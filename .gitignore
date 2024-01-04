@@ -1,0 +1,10 @@
+*.pyc
+__pycache__/
+*.mo
+media/
+/logs/*
+.env
+staticfiles/
+node_modules/
+.parcel-cache/
+administrator/static/admin/dist
