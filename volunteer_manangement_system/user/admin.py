@@ -1,22 +1,23 @@
 from django.contrib import admin
 from leaflet.admin import LeafletGeoAdmin
-from .models import Profile, Incident, Programme, Job
+from . import models
 
 
 class ProfileAdmin(admin.ModelAdmin):
-    model = Profile
+    model = models.Profile
     list_display = ("__str__", "gender", "dob")
 
 
 class JobAdmin(admin.ModelAdmin):
-    model = Job
+    model = models.Job
     list_display = ("__str__", "vacancy", "volunteer_employed", "status")
 
     def volunteer_employed(self, obj):
         return obj.volunteers.count()
 
+
 class IncidentAdmin(LeafletGeoAdmin):
-    model = Incident
+    model = models.Incident
     list_display = ("__str__", "location", "formatted_date")
 
     def formatted_date(self, obj):
@@ -26,12 +27,14 @@ class IncidentAdmin(LeafletGeoAdmin):
 
 
 class ProgrammeAdmin(admin.ModelAdmin):
-    model = Programme
+    model = models.Programme
     list_display = ("__str__", "incident")
 
 
 # Register your models here.
-admin.site.register(Profile, ProfileAdmin)
-admin.site.register(Incident, IncidentAdmin)
-admin.site.register(Programme, ProgrammeAdmin)
-admin.site.register(Job, JobAdmin)
+admin.site.register(models.Profile, ProfileAdmin)
+admin.site.register(models.Incident, IncidentAdmin)
+admin.site.register(models.Programme, ProgrammeAdmin)
+admin.site.register(models.Job, JobAdmin)
+admin.site.register(models.Province)
+admin.site.register(models.District)
