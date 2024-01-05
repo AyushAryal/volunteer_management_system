@@ -138,27 +138,4 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 LEAFLET_CONFIG = {
     "DEFAULT_CENTER": (27.7172, 85.3240),
     "DEFAULT_ZOOM": 8,
-    # "PLUGINS": {
-    #     "Jawg": {
-    #         "css": [
-    #             "https://unpkg.com/jawg-leaflet/dist/jawg-leaflet.css",
-    #         ],
-    #         "js": "https://unpkg.com/jawg-leaflet/dist/jawg-leaflet.min.js",
-    #     },
-    # },
-    # "TILES": [
-    #     # {
-    #     #     "name": "Jawg Light",
-    #     #     # "url": "https://{s}.tile.jawg.io/jawg-light/{z}/{x}/{y}{r}.png?access-token=uPrrDjnAdV9b4IwBxAYXqQGM2g1gFfLcEhv80MlNx5rD3ILDYFmHNaptZhyfcLyx",
-    #     #     "url": "https://tiles.stadiamaps.com/tiles/stamen_toner/{z}/{x}/{y}{r}.png",
-    #     #     "options": {
-    #     #         "attribution": '&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://www.stamen.com/" target="_blank">Stamen Design</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-    #     #     },
-    #     # },
-    #     {
-    #         "name": "OpenStreetMap",
-    #         "url": "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-    #         "options": {"attribution": "© OpenStreetMap contributors"},
-    #     },
-    # ],
 }
