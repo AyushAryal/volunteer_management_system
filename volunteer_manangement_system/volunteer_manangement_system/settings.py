@@ -38,11 +38,9 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.gis",
-
     "rest_framework",
     "ckeditor",
     "leaflet",
-
     "user",
     "administrator",
 ]
@@ -61,18 +59,18 @@ ROOT_URLCONF = "volunteer_manangement_system.urls"
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [
-            BASE_DIR / 'templates',
-            BASE_DIR / 'administrator' / 'templates',
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [
+            BASE_DIR / "templates",
+            BASE_DIR / "administrator" / "templates",
         ],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
             ],
         },
     },
@@ -126,10 +124,10 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = "static/"
 STATICFILES_DIRS = (
-    BASE_DIR / 'static',
-    BASE_DIR / 'administrator' / 'static',
+    BASE_DIR / "static",
+    BASE_DIR / "administrator" / "static",
 )
 
 # Default primary key field type
@@ -138,6 +136,29 @@ STATICFILES_DIRS = (
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 LEAFLET_CONFIG = {
-    'DEFAULT_CENTER' : (27.7172, 85.3240),
-    'DEFAULT_ZOOM': 8,
+    "DEFAULT_CENTER": (27.7172, 85.3240),
+    "DEFAULT_ZOOM": 8,
+    # "PLUGINS": {
+    #     "Jawg": {
+    #         "css": [
+    #             "https://unpkg.com/jawg-leaflet/dist/jawg-leaflet.css",
+    #         ],
+    #         "js": "https://unpkg.com/jawg-leaflet/dist/jawg-leaflet.min.js",
+    #     },
+    # },
+    # "TILES": [
+    #     # {
+    #     #     "name": "Jawg Light",
+    #     #     # "url": "https://{s}.tile.jawg.io/jawg-light/{z}/{x}/{y}{r}.png?access-token=uPrrDjnAdV9b4IwBxAYXqQGM2g1gFfLcEhv80MlNx5rD3ILDYFmHNaptZhyfcLyx",
+    #     #     "url": "https://tiles.stadiamaps.com/tiles/stamen_toner/{z}/{x}/{y}{r}.png",
+    #     #     "options": {
+    #     #         "attribution": '&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://www.stamen.com/" target="_blank">Stamen Design</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    #     #     },
+    #     # },
+    #     {
+    #         "name": "OpenStreetMap",
+    #         "url": "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+    #         "options": {"attribution": "© OpenStreetMap contributors"},
+    #     },
+    # ],
 }
