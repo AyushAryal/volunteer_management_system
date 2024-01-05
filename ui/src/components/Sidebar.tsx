@@ -1,7 +1,8 @@
-import { ReactElement } from 'react';
+import { Button } from 'react-bootstrap';
 
 function Sidebar() {
-    return (<span>Geography Filter</span>);
+    return (<><Button variant='primary'>Submit</Button>
+        <Button variant='secondary'>Submit</Button></>);
 }
 
 export default Sidebar;

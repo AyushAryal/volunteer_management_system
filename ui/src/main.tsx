@@ -1,6 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 
+import './assets/scss/bootstrap.scss';
+
 import Map from './components/Map.tsx';
 import Sidebar from './components/Sidebar.tsx';
 import './index.css';
