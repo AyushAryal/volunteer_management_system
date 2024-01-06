@@ -5,7 +5,6 @@ from user.models import (
     Profile,
     Incident,
     Job,
-    Programme,
 )
 
 register = template.Library()

@@ -17,6 +17,8 @@ psycopg2 = "^2.9.9"
 
 [tool.poetry.group.dev.dependencies]
 django-stubs = "^4.2.7"
+flake8 = "^7.0.0"
+black = "^23.12.1"
 
 [build-system]
 requires = ["poetry-core"]
@@ -24,3 +26,6 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.django-stubs]
 django_settings_module = "volunteer_management_system.settings"
+
+[tool.black]
+exclude = "migrations|node_modules"

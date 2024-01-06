@@ -84,13 +84,19 @@ class TokenTest(TestCase):
         view = TokenViewSet.as_view({"post": "create"})
 
         # Invalid credentials
-        request = factory.post("/token/", {"email": "", "password": ""}, format="json")
+        request = factory.post(
+            "/token/",
+            {"email": "", "password": ""},
+            format="json",
+        )
         response = view(request)
         self.assertNotEqual(response.status_code, status.HTTP_200_OK)
 
         # Valid credentials but email is not verified
         request = factory.post(
-            "/token/", {"email": self.email, "password": self.password}, format="json"
+            "/token/",
+            {"email": self.email, "password": self.password},
+            format="json",
         )
         response = view(request)
         self.assertNotEqual(response.status_code, status.HTTP_200_OK)
@@ -99,7 +105,9 @@ class TokenTest(TestCase):
         self.user.email_verified = True
         self.user.save()
         request = factory.post(
-            "/token/", {"email": self.email, "password": self.password}, format="json"
+            "/token/",
+            {"email": self.email, "password": self.password},
+            format="json",
         )
         response = view(request)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
