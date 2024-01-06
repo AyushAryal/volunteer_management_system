@@ -289,7 +289,8 @@ class TokenViewSet(viewsets.GenericViewSet):
     def get_token(user, request):
         if not user or not user.is_authenticated:
             return Response(
-                {"detail": _("Unauthenticated")}, status=status.HTTP_401_UNAUTHORIZED
+                {"detail": _("Unauthenticated")},
+                status=status.HTTP_401_UNAUTHORIZED,
             )
 
         from authentication.hooks import ADDITIONAL_AUTH_CHECKS  # noqa

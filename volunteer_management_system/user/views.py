@@ -1,33 +1,41 @@
-from rest_framework.viewsets import ModelViewSet
+from rest_framework import viewsets
 from . import models
 from . import serializers
 
 
-class ProfileViewSet(ModelViewSet):
+class ProfileViewSet(viewsets.ModelViewSet):
     queryset = models.Profile.objects.all()
     serializer_class = serializers.ProfileSerializer
 
 
-class IncidentViewSet(ModelViewSet):
+class IncidentViewSet(viewsets.ModelViewSet):
     queryset = models.Incident.objects.all()
     serializer_class = serializers.IncidentSerializer
 
 
-class ProgrammeViewSet(ModelViewSet):
+class ProgrammeViewSet(viewsets.ModelViewSet):
     queryset = models.Programme.objects.all()
     serializer_class = serializers.ProgrammeSerializer
 
 
-class JobViewSet(ModelViewSet):
+class JobViewSet(viewsets.ModelViewSet):
     queryset = models.Job.objects.all()
     serializer_class = serializers.JobSerializer
 
 
-class ProvinceViewSet(ModelViewSet):
+class ProvinceViewSet(
+    viewsets.GenericViewSet,
+    viewsets.mixins.RetrieveModelMixin,
+    viewsets.mixins.ListModelMixin,
+):
     queryset = models.Province.objects.all()
     serializer_class = serializers.ProvinceSerializer
 
 
-class DistrictViewSet(ModelViewSet):
+class DistrictViewSet(
+    viewsets.GenericViewSet,
+    viewsets.mixins.RetrieveModelMixin,
+    viewsets.mixins.ListModelMixin,
+):
     queryset = models.District.objects.all()
     serializer_class = serializers.DistrictSerializer
