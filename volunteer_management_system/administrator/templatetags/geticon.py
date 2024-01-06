@@ -1,7 +1,7 @@
 from django import template
 
 from django.contrib.auth import get_user_model
-from user.models import (
+from federal.models import (
     Profile,
     Incident,
     Job,
@@ -23,5 +23,5 @@ def modelicon(model):
 @register.filter()
 def appicon(app):
     return {
-        "user": "fa-solid fa-user",
+        "federal": "fa-solid fa-user",
     }.get(app["app_label"], "fa-solid fa-box")

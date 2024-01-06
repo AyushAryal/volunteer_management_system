@@ -1,6 +1,6 @@
 from django.contrib import admin
 from leaflet.admin import LeafletGeoAdmin
-from user import models
+from federal import models
 
 
 class ProfileAdmin(admin.ModelAdmin):

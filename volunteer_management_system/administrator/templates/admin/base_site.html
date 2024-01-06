@@ -12,7 +12,7 @@
 
 {% block branding %}
 <div class="logo-container d-flex align-items-center" style="gap: 0.5rem">
-    <img style="filter: brightness(100)" height="30px" alt="logo" src="{% static 'shared/logo.png' %}" />
+    <img height="30px" alt="logo" src="{% static 'shared/logo.png' %}" />
     <h1 id="site-name" class="mb-0"><a class="text-light" href="{% url 'admin:index' %}">{{ site_header }}</a></h1>
 </div>
 {% endblock %}

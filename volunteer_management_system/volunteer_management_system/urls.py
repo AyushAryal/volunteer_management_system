@@ -19,7 +19,7 @@ from django.views.generic.base import RedirectView
 
 from rest_framework.routers import DefaultRouter
 
-import user.views as views
+import federal.views as views
 
 
 router = DefaultRouter()
