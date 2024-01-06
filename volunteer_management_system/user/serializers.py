@@ -1,5 +1,5 @@
 from rest_framework.serializers import ModelSerializer
-from .models import Profile, Incident, Programme, Job
+from .models import Profile, Incident, Programme, Job, Province, District
 
 
 class ProfileSerializer(ModelSerializer):
@@ -23,4 +23,10 @@ class ProgrammeSerializer(ModelSerializer):
 class JobSerializer(ModelSerializer):
     class Meta:
         model = Job
+        fields = "__all__"
+
+
+class ProvinceSerializer(ModelSerializer):
+    class Meta:
+        model = Province
         fields = "__all__"
