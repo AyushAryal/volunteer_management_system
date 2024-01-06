@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "volunteer-manangement-system"
+name = "volunteer-management-system"
 version = "0.1.0"
 description = ""
 authors = ["AyushAryal <ayusharyal100@gmail.com>"]
@@ -15,6 +15,12 @@ django-geojson = "^4.0.0"
 psycopg2 = "^2.9.9"
 
 
+[tool.poetry.group.dev.dependencies]
+django-stubs = "^4.2.7"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.django-stubs]
+django_settings_module = "volunteer_management_system.settings"

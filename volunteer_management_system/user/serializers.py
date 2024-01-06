@@ -1,32 +1,38 @@
 from rest_framework.serializers import ModelSerializer
-from .models import Profile, Incident, Programme, Job, Province, District
+from . import models
 
 
 class ProfileSerializer(ModelSerializer):
     class Meta:
-        model = Profile
+        model = models.Profile
         fields = "__all__"
 
 
 class IncidentSerializer(ModelSerializer):
     class Meta:
-        model = Incident
+        model = models.Incident
         fields = "__all__"
 
 
 class ProgrammeSerializer(ModelSerializer):
     class Meta:
-        model = Programme
+        model = models.Programme
         fields = "__all__"
 
 
 class JobSerializer(ModelSerializer):
     class Meta:
-        model = Job
+        model = models.Job
         fields = "__all__"
 
 
 class ProvinceSerializer(ModelSerializer):
     class Meta:
-        model = Province
+        model = models.Province
+        fields = "__all__"
+
+
+class DistrictSerializer(ModelSerializer):
+    class Meta:
+        model = models.District
         fields = "__all__"

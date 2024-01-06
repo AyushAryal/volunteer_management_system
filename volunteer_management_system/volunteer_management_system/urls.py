@@ -27,6 +27,8 @@ router.register(prefix="profile", viewset=views.ProfileViewSet)
 router.register(prefix="incident", viewset=views.IncidentViewSet)
 router.register(prefix="programme", viewset=views.ProgrammeViewSet)
 router.register(prefix="job", viewset=views.JobViewSet)
+router.register(prefix="district", viewset=views.DistrictViewSet)
+router.register(prefix="province", viewset=views.ProvinceViewSet)
 
 
 favicon_view = RedirectView.as_view(url="/static/favicon.ico", permanent=True)
