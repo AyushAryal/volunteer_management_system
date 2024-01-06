@@ -19,16 +19,17 @@ from django.views.generic.base import RedirectView
 
 from rest_framework.routers import DefaultRouter
 
-import federal.views as views
+import federal.views
+import incident.views
 
 
 router = DefaultRouter()
-router.register(prefix="profile", viewset=views.ProfileViewSet)
-router.register(prefix="incident", viewset=views.IncidentViewSet)
-router.register(prefix="programme", viewset=views.ProgrammeViewSet)
-router.register(prefix="job", viewset=views.JobViewSet)
-router.register(prefix="district", viewset=views.DistrictViewSet)
-router.register(prefix="province", viewset=views.ProvinceViewSet)
+router.register(prefix="profile", viewset=incident.views.ProfileViewSet)
+router.register(prefix="incident", viewset=incident.views.IncidentViewSet)
+router.register(prefix="programme", viewset=incident.views.ProgrammeViewSet)
+router.register(prefix="job", viewset=incident.views.JobViewSet)
+router.register(prefix="district", viewset=federal.views.DistrictViewSet)
+router.register(prefix="province", viewset=federal.views.ProvinceViewSet)
 
 
 favicon_view = RedirectView.as_view(url="/static/favicon.ico", permanent=True)

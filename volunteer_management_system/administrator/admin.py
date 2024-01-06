@@ -1,15 +1,17 @@
 from django.contrib import admin
 from leaflet.admin import LeafletGeoAdmin
-from federal import models
+
+import federal.models
+import incident.models
 
 
 class ProfileAdmin(admin.ModelAdmin):
-    model = models.Profile
+    model = incident.models.Profile
     list_display = ("__str__", "gender", "dob")
 
 
 class JobAdmin(admin.ModelAdmin):
-    model = models.Job
+    model = incident.models.Job
     list_display = ("__str__", "vacancy", "volunteer_employed", "status")
 
     def volunteer_employed(self, obj):
@@ -17,7 +19,7 @@ class JobAdmin(admin.ModelAdmin):
 
 
 class IncidentAdmin(LeafletGeoAdmin):
-    model = models.Incident
+    model = incident.models.Incident
     list_display = ("__str__", "location", "formatted_date")
 
     def formatted_date(self, obj):
@@ -27,7 +29,7 @@ class IncidentAdmin(LeafletGeoAdmin):
 
 
 class ProgrammeAdmin(admin.ModelAdmin):
-    model = models.Programme
+    model = incident.models.Programme
     list_display = ("__str__", "incident")
 
 
@@ -39,9 +41,10 @@ class MainAdminSite(admin.AdminSite):
 
 admin_site = MainAdminSite()
 
-admin_site.register(models.Profile, ProfileAdmin)
-admin_site.register(models.Incident, IncidentAdmin)
-admin_site.register(models.Programme, ProgrammeAdmin)
-admin_site.register(models.Job, JobAdmin)
-admin_site.register(models.Province)
-admin_site.register(models.District)
+admin_site.register(federal.models.Province)
+admin_site.register(federal.models.District)
+
+admin_site.register(incident.models.Profile, ProfileAdmin)
+admin_site.register(incident.models.Incident, IncidentAdmin)
+admin_site.register(incident.models.Programme, ProgrammeAdmin)
+admin_site.register(incident.models.Job, JobAdmin)

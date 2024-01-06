@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "ckeditor",
     "leaflet",
     "federal",
+    "incident",
     "administrator",
 ]
 
