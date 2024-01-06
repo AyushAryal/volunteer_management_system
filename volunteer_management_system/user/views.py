@@ -1,12 +1,7 @@
 from django.shortcuts import render
 from rest_framework.viewsets import ModelViewSet
 from .models import Profile, Incident, Programme, Job
-from .serializers import (
-    ProfileSerializer,
-    IncidentSerializer,
-    ProgrammeSerializer,
-    JobSerializer,
-)
+from . import serializers
 
 
 class ProfileViewSet(ModelViewSet):

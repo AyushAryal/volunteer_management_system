@@ -1,5 +1,5 @@
 """
-URL configuration for volunteer_manangement_system project.
+URL configuration for volunteer_management_system project.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/5.0/topics/http/urls/
@@ -29,15 +29,15 @@ router.register(prefix="programme", viewset=views.ProgrammeViewSet)
 router.register(prefix="job", viewset=views.JobViewSet)
 
 
-favicon_view = RedirectView.as_view(url='/static/favicon.ico', permanent=True)
+favicon_view = RedirectView.as_view(url="/static/favicon.ico", permanent=True)
 
 urlpatterns = [
-    path('admin/', include('administrator.urls')),
+    path("admin/", include("administrator.urls")),
     path(
         "api/",
         include(
             router.urls,
         ),
     ),
-    re_path(r'^favicon\.ico$', favicon_view),
+    re_path(r"^favicon\.ico$", favicon_view),
 ]
