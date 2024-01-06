@@ -3,22 +3,38 @@ from . import models
 from . import serializers
 
 
-class ProfileViewSet(viewsets.ModelViewSet):
+class ProfileViewSet(
+    viewsets.GenericViewSet,
+    viewsets.mixins.RetrieveModelMixin,
+    viewsets.mixins.ListModelMixin,
+):
     queryset = models.Profile.objects.all()
     serializer_class = serializers.ProfileSerializer
 
 
-class IncidentViewSet(viewsets.ModelViewSet):
+class IncidentViewSet(
+    viewsets.GenericViewSet,
+    viewsets.mixins.RetrieveModelMixin,
+    viewsets.mixins.ListModelMixin,
+):
     queryset = models.Incident.objects.all()
     serializer_class = serializers.IncidentSerializer
 
 
-class ProgrammeViewSet(viewsets.ModelViewSet):
+class ProgrammeViewSet(
+    viewsets.GenericViewSet,
+    viewsets.mixins.RetrieveModelMixin,
+    viewsets.mixins.ListModelMixin,
+):
     queryset = models.Programme.objects.all()
     serializer_class = serializers.ProgrammeSerializer
 
 
-class JobViewSet(viewsets.ModelViewSet):
+class JobViewSet(
+    viewsets.GenericViewSet,
+    viewsets.mixins.RetrieveModelMixin,
+    viewsets.mixins.ListModelMixin,
+):
     queryset = models.Job.objects.all()
     serializer_class = serializers.JobSerializer
 

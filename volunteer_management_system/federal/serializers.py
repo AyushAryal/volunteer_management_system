@@ -1,38 +1,38 @@
-from rest_framework.serializers import ModelSerializer
+from rest_framework.serializers import HyperlinkedModelSerializer
 from . import models
 
 
-class ProfileSerializer(ModelSerializer):
+class ProfileSerializer(HyperlinkedModelSerializer):
     class Meta:
         model = models.Profile
         fields = "__all__"
 
 
-class IncidentSerializer(ModelSerializer):
+class IncidentSerializer(HyperlinkedModelSerializer):
     class Meta:
         model = models.Incident
         fields = "__all__"
 
 
-class ProgrammeSerializer(ModelSerializer):
+class ProgrammeSerializer(HyperlinkedModelSerializer):
     class Meta:
         model = models.Programme
         fields = "__all__"
 
 
-class JobSerializer(ModelSerializer):
+class JobSerializer(HyperlinkedModelSerializer):
     class Meta:
         model = models.Job
         fields = "__all__"
 
 
-class ProvinceSerializer(ModelSerializer):
+class ProvinceSerializer(HyperlinkedModelSerializer):
     class Meta:
         model = models.Province
         fields = "__all__"
 
 
-class DistrictSerializer(ModelSerializer):
+class DistrictSerializer(HyperlinkedModelSerializer):
     class Meta:
         model = models.District
         fields = "__all__"

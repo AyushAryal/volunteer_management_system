@@ -3,7 +3,7 @@ import json
 from django.core.management.base import BaseCommand
 from django.contrib.gis.geos import Polygon
 
-from user.models import Province, District
+from federal.models import Province, District
 
 
 class Command(BaseCommand):
@@ -40,11 +40,12 @@ class Command(BaseCommand):
 
     def handle(self, *_, **__):
         provinces = self.load_provinces()
-        districts = self.load_districts()
 
         if Province.objects.all().count() == 0:
             for province in provinces:
                 province.save()
+
+        districts = self.load_districts()
 
         if District.objects.all().count() == 0:
             for district in districts:

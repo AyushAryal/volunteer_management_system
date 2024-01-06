@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "ckeditor",
     "leaflet",
-    "user",
+    "federal",
     "administrator",
 ]
 
