@@ -7,54 +7,119 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Incident',
+            name="Incident",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=30)),
-                ('description', ckeditor.fields.RichTextField()),
-                ('date', models.DateTimeField()),
-                ('location', models.CharField(max_length=10)),
-                ('point', django.contrib.gis.db.models.fields.PointField(srid=4326)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=30)),
+                ("description", ckeditor.fields.RichTextField()),
+                ("date", models.DateTimeField()),
+                ("location", models.CharField(max_length=10)),
+                ("point", django.contrib.gis.db.models.fields.PointField(srid=4326)),
             ],
         ),
         migrations.CreateModel(
-            name='Profile',
+            name="Profile",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=20)),
-                ('dob', models.DateField(blank=True, null=True)),
-                ('gender', models.CharField(choices=[('M', 'Male'), ('F', 'Female')], default='M', max_length=1)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=20)),
+                ("dob", models.DateField(blank=True, null=True)),
+                (
+                    "gender",
+                    models.CharField(
+                        choices=[("M", "Male"), ("F", "Female")],
+                        default="M",
+                        max_length=1,
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Programme',
+            name="Programme",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=30)),
-                ('description', ckeditor.fields.RichTextField()),
-                ('incident', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='user.incident')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=30)),
+                ("description", ckeditor.fields.RichTextField()),
+                (
+                    "incident",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="user.incident"
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Job',
+            name="Job",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=64)),
-                ('start_date', models.DateTimeField()),
-                ('end_date', models.DateTimeField()),
-                ('vacancy', models.PositiveIntegerField()),
-                ('description', ckeditor.fields.RichTextField()),
-                ('status', models.CharField(choices=[('C', 'Completed'), ('P', 'In Progress'), ('U', 'Not Assigned')], max_length=1)),
-                ('volunteers', models.ManyToManyField(blank=True, related_name='jobs', to='user.profile', verbose_name='Volunteers Employed')),
-                ('programme', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='user.programme')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=64)),
+                ("start_date", models.DateTimeField()),
+                ("end_date", models.DateTimeField()),
+                ("vacancy", models.PositiveIntegerField()),
+                ("description", ckeditor.fields.RichTextField()),
+                (
+                    "status",
+                    models.CharField(
+                        choices=[
+                            ("C", "Completed"),
+                            ("P", "In Progress"),
+                            ("U", "Not Assigned"),
+                        ],
+                        max_length=1,
+                    ),
+                ),
+                (
+                    "volunteers",
+                    models.ManyToManyField(
+                        blank=True,
+                        related_name="jobs",
+                        to="user.profile",
+                        verbose_name="Volunteers Employed",
+                    ),
+                ),
+                (
+                    "programme",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="user.programme"
+                    ),
+                ),
             ],
         ),
     ]
