@@ -1,13 +1,16 @@
-import json
-
 from django.core.management.base import BaseCommand
+import json
 from django.contrib.gis.geos import Polygon
 
 from federal.models import Province, District
 
+# from incident.models import Incident
+
 
 class Command(BaseCommand):
     help = "This command populates the database with default db"
+
+    # Incident.objects.filter(pk=1).update(name="Flood1")
 
     def load_provinces(self):
         provinces = []
@@ -39,6 +42,8 @@ class Command(BaseCommand):
         return districts
 
     def handle(self, *_, **__):
+        # Incident.objects.filter(pk=1).update(name="Flood1")
+
         provinces = self.load_provinces()
 
         if Province.objects.all().count() == 0:
@@ -50,3 +55,9 @@ class Command(BaseCommand):
         if District.objects.all().count() == 0:
             for district in districts:
                 district.save()
+
+        # if Incident.objects.all().count == 0:
+        #     incident_count = 20
+        #     for incident_id in  range(incident_count):
+        #         Incident.objects.create(name = "incident"+ str(incident_count),
+        #                                 description )

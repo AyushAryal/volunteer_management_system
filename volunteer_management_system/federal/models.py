@@ -21,8 +21,19 @@ class District(models.Model):
 
 
 class Municipality(models.Model):
+    class Meta:
+        verbose_name_plural = "Municipalities"
+
     name = models.CharField(max_length=25)
     district = models.ForeignKey(District, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return str(self.name)
+
+
+class Ward(models.Model):
+    name = models.CharField(max_length=25)
+    municipality = models.ForeignKey(Municipality, on_delete=models.CASCADE)
 
     def __str__(self):
         return str(self.name)

@@ -1,8 +1,25 @@
-import { Button } from 'react-bootstrap';
+import React from "react";
+import Nav from "react-bootstrap/Nav";
 
-function Sidebar() {
-    return (<><Button variant='primary'>Submit</Button>
-        <Button variant='secondary'>Submit</Button></>);
+function Navbar(){
+    return(
+        <>
+        <Nav
+      activeKey="/home"
+      onSelect={(selectedKey) => alert(`selected ${selectedKey}`)}
+    >
+      <Nav.Item>
+        <Nav.Link href="/home">Home</Nav.Link>
+      </Nav.Item>
+      <Nav.Item>
+        <Nav.Link eventKey="link-1">Dashboard</Nav.Link>
+      </Nav.Item>
+      <Nav.Item>
+        <Nav.Link eventKey="link-2">Login</Nav.Link>
+      </Nav.Item>
+    </Nav>
+        </>
+    )
 }
 
-export default Sidebar;
+export default Navbar;

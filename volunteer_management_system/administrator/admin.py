@@ -43,6 +43,8 @@ admin_site = MainAdminSite()
 
 admin_site.register(federal.models.Province)
 admin_site.register(federal.models.District)
+admin_site.register(federal.models.Municipality)
+admin_site.register(federal.models.Ward)
 
 admin_site.register(incident.models.Profile, ProfileAdmin)
 admin_site.register(incident.models.Incident, IncidentAdmin)
