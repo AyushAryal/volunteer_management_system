@@ -8,8 +8,8 @@ from federal.models import Municipality, Ward
 
 class Profile(models.Model):
     class Meta:
-        verbose_name = _("Customer profile")
-        verbose_name_plural = _("Customer profiles")
+        verbose_name = _("Volunteer profile")
+        verbose_name_plural = _("Volunteer profiles")
 
     user = models.OneToOneField(
         get_user_model(),
@@ -19,7 +19,7 @@ class Profile(models.Model):
         blank=True,
         verbose_name=_("user"),
     )
-    user = models.OneToOneField(get_user_model(), on_delete=models.CASCADE)
+
     name = models.CharField(max_length=20, null=False, blank=False)
     dob = models.DateField(null=True, blank=True)
     gender = models.CharField(
@@ -57,6 +57,10 @@ class Profile(models.Model):
 
 
 class Incident(models.Model):
+    class Meta:
+        verbose_name = _("Incident")
+        verbose_name_plural = _("Incidents")
+
     name = models.CharField(max_length=30)
     description = RichTextField()
     date = models.DateTimeField()
@@ -76,6 +80,10 @@ class Incident(models.Model):
 
 
 class Programme(models.Model):
+    class Meta:
+        verbose_name = _("Programme")
+        verbose_name_plural = _("Programmes")
+
     name = models.CharField(max_length=30)
     description = RichTextField()
     incident = models.ForeignKey(Incident, on_delete=models.CASCADE)
@@ -85,6 +93,10 @@ class Programme(models.Model):
 
 
 class Job(models.Model):
+    class Meta:
+        verbose_name = _("Job")
+        verbose_name_plural = _("Jobs")
+
     name = models.CharField(max_length=64)
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
