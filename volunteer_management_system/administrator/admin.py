@@ -1,13 +1,18 @@
 from django.contrib import admin
 from leaflet.admin import LeafletGeoAdmin
+from django.contrib.auth import get_user_model
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+from django.contrib.sites.models import Site
+from django.utils.translation import gettext_lazy as _
 
 import federal.models
 import incident.models
 
 
-class ProfileAdmin(admin.ModelAdmin):
+class ProfileInline(admin.StackedInline):
     model = incident.models.Profile
-    list_display = ("__str__", "gender", "dob")
+    can_delete = False
+    extra = 0
 
 
 class JobAdmin(admin.ModelAdmin):
@@ -33,6 +38,37 @@ class ProgrammeAdmin(admin.ModelAdmin):
     list_display = ("__str__", "incident")
 
 
+class UserAdmin(BaseUserAdmin):
+    inlines = (ProfileInline,)
+    list_display = ("email", "email_verified")
+    list_filter = ("is_superuser", "is_active", "email_verified")
+    fieldsets = (
+        (_("Personal info"), {"fields": ("email", "password", "email_verified")}),
+        (
+            _("Permissions"),
+            {
+                "fields": (
+                    "is_active",
+                    "is_staff",
+                    "is_superuser",
+                ),
+            },
+        ),
+        (_("Important dates"), {"fields": ("last_login", "date_joined")}),
+    )
+    add_fieldsets = (
+        (
+            None,
+            {
+                "classes": ("wide",),
+                "fields": ("email", "password1", "password2"),
+            },
+        ),
+    )
+    ordering = ("email",)
+    search_fields = ("email",)
+
+
 class MainAdminSite(admin.AdminSite):
     site_title = "Dashboard"
     site_header = "Admin Dashboard"
@@ -41,12 +77,13 @@ class MainAdminSite(admin.AdminSite):
 
 admin_site = MainAdminSite()
 
+admin_site.register(Site)
 admin_site.register(federal.models.Province)
 admin_site.register(federal.models.District)
 admin_site.register(federal.models.Municipality)
 admin_site.register(federal.models.Ward)
 
-admin_site.register(incident.models.Profile, ProfileAdmin)
 admin_site.register(incident.models.Incident, IncidentAdmin)
 admin_site.register(incident.models.Programme, ProgrammeAdmin)
 admin_site.register(incident.models.Job, JobAdmin)
+admin_site.register(get_user_model(), UserAdmin)

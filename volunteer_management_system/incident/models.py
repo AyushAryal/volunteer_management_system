@@ -1,11 +1,15 @@
 from django.db import models
+from django.contrib.auth import get_user_model
 
 from django.contrib.gis.db import models as gis_models
 
 from ckeditor.fields import RichTextField
 
+from federal.models import Ward, Municipality
+
 
 class Profile(models.Model):
+    user = models.OneToOneField(get_user_model(), on_delete=models.CASCADE)
     name = models.CharField(max_length=20, null=False, blank=False)
     dob = models.DateField(null=True, blank=True)
     gender = models.CharField(
@@ -16,6 +20,27 @@ class Profile(models.Model):
         ),
         default="M",
     )
+    blood_type = models.CharField(
+        max_length=3,
+        choices=(
+            ("ON", "O Negative"),
+            ("OP", "O Positive"),
+            ("AN", "A Negative"),
+            ("AP", "A Positive"),
+            ("BN", "B Negative"),
+            ("BP", "B Positive"),
+            ("ABN", "AB Negative"),
+            ("ABP", "AB Positive"),
+        ),
+    )
+    nationality = models.CharField(
+        max_length=1,
+        choices=(
+            ("N", "Nepalese"),
+            ("I", "International"),
+        ),
+    )
+    municipality = models.ForeignKey(Municipality, on_delete=models.CASCADE)
 
     def __str__(self):
         return str(self.name)
@@ -25,8 +50,16 @@ class Incident(models.Model):
     name = models.CharField(max_length=30)
     description = RichTextField()
     date = models.DateTimeField()
-    location = models.CharField(max_length=10)
+    location = models.ForeignKey(Ward, on_delete=models.CASCADE)
     point = gis_models.PointField()
+    # severity = models.CharField(
+    #     max_length=1,
+    #     choices=(
+    #         ("M", "Mild Attention"),
+    #         ("I", "Immediate Attention"),
+    #         ("C", "Critical Case"),
+    #     ),
+    # )
 
     def __str__(self):
         return str(self.name)
