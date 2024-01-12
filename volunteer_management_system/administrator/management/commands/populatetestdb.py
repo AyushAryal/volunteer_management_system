@@ -1,10 +1,10 @@
 import json
-from django.core.management.base import BaseCommand
-from django.conf import settings
-from django.contrib.gis.geos import Polygon
-from django.contrib.auth import get_user_model
 
-from federal.models import Province, District
+from django.conf import settings
+from django.contrib.auth import get_user_model
+from django.contrib.gis.geos import Polygon
+from django.core.management.base import BaseCommand
+from federal.models import District, Province
 
 
 class Command(BaseCommand):

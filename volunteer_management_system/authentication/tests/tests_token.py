@@ -1,10 +1,8 @@
-from django.test import TestCase
-from django.contrib.auth import get_user_model
-
-from rest_framework.test import APIRequestFactory, force_authenticate
-from rest_framework import status
-
 from authentication.views import TokenViewSet
+from django.contrib.auth import get_user_model
+from django.test import TestCase
+from rest_framework import status
+from rest_framework.test import APIRequestFactory, force_authenticate
 
 
 class TokenTest(TestCase):
@@ -20,8 +18,8 @@ class TokenTest(TestCase):
         factory = APIRequestFactory()
         view = TokenViewSet.delete
 
-        from rest_framework.request import Request
         from rest_framework.parsers import JSONParser
+        from rest_framework.request import Request
 
         # Get token
         list_view = TokenViewSet.as_view({"get": "list"})

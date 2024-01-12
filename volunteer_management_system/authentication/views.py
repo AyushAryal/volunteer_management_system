@@ -6,23 +6,16 @@ from django.contrib.sites.models import Site
 from django.core.exceptions import ValidationError as DjValidationError
 from django.shortcuts import redirect
 from django.utils.translation import gettext_lazy as _
-
-
-from rest_framework import mixins
-from rest_framework import permissions
-from rest_framework import status
-from rest_framework import viewsets
+from rest_framework import mixins, permissions, status, viewsets
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import action
-from rest_framework.reverse import reverse
-from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError as DRFValidationError
+from rest_framework.response import Response
+from rest_framework.reverse import reverse
 
-from .tokens import VerificationLinkTokenGenerator
-from . import signals
 from . import permissions as authentication_permissions
-from . import serializers
-from . import utils
+from . import serializers, signals, utils
+from .tokens import VerificationLinkTokenGenerator
 
 
 class UserViewSet(

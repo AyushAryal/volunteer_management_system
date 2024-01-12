@@ -32,3 +32,6 @@ django_settings_module = "volunteer_management_system.settings"
 
 [tool.black]
 force-exclude = "migrations|node_modules"
+
+[tool.isort]
+profile = "black"

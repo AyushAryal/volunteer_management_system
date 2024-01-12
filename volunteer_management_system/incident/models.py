@@ -1,14 +1,24 @@
-from django.db import models
-from django.contrib.auth import get_user_model
-
-from django.contrib.gis.db import models as gis_models
-
 from ckeditor.fields import RichTextField
-
-from federal.models import Ward, Municipality
+from django.contrib.auth import get_user_model
+from django.contrib.gis.db import models as gis_models
+from django.db import models
+from django.utils.translation import gettext_lazy as _
+from federal.models import Municipality, Ward
 
 
 class Profile(models.Model):
+    class Meta:
+        verbose_name = _("Customer profile")
+        verbose_name_plural = _("Customer profiles")
+
+    user = models.OneToOneField(
+        get_user_model(),
+        on_delete=models.CASCADE,
+        related_name="customer",
+        primary_key=True,
+        blank=True,
+        verbose_name=_("user"),
+    )
     user = models.OneToOneField(get_user_model(), on_delete=models.CASCADE)
     name = models.CharField(max_length=20, null=False, blank=False)
     dob = models.DateField(null=True, blank=True)
