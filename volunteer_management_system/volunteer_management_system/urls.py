@@ -17,6 +17,8 @@ Including another URLconf
 import federal.views
 import incident.views
 from authentication.urls import router as authentication_router
+from django.conf import settings
+from django.conf.urls.static import static
 from django.urls import include, path, re_path
 from django.views.generic.base import RedirectView
 
@@ -40,5 +42,14 @@ favicon_view = RedirectView.as_view(url="/static/favicon.ico", permanent=True)
 urlpatterns = [
     path("admin/", include("administrator.urls")),
     path("api/", include((router.urls, "api"))),
+    path("ckeditor/", include("ckeditor_uploader.urls")),
     re_path(r"^favicon\.ico$", favicon_view),
 ]
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+# login for browsable api only on development
+if settings.DEBUG:
+    urlpatterns += [
+        path("api-auth/", include("rest_framework.urls", namespace="rest_framework"))
+    ]

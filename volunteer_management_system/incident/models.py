@@ -1,9 +1,77 @@
+from types import DynamicClassAttribute
+
 from ckeditor.fields import RichTextField
 from django.contrib.auth import get_user_model
 from django.contrib.gis.db import models as gis_models
 from django.db import models
+from django.utils.html import mark_safe
 from django.utils.translation import gettext_lazy as _
 from federal.models import Municipality, Ward
+
+
+class Nationality(models.IntegerChoices):
+    National, International = range(2)
+
+    @DynamicClassAttribute
+    def label(self):
+        label = super().label
+        return {
+            "National": _("National"),
+            "International": _("International"),
+        }.get(label, _("None"))
+
+
+class JobStatus(models.IntegerChoices):
+    Completed, InProgress, NotAssigned = range(3)
+
+    @DynamicClassAttribute
+    def label(self):
+        label = super().label
+        return {
+            "Completed": _("Completed"),
+            "Inprogress": _("In Progress"),
+            "Notassigned": _("Not Assigned"),
+        }.get(label, _("None"))
+
+
+class Gender(models.IntegerChoices):
+    Male, Female, Other = range(3)
+
+    @DynamicClassAttribute
+    def label(self):
+        label = super().label
+        return {
+            "Male": _("Male"),
+            "Female": _("Female"),
+            "Other": _("Other"),
+        }.get(label, _("None"))
+
+
+class BloodGroup(models.IntegerChoices):
+    (
+        O_Negative,
+        O_Positive,
+        A_Negative,
+        A_Positive,
+        B_Positive,
+        B_Negative,
+        AB_Negative,
+        AB_Positive,
+    ) = range(8)
+
+    @DynamicClassAttribute
+    def label(self):
+        label = super().label
+        return {
+            "O Negative": _("O Negative"),
+            "O Positive": _("O Positive"),
+            "A Negative": _("A Negative"),
+            "A Positive": _("A Positive"),
+            "B Negative": _("B Negative"),
+            "B Positive": _("B Positive"),
+            "Ab Negative": _("AB Negative"),
+            "Ab Positive": _("AB Positive"),
+        }.get(label, _("None"))
 
 
 class Profile(models.Model):
@@ -20,40 +88,48 @@ class Profile(models.Model):
         verbose_name=_("user"),
     )
 
-    name = models.CharField(max_length=20, null=False, blank=False)
-    dob = models.DateField(null=True, blank=True)
-    gender = models.CharField(
-        max_length=1,
-        choices=(
-            ("M", "Male"),
-            ("F", "Female"),
-        ),
-        default="M",
+    full_name = models.CharField(
+        max_length=20, null=False, blank=False, verbose_name=_("full name")
     )
-    blood_type = models.CharField(
-        max_length=3,
-        choices=(
-            ("ON", "O Negative"),
-            ("OP", "O Positive"),
-            ("AN", "A Negative"),
-            ("AP", "A Positive"),
-            ("BN", "B Negative"),
-            ("BP", "B Positive"),
-            ("ABN", "AB Negative"),
-            ("ABP", "AB Positive"),
-        ),
+
+    profile_image = models.ImageField(
+        upload_to="uploads/images/profile_images/",
+        blank=True,
+        verbose_name=_("profile image"),
     )
-    nationality = models.CharField(
-        max_length=1,
-        choices=(
-            ("N", "Nepalese"),
-            ("I", "International"),
-        ),
+
+    date_of_birth = models.DateField(
+        null=True, blank=True, verbose_name=_("date of birth")
     )
-    municipality = models.ForeignKey(Municipality, on_delete=models.CASCADE)
+
+    gender = models.SmallIntegerField(
+        choices=Gender.choices,
+        default=Gender.Male,
+        verbose_name=_("gender"),
+    )
+
+    blood_group = models.SmallIntegerField(
+        choices=BloodGroup.choices,
+        default=BloodGroup.B_Positive,
+        verbose_name=_("blood type"),
+    )
+
+    nationality = models.SmallIntegerField(
+        choices=Nationality.choices,
+        verbose_name=_("nationality"),
+    )
+
+    municipality = models.ForeignKey(
+        Municipality, on_delete=models.CASCADE, verbose_name=_("municipality")
+    )
 
     def __str__(self):
-        return str(self.name)
+        return str(self.full_name)
+
+    def profile_image_preview(self):
+        return mark_safe(
+            f'<img src="{self.profile_image.url}" style="max-height: 200px;" />'
+        )
 
 
 class Incident(models.Model):
@@ -61,19 +137,13 @@ class Incident(models.Model):
         verbose_name = _("Incident")
         verbose_name_plural = _("Incidents")
 
-    name = models.CharField(max_length=30)
-    description = RichTextField()
-    date = models.DateTimeField()
-    location = models.ForeignKey(Ward, on_delete=models.CASCADE)
-    point = gis_models.PointField()
-    # severity = models.CharField(
-    #     max_length=1,
-    #     choices=(
-    #         ("M", "Mild Attention"),
-    #         ("I", "Immediate Attention"),
-    #         ("C", "Critical Case"),
-    #     ),
-    # )
+    name = models.CharField(max_length=30, verbose_name=_("name"))
+    description = RichTextField(verbose_name=_("description"))
+    date = models.DateTimeField(verbose_name=_("date"))
+    location = models.ForeignKey(
+        Ward, on_delete=models.CASCADE, verbose_name=_("location")
+    )
+    point = gis_models.PointField(verbose_name=_("point"))
 
     def __str__(self):
         return str(self.name)
@@ -97,25 +167,21 @@ class Job(models.Model):
         verbose_name = _("Job")
         verbose_name_plural = _("Jobs")
 
-    name = models.CharField(max_length=64)
-    start_date = models.DateTimeField()
-    end_date = models.DateTimeField()
-    vacancy = models.PositiveIntegerField()
-    description = RichTextField()
-    status = models.CharField(
-        max_length=1,
-        choices=(
-            ("C", "Completed"),
-            ("P", "In Progress"),
-            ("U", "Not Assigned"),
-        ),
+    name = models.CharField(max_length=64, verbose_name=_("name"))
+    start_date = models.DateTimeField(verbose_name=_("start date"))
+    end_date = models.DateTimeField(verbose_name=_("end date"))
+    vacancy = models.PositiveIntegerField(verbose_name=_("vacancy"))
+    description = RichTextField(verbose_name=_("description"))
+    status = models.SmallIntegerField(
+        choices=JobStatus.choices,
+        verbose_name=_("status"),
     )
     programme = models.ForeignKey(Programme, on_delete=models.CASCADE)
     volunteers = models.ManyToManyField(
         Profile,
         related_name="jobs",
         blank=True,
-        verbose_name="Volunteers Employed",
+        verbose_name=_("Volunteers Employed"),
     )
 
     def __str__(self):

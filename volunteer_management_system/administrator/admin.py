@@ -10,6 +10,7 @@ from leaflet.admin import LeafletGeoAdmin
 
 class ProfileInline(admin.StackedInline):
     model = incident.models.Profile
+    readonly_fields = ("profile_image_preview",)
     can_delete = False
     extra = 0
 
