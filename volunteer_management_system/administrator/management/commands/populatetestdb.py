@@ -1,20 +1,19 @@
-from django.core.management.base import BaseCommand
 import json
+from django.core.management.base import BaseCommand
+from django.conf import settings
 from django.contrib.gis.geos import Polygon
+from django.contrib.auth import get_user_model
 
 from federal.models import Province, District
-
-# from incident.models import Incident
 
 
 class Command(BaseCommand):
     help = "This command populates the database with default db"
 
-    # Incident.objects.filter(pk=1).update(name="Flood1")
-
     def load_provinces(self):
+        filepath = settings.BASE_DIR / "shared" / "provinces.geojson.json"
         provinces = []
-        with open("shared/provinces.geojson.json", encoding="utf8") as j:
+        with open(filepath, encoding="utf8") as j:
             geojson_obj = json.load(j)
             features = geojson_obj["features"]
             for feature in features:
@@ -26,7 +25,8 @@ class Command(BaseCommand):
 
     def load_districts(self):
         districts = []
-        with open("shared/districts.geojson.json", encoding="utf8") as j:
+        filepath = settings.BASE_DIR / "shared" / "districts.geojson.json"
+        with open(filepath, encoding="utf8") as j:
             geojson_obj = json.load(j)
             features = geojson_obj["features"]
             for feature in features:
@@ -41,9 +41,22 @@ class Command(BaseCommand):
                 districts.append(district)
         return districts
 
-    def handle(self, *_, **__):
-        # Incident.objects.filter(pk=1).update(name="Flood1")
+    def create_super_user(self, email, password):
+        user = get_user_model().objects.create_user(
+            password=password,
+            email=email,
+            email_verified=True,
+        )
+        user.is_superuser = True
+        user.is_staff = True
+        user.save()
+        self.stdout.write(
+            self.style.SUCCESS(f"Created superuser {email}, with password '{password}'")
+        )
+        return user
 
+    def handle(self, *_, **__):
+        self.create_super_user("admin@example.com", "shark@123")
         provinces = self.load_provinces()
 
         if Province.objects.all().count() == 0:
@@ -55,9 +68,3 @@ class Command(BaseCommand):
         if District.objects.all().count() == 0:
             for district in districts:
                 district.save()
-
-        # if Incident.objects.all().count == 0:
-        #     incident_count = 20
-        #     for incident_id in  range(incident_count):
-        #         Incident.objects.create(name = "incident"+ str(incident_count),
-        #                                 description )

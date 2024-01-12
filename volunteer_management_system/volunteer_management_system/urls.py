@@ -17,13 +17,17 @@ Including another URLconf
 from django.urls import path, include, re_path
 from django.views.generic.base import RedirectView
 
-from rest_framework.routers import DefaultRouter
+from .router import VolunteerManagementSystemRouter
 
 import federal.views
 import incident.views
 
+from authentication.urls import router as authentication_router
 
-router = DefaultRouter()
+router = VolunteerManagementSystemRouter()
+
+router.registry.extend(authentication_router.registry)
+
 router.register(prefix="profile", viewset=incident.views.ProfileViewSet)
 router.register(prefix="incident", viewset=incident.views.IncidentViewSet)
 router.register(prefix="programme", viewset=incident.views.ProgrammeViewSet)
@@ -33,16 +37,10 @@ router.register(prefix="province", viewset=federal.views.ProvinceViewSet)
 router.register(prefix="municipality", viewset=federal.views.MunicipalityViewSet)
 router.register(prefix="ward", viewset=federal.views.WardViewSet)
 
-
 favicon_view = RedirectView.as_view(url="/static/favicon.ico", permanent=True)
 
 urlpatterns = [
     path("admin/", include("administrator.urls")),
-    path(
-        "api/",
-        include(
-            router.urls,
-        ),
-    ),
+    path("api/", include((router.urls, "api"))),
     re_path(r"^favicon\.ico$", favicon_view),
 ]

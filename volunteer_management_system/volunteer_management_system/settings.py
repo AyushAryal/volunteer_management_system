@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+from urllib.parse import quote_plus
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -27,8 +28,9 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+SITE_ID = 1
 
-# Application definition
+AUTH_USER_MODEL = "authentication.User"
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -37,10 +39,14 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django.contrib.sites",
     "django.contrib.gis",
     "rest_framework",
+    "rest_framework.authtoken",
     "ckeditor",
     "leaflet",
+    "core",
+    "authentication",
     "federal",
     "incident",
     "administrator",
@@ -54,6 +60,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "django.contrib.sites.middleware.CurrentSiteMiddleware",
 ]
 
 ROOT_URLCONF = "volunteer_management_system.urls"
@@ -136,6 +143,21 @@ STATICFILES_DIRS = (
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+FRONTEND_URLS = {
+    "email_verification_successful": quote_plus("/registration-success"),
+    "email_verification_failed": quote_plus("/verify-email"),
+    "reset_password_form": quote_plus("/reset-password"),
+}
+
+VERIFICATION_LINK_TIMEOUT = 60 * 30
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework.authentication.TokenAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
+    ),
+}
 
 LEAFLET_CONFIG = {
     "DEFAULT_CENTER": (27.7172, 85.3240),
