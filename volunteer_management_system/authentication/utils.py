@@ -1,12 +1,10 @@
 from urllib.parse import urlencode
 
+from authentication.tokens import VerificationLinkTokenGenerator
+from django.conf import settings
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.contrib.sites.models import Site
-from django.conf import settings
-
 from rest_framework.reverse import reverse
-
-from authentication.tokens import VerificationLinkTokenGenerator
 
 
 @staticmethod

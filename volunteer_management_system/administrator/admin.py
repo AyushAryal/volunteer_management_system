@@ -1,12 +1,11 @@
+import federal.models
+import incident.models
 from django.contrib import admin
-from leaflet.admin import LeafletGeoAdmin
 from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.sites.models import Site
 from django.utils.translation import gettext_lazy as _
-
-import federal.models
-import incident.models
+from leaflet.admin import LeafletGeoAdmin
 
 
 class ProfileInline(admin.StackedInline):

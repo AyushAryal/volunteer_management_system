@@ -1,13 +1,12 @@
+from authentication.tokens import (
+    PasswordResetTokenGenerator,
+    VerificationLinkTokenGenerator,
+)
+from authentication.views import UserViewSet
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from rest_framework import status
 from rest_framework.test import APIRequestFactory, force_authenticate
-
-from authentication.views import UserViewSet
-from authentication.tokens import (
-    VerificationLinkTokenGenerator,
-    PasswordResetTokenGenerator,
-)
 
 
 class UserTest(TestCase):

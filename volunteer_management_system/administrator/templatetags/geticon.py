@@ -1,8 +1,7 @@
-from django import template
-
-from django.contrib.auth import get_user_model
 import federal.models
 import incident.models
+from django import template
+from django.contrib.auth import get_user_model
 
 register = template.Library()
 
