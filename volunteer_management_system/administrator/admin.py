@@ -25,7 +25,7 @@ class JobAdmin(admin.ModelAdmin):
 
 class IncidentAdmin(LeafletGeoAdmin):
     model = incident.models.Incident
-    list_display = ("__str__", "location", "formatted_date")
+    list_display = ("__str__", "municipality", "formatted_date")
 
     def formatted_date(self, obj):
         return obj.date.strftime("%Y-%m-%d")

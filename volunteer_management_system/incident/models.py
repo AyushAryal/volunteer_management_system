@@ -6,7 +6,7 @@ from django.contrib.gis.db import models as gis_models
 from django.db import models
 from django.utils.html import mark_safe
 from django.utils.translation import gettext_lazy as _
-from federal.models import Municipality, Ward
+from federal.models import Municipality
 
 
 class Nationality(models.IntegerChoices):
@@ -140,8 +140,8 @@ class Incident(models.Model):
     name = models.CharField(max_length=30, verbose_name=_("name"))
     description = RichTextField(verbose_name=_("description"))
     date = models.DateTimeField(verbose_name=_("date"))
-    location = models.ForeignKey(
-        Ward, on_delete=models.CASCADE, verbose_name=_("location")
+    municipality = models.ForeignKey(
+        Municipality, on_delete=models.CASCADE, verbose_name=_("municipality")
     )
     point = gis_models.PointField(verbose_name=_("point"))
 
