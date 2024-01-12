@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
+import os
 from pathlib import Path
 from urllib.parse import quote_plus
 
@@ -139,6 +140,14 @@ STATICFILES_DIRS = (
     BASE_DIR / "administrator" / "static",
 )
 
+MEDIA_ROOT = BASE_DIR / "media/"
+MEDIA_ROOT = os.getenv("MEDIA_ROOT") or MEDIA_ROOT
+
+MEDIA_URL = "media/"
+
+DATA_UPLOAD_MAX_MEMORY_SIZE = 1024 * 1024 * 15
+FILE_UPLOAD_MAX_MEMORY_SIZE = DATA_UPLOAD_MAX_MEMORY_SIZE
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
@@ -163,3 +172,5 @@ LEAFLET_CONFIG = {
     "DEFAULT_CENTER": (27.7172, 85.3240),
     "DEFAULT_ZOOM": 8,
 }
+
+CKEDITOR_UPLOAD_PATH = "editor/"

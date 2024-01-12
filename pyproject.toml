@@ -15,6 +15,7 @@ django-geojson = "^4.0.0"
 psycopg2 = "^2.9.9"
 markdown = "^3.5.2"
 python-dotenv = "^1.0.0"
+pillow = "^10.2.0"
 
 
 [tool.poetry.group.dev.dependencies]
@@ -29,6 +30,9 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.django-stubs]
 django_settings_module = "volunteer_management_system.settings"
+
+[tool.pyright]
+typeCheckingMode = "basic"
 
 [tool.black]
 force-exclude = "migrations|node_modules"
