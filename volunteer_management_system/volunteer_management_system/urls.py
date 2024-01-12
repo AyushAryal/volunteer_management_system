@@ -14,28 +14,21 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-import federal.views
-import incident.views
 from authentication.urls import router as authentication_router
 from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import include, path, re_path
 from django.views.generic.base import RedirectView
+from federal.urls import router as federal_router
+from incident.urls import router as incident_router
 
 from .router import VolunteerManagementSystemRouter
 
 router = VolunteerManagementSystemRouter()
 
 router.registry.extend(authentication_router.registry)
-
-router.register(prefix="profile", viewset=incident.views.ProfileViewSet)
-router.register(prefix="incident", viewset=incident.views.IncidentViewSet)
-router.register(prefix="programme", viewset=incident.views.ProgrammeViewSet)
-router.register(prefix="job", viewset=incident.views.JobViewSet)
-router.register(prefix="district", viewset=federal.views.DistrictViewSet)
-router.register(prefix="province", viewset=federal.views.ProvinceViewSet)
-router.register(prefix="municipality", viewset=federal.views.MunicipalityViewSet)
-router.register(prefix="ward", viewset=federal.views.WardViewSet)
+router.registry.extend(incident_router.registry)
+router.registry.extend(federal_router.registry)
 
 favicon_view = RedirectView.as_view(url="/static/favicon.ico", permanent=True)
 

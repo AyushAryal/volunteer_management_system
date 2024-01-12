@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     "leaflet",
     "core",
     "authentication",
+    "emails",
     "federal",
     "incident",
     "administrator",
