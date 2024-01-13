@@ -41,6 +41,12 @@ class Command(BaseCommand):
                 districts.append(district)
         return districts
 
+    def create_incident(self):
+        ...
+
+    def create_program(self, incident):
+        ...
+
     def create_super_user(self, email, password):
         user = get_user_model().objects.create_user(
             password=password,

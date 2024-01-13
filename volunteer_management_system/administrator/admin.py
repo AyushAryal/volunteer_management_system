@@ -8,8 +8,8 @@ from django.utils.translation import gettext_lazy as _
 from leaflet.admin import LeafletGeoAdmin
 
 
-class ProfileInline(admin.StackedInline):
-    model = incident.models.Profile
+class VolunteerProfileInline(admin.StackedInline):
+    model = incident.models.VolunteerProfile
     readonly_fields = ("profile_image_preview",)
     can_delete = False
     extra = 0
@@ -33,13 +33,13 @@ class IncidentAdmin(LeafletGeoAdmin):
     formatted_date.short_description = "Date"
 
 
-class ProgrammeAdmin(admin.ModelAdmin):
-    model = incident.models.Programme
+class ProgramAdmin(admin.ModelAdmin):
+    model = incident.models.Program
     list_display = ("__str__", "incident")
 
 
 class UserAdmin(BaseUserAdmin):
-    inlines = (ProfileInline,)
+    inlines = (VolunteerProfileInline,)
     list_display = ("email", "email_verified")
     list_filter = ("is_superuser", "is_active", "email_verified")
     fieldsets = (
@@ -51,6 +51,8 @@ class UserAdmin(BaseUserAdmin):
                     "is_active",
                     "is_staff",
                     "is_superuser",
+                    "groups",
+                    "user_permissions",
                 ),
             },
         ),
@@ -84,6 +86,6 @@ admin_site.register(federal.models.Municipality)
 admin_site.register(federal.models.Ward)
 
 admin_site.register(incident.models.Incident, IncidentAdmin)
-admin_site.register(incident.models.Programme, ProgrammeAdmin)
+admin_site.register(incident.models.Program, ProgramAdmin)
 admin_site.register(incident.models.Job, JobAdmin)
 admin_site.register(get_user_model(), UserAdmin)

@@ -74,7 +74,7 @@ class BloodGroup(models.IntegerChoices):
         }.get(label, _("None"))
 
 
-class Profile(models.Model):
+class VolunteerProfile(models.Model):
     class Meta:
         verbose_name = _("Volunteer profile")
         verbose_name_plural = _("Volunteer profiles")
@@ -82,15 +82,13 @@ class Profile(models.Model):
     user = models.OneToOneField(
         get_user_model(),
         on_delete=models.CASCADE,
-        related_name="customer",
+        related_name="volunteer",
         primary_key=True,
         blank=True,
         verbose_name=_("user"),
     )
 
-    full_name = models.CharField(
-        max_length=20, null=False, blank=False, verbose_name=_("full name")
-    )
+    full_name = models.CharField(max_length=20, verbose_name=_("full name"))
 
     profile_image = models.ImageField(
         upload_to="uploads/images/profile_images/",
@@ -98,9 +96,7 @@ class Profile(models.Model):
         verbose_name=_("profile image"),
     )
 
-    date_of_birth = models.DateField(
-        null=True, blank=True, verbose_name=_("date of birth")
-    )
+    date_of_birth = models.DateField(verbose_name=_("date of birth"))
 
     gender = models.SmallIntegerField(
         choices=Gender.choices,
@@ -149,10 +145,10 @@ class Incident(models.Model):
         return str(self.name)
 
 
-class Programme(models.Model):
+class Program(models.Model):
     class Meta:
-        verbose_name = _("Programme")
-        verbose_name_plural = _("Programmes")
+        verbose_name = _("Program")
+        verbose_name_plural = _("Programs")
 
     name = models.CharField(max_length=30)
     description = RichTextField()
@@ -176,9 +172,9 @@ class Job(models.Model):
         choices=JobStatus.choices,
         verbose_name=_("status"),
     )
-    programme = models.ForeignKey(Programme, on_delete=models.CASCADE)
+    program = models.ForeignKey(Program, on_delete=models.CASCADE)
     volunteers = models.ManyToManyField(
-        Profile,
+        VolunteerProfile,
         related_name="jobs",
         blank=True,
         verbose_name=_("Volunteers Employed"),
