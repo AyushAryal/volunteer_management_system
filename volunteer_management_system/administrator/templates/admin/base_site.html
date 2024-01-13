@@ -1,7 +1,7 @@
 {% extends "admin/base_site.html" %}
 {% load static i18n %}
 
-{% block bodyclass %}{{block.super}} bg-light pb-4{% endblock %}
+{% block bodyclass %}{{block.super}} bg-light{% endblock %}
 
 {% block dark-mode-vars %}{% endblock %}
 
@@ -63,11 +63,4 @@
 {% endblock %}
 
 {% block footer %}
-<footer class="fs-6 fw-lighter bg-dark text-light p-2 d-flex">
-    <span class="mx-auto"><i class="fa fa-person-digging"></i>
-      {% blocktranslate trimmed with name=_('GI') %}
-      Engineered by {{ name }}
-      {% endblocktranslate %}
-      <i class="fa fa-phone px-1"></i>98-</span>
-</footer>
 {% endblock %}

@@ -174,6 +174,29 @@ REST_FRAMEWORK = {
 LEAFLET_CONFIG = {
     "DEFAULT_CENTER": (27.7172, 85.3240),
     "DEFAULT_ZOOM": 8,
+    "TILES": [
+        (
+            "Open Street Map",
+            "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            {"attribution": "&copy; contributors"},
+        ),
+        (
+            "ESRI.World Imagery",
+            (
+                "https://server.arcgisonline.com"
+                "/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+            ),
+            {
+                "attribution": (
+                    "Tiles &copy; "
+                    "Esri &mdash; "
+                    "Source: Esri, i-cubed, USDA, USGS, AEX, "
+                    "GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, "
+                    "and the GIS User Community"
+                )
+            },
+        ),
+    ],
 }
 
 CKEDITOR_UPLOAD_PATH = "editor/"

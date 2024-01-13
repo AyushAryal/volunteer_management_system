@@ -1,8 +1,26 @@
 {% extends "admin/base_site.html" %}
-{% load i18n static %}
+{% load i18n static leaflet_tags %}
 
+{% block content_title %}{% endblock %}
+
+{% block extrahead %}
+    {% leaflet_js %}
+    {% leaflet_css %}
+    <style>
+        #content {
+            min-height: initial !important;
+            height: 100% !important;
+            padding: 0 !important;
+        }
+        #index_map {
+            height: 100%;
+        }
+    </style>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => document.querySelector("br.clear").remove());
+    </script>
+{% endblock %}
 
 {% block content %}
-<h4>Welcome to the Admin Panel</h4>
-
+    {% leaflet_map "index_map" %}
 {% endblock %}
