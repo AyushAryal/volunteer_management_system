@@ -18,6 +18,17 @@ PASSWORD = "shark@123"
 class Command(BaseCommand):
     help = "This command populates the database with default db"
 
+    def create_staff_user(self, email):
+        user = get_user_model().objects.create_user(
+            email=email,
+            password=PASSWORD,
+            email_verified=True,
+        )
+        user.is_staff = True
+        user.save()
+        self.stdout.write(self.style.SUCCESS(f"Created staff {email}"))
+        return user
+
     def load_provinces(self):
         filepath = settings.BASE_DIR / "shared" / "provinces.geojson.json"
         provinces = []
@@ -27,7 +38,13 @@ class Command(BaseCommand):
             for feature in features:
                 polygon = Polygon(feature["geometry"]["coordinates"][0][0])
                 name = feature["properties"]["PROV_NAME"]
-                province = federal.models.Province(name=name, shape=polygon)
+                email = "{}@example.com".format(name.lower().strip().replace(" ", "_"))
+                admin = self.create_staff_user(email)
+                province = federal.models.Province(
+                    name=name,
+                    shape=polygon,
+                    admin=admin,
+                )
                 provinces.append(province)
         return provinces
 
@@ -41,10 +58,13 @@ class Command(BaseCommand):
                 polygon = Polygon(feature["geometry"]["coordinates"][0][0])
                 name = feature["properties"]["title"]
                 province = feature["properties"]["province"]
+                email = "{}@example.com".format(name.lower().strip().replace(" ", "_"))
+                admin = self.create_staff_user(email)
                 district = federal.models.District(
                     name=name,
                     shape=polygon,
                     province=federal.models.Province.objects.get(pk=province),
+                    admin=admin,
                 )
                 districts.append(district)
         return districts
@@ -59,10 +79,17 @@ class Command(BaseCommand):
                 polygon = Polygon(feature["geometry"]["coordinates"][0][0])
                 name = feature["properties"]["Name"]
                 district = feature["properties"]["districtId"]
+                district_name = federal.models.District.objects.get(pk=district).name
+                email = "{}_{}@example.com".format(
+                    district_name.lower().strip().replace(" ", "_"),
+                    name.lower().strip().replace(" ", "_"),
+                )
+                admin = self.create_staff_user(email)
                 municipality = federal.models.Municipality(
                     name=name,
                     shape=polygon,
                     district=federal.models.District.objects.get(pk=district),
+                    admin=admin,
                 )
                 municipalities.append(municipality)
         return municipalities
@@ -215,7 +242,7 @@ class Command(BaseCommand):
                 municipality.name,
             )
             point = (
-                federal.models.District.objects.filter(pk=municipality.district.pk)
+                federal.models.Municipality.objects.filter(pk=municipality.pk)
                 .annotate(rand_point=PointOnSurface("shape"))
                 .values("rand_point")
                 .first()["rand_point"]
@@ -272,22 +299,20 @@ class Command(BaseCommand):
             jobs.append(job)
         return jobs
 
-    def create_super_user(self, email, password):
+    def create_super_user(self, email):
         user = get_user_model().objects.create_user(
-            password=password,
+            password=PASSWORD,
             email=email,
             email_verified=True,
         )
         user.is_superuser = True
         user.is_staff = True
         user.save()
-        self.stdout.write(
-            self.style.SUCCESS(f"Created superuser {email}, with password '{password}'")
-        )
+        self.stdout.write(self.style.SUCCESS(f"Created superuser {email}"))
         return user
 
     def handle(self, *_, **__):
-        self.create_super_user("admin@example.com", PASSWORD)
+        self.create_super_user("admin@example.com")
 
         provinces = self.load_provinces()
         if federal.models.Province.objects.all().count() == 0:
@@ -306,5 +331,5 @@ class Command(BaseCommand):
 
         incidents = self.create_incidents(municipalities)
         programs = self.create_programs(incidents)
-        _ = self.create_volunteers(random.sample(municipalities, 30))
+        _ = self.create_volunteers(municipalities)
         _ = self.create_jobs(programs)
