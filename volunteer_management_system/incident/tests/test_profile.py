@@ -1,9 +1,10 @@
+import federal.models
+import incident.models
+import incident.views
 from authentication.views import TokenViewSet
 from django.contrib.auth import get_user_model
 from django.contrib.gis.geos import Polygon
 from django.test import TestCase
-from federal import models as federal_models
-from incident import models, views
 from rest_framework import status
 from rest_framework.reverse import reverse
 from rest_framework.test import APIRequestFactory, force_authenticate
@@ -11,18 +12,18 @@ from rest_framework.test import APIRequestFactory, force_authenticate
 
 class VolunteerProfileTest(TestCase):
     def setup_geo(self):
-        self.province = federal_models.Province.objects.create(
+        self.province = federal.models.Province.objects.create(
             name="Province",
             shape=Polygon([(0, 0), (0, 1), (1, 1), (1, 0), (0, 0)]),
         )
 
-        self.district = federal_models.District.objects.create(
+        self.district = federal.models.District.objects.create(
             name="District",
             province=self.province,
             shape=Polygon([(0, 0), (0, 1), (1, 1), (1, 0), (0, 0)]),
         )
 
-        self.municipality = federal_models.Municipality.objects.create(
+        self.municipality = federal.models.Municipality.objects.create(
             name="Municipality",
             district=self.district,
         )
@@ -44,13 +45,13 @@ class VolunteerProfileTest(TestCase):
         self.volunteer.save()
 
         self.setup_geo()
-        self.volunteer_profile = models.VolunteerProfile.objects.create(
+        self.volunteer_profile = incident.models.VolunteerProfile.objects.create(
             user=self.volunteer,
             full_name="Name",
             date_of_birth="2022-01-01",
-            gender=models.Gender.Male,
-            nationality=models.Nationality.National,
-            blood_group=models.BloodGroup.O_Positive,
+            gender=incident.models.Gender.Male,
+            nationality=incident.models.Nationality.National,
+            blood_group=incident.models.BloodGroup.O_Positive,
             municipality=self.municipality,
         )
 
@@ -68,7 +69,7 @@ class VolunteerProfileTest(TestCase):
 
     def test_get_volunteer_profile_list(self):
         factory = APIRequestFactory()
-        view = views.VolunteerProfileViewSet.as_view({"get": "list"})
+        view = incident.views.VolunteerProfileViewSet.as_view({"get": "list"})
 
         # Unauthenticated
         request = factory.get("/volunteer")
@@ -87,7 +88,7 @@ class VolunteerProfileTest(TestCase):
 
     def test_get_volunteer_profile(self):
         factory = APIRequestFactory()
-        view = views.VolunteerProfileViewSet.as_view({"get": "retrieve"})
+        view = incident.views.VolunteerProfileViewSet.as_view({"get": "retrieve"})
 
         # Unauthenticated
         request = factory.get("/volunteer")
@@ -105,7 +106,7 @@ class VolunteerProfileTest(TestCase):
 
     def test_post_volunteer_profile(self):
         factory = APIRequestFactory()
-        view = views.VolunteerProfileViewSet.as_view({"post": "create"})
+        view = incident.views.VolunteerProfileViewSet.as_view({"post": "create"})
 
         # Invalid data
         request = factory.post("/volunteer/", data={}, format="json")
@@ -143,7 +144,7 @@ class VolunteerProfileTest(TestCase):
 
     def test_put_volunteer_profile(self):
         factory = APIRequestFactory()
-        view = views.VolunteerProfileViewSet.as_view({"put": "update"})
+        view = incident.views.VolunteerProfileViewSet.as_view({"put": "update"})
 
         # Unauthenticated and invalid data
         request = factory.put(

@@ -8,7 +8,7 @@ class Province(models.Model):
         verbose_name = _("Province")
         verbose_name_plural = _("Provinces")
 
-    name = models.CharField(max_length=25, verbose_name=_("name"))
+    name = models.CharField(max_length=100, verbose_name=_("name"))
 
     shape = gis_models.PolygonField(verbose_name=_("shape"))
 
@@ -21,7 +21,7 @@ class District(models.Model):
         verbose_name = _("District")
         verbose_name_plural = _("Districts")
 
-    name = models.CharField(max_length=25, verbose_name=_("name"))
+    name = models.CharField(max_length=100, verbose_name=_("name"))
     province = models.ForeignKey(
         Province, on_delete=models.CASCADE, verbose_name=_("province")
     )
@@ -36,7 +36,7 @@ class Municipality(models.Model):
         verbose_name = _("Municipality")
         verbose_name_plural = _("Municipalities")
 
-    name = models.CharField(max_length=25, verbose_name=_("name"))
+    name = models.CharField(max_length=100, verbose_name=_("name"))
     district = models.ForeignKey(
         District, on_delete=models.CASCADE, verbose_name=_("district")
     )
@@ -50,7 +50,7 @@ class Ward(models.Model):
         verbose_name = _("Ward")
         verbose_name_plural = _("Wards")
 
-    name = models.CharField(max_length=25)
+    name = models.CharField(max_length=100)
     municipality = models.ForeignKey(Municipality, on_delete=models.CASCADE)
 
     def __str__(self):

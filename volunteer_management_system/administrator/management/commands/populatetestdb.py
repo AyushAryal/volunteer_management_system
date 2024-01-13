@@ -1,10 +1,18 @@
 import json
+import math
+import random
+from datetime import timedelta
 
+import federal.models
+import incident.models
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.contrib.gis.db.models.functions import PointOnSurface
 from django.contrib.gis.geos import Polygon
 from django.core.management.base import BaseCommand
-from federal.models import District, Province
+from django.utils import timezone
+
+PASSWORD = "shark@123"
 
 
 class Command(BaseCommand):
@@ -19,7 +27,7 @@ class Command(BaseCommand):
             for feature in features:
                 polygon = Polygon(feature["geometry"]["coordinates"][0][0])
                 name = feature["properties"]["PROV_NAME"]
-                province = Province(name=name, shape=polygon)
+                province = federal.models.Province(name=name, shape=polygon)
                 provinces.append(province)
         return provinces
 
@@ -33,19 +41,231 @@ class Command(BaseCommand):
                 polygon = Polygon(feature["geometry"]["coordinates"][0][0])
                 name = feature["properties"]["title"]
                 province = feature["properties"]["province"]
-                district = District(
+                district = federal.models.District(
                     name=name,
                     shape=polygon,
-                    province=Province.objects.get(pk=province),
+                    province=federal.models.Province.objects.get(pk=province),
                 )
                 districts.append(district)
         return districts
 
-    def create_incident(self):
-        ...
+    def create_municipalities(self, districts):
+        municipalities = []
+        for district in districts:
+            for i in range(2):
+                details = {
+                    "name": f"{district.name} - {i}",
+                    "district": district,
+                }
+                municipality = federal.models.Municipality(**details)
+                municipality.save()
+                municipalities.append(municipality)
+        return municipalities
 
-    def create_program(self, incident):
-        ...
+    def create_volunteers(self, municipalities):
+        volunteers = []
+        first_names = [
+            "ram",
+            "shyam",
+            "hari",
+            "ayush",
+            "ankit",
+            "aakash",
+            "bishal",
+            "gita",
+            "sita",
+            "joti",
+            "shushmita",
+            "sneha",
+            "sambriddhi",
+            "fulkumari",
+            "kalpana",
+        ]
+        genders = [
+            incident.models.Gender.Male,
+            incident.models.Gender.Male,
+            incident.models.Gender.Male,
+            incident.models.Gender.Male,
+            incident.models.Gender.Male,
+            incident.models.Gender.Male,
+            incident.models.Gender.Male,
+            incident.models.Gender.Female,
+            incident.models.Gender.Female,
+            incident.models.Gender.Female,
+            incident.models.Gender.Female,
+            incident.models.Gender.Female,
+            incident.models.Gender.Female,
+            incident.models.Gender.Female,
+            incident.models.Gender.Female,
+        ]
+        last_names = [
+            "sitaula",
+            "sharma",
+            "adhikari",
+            "shrestha",
+            "kc",
+            "pandit",
+            "pandey",
+            "panday",
+            "aryal",
+            "khanal",
+        ]
+        domains = [
+            "gmail.com",
+            "hotmail.com",
+            "yahoo.com",
+            "mail.com",
+            "outlook.com",
+            "live.com",
+            "apple.com",
+            "pm.com",
+            "zoho.com",
+            "aol.com",
+            "icloud.com",
+            "tutanota.com",
+            "yandex.com",
+            "inbox.com",
+            "amazon.com",
+        ]
+
+        generators = [
+            lambda f, s, d: f"{f}{s}@{d}",
+            lambda f, s, d: f"{s}{f}@{d}",
+            lambda f, s, d: f"{f}.{s}@{d}",
+            lambda f, s, d: f"{s}.{f}@{d}",
+            lambda f, s, d: f"{f}_{s}@{d}",
+            lambda f, s, d: f"{s}_{f}@{d}",
+        ]
+
+        details = set()
+        while len(details) != len(municipalities) * 3:
+            first_name = random.randint(0, len(first_names) - 1)
+            last_name = random.randint(0, len(last_names) - 1)
+            domain = random.randint(0, len(domains) - 1)
+            generator = random.randint(0, len(generators) - 1)
+            details.add((first_name, last_name, domain, generator))
+        details = list(details)
+
+        for municipality in municipalities:
+            for _ in range(random.randint(1, 3)):
+                first_name_idx, last_name_idx, domain_idx, generator_idx = details.pop()
+                gender = genders[first_name_idx]
+                first_name = first_names[first_name_idx]
+                last_name = last_names[last_name_idx]
+                domain = domains[domain_idx]
+                generator = generators[generator_idx]
+                email = generator(first_name, last_name, domain)
+                full_name = f"{first_name.capitalize()} {last_name.capitalize()}"
+                nationality = (
+                    incident.models.Nationality.National
+                    if random.random() < 0.95
+                    else incident.models.Nationality.International
+                )
+                date_of_birth = timezone.now() - timedelta(
+                    days=365 * random.randint(19, 45) + random.randint(0, 365)
+                )
+
+                user = get_user_model().objects.create_user(
+                    password=PASSWORD, email=email
+                )
+                user.email_verified = True
+                user.save()
+                volunteer = incident.models.VolunteerProfile(
+                    user=user,
+                    full_name=full_name,
+                    gender=gender,
+                    blood_group=random.choice(incident.models.BloodGroup.values),
+                    nationality=nationality,
+                    date_of_birth=date_of_birth,
+                    municipality=municipality,
+                )
+                volunteer.save()
+                self.stdout.write(self.style.SUCCESS(f"Created volunteer {email}"))
+        return volunteers
+
+    def create_incidents(self, municipalities):
+        incidents = []
+        disasters = [
+            "Earthquake",
+            "Landslide",
+            "Food",
+            "Forest Fire",
+            "Avalance",
+            "Glacial Flood",
+            "Volcanic Eruption",
+        ]
+        adjectives = [
+            "Severe",
+            "Mild",
+            "Dangerous",
+            "Devestating",
+            "Violent",
+            "Critical",
+        ]
+        for _ in range(math.floor(len(municipalities) * 0.6)):
+            municipality = random.choice(municipalities)
+            name = "{} {} in {}".format(
+                random.choice(adjectives),
+                random.choice(disasters),
+                municipality.name,
+            )
+            point = (
+                federal.models.District.objects.filter(pk=municipality.district.pk)
+                .annotate(rand_point=PointOnSurface("shape"))
+                .values("rand_point")
+                .first()["rand_point"]
+            )
+            incident_ = incident.models.Incident(
+                name=name,
+                description=name,
+                municipality=municipality,
+                date=timezone.now() - timedelta(days=random.randint(0, 30 * 12 * 5)),
+                point=point,
+            )
+            incident_.save()
+            self.stdout.write(self.style.SUCCESS(f"Created incident: {name}"))
+            incidents.append(incident_)
+        return incidents
+
+    def create_programs(self, incidents):
+        programs = []
+        actions = [
+            "Relief for",
+            "Donatations for",
+            "Rescue operations for",
+            "Restoration after",
+            "Reconstruction efforts after",
+        ]
+        for incident_ in incidents:
+            name = "{} {}".format(random.choice(actions), incident_.name)
+            program = incident.models.Program(
+                incident=incident_,
+                name=name,
+                description=name,
+            )
+            program.save()
+            self.stdout.write(self.style.SUCCESS(f"Created program: {name}"))
+            programs.append(program)
+        return programs
+
+    def create_jobs(self, programs):
+        jobs = []
+        incident.models.Job
+        for program in programs:
+            start_date = program.incident.date + timedelta(days=random.randint(1, 7))
+            job = incident.models.Job(
+                program=program,
+                start_date=start_date,
+                end_date=start_date + timedelta(days=random.randint(1, 30)),
+                name=program.name,
+                vacancy=random.randint(1, 5),
+                description=program.name,
+                status=incident.models.JobStatus.NotAssigned,
+            )
+            job.save()
+            self.stdout.write(self.style.SUCCESS(f"Created job: {program.name}"))
+            jobs.append(job)
+        return jobs
 
     def create_super_user(self, email, password):
         user = get_user_model().objects.create_user(
@@ -62,15 +282,20 @@ class Command(BaseCommand):
         return user
 
     def handle(self, *_, **__):
-        self.create_super_user("admin@example.com", "shark@123")
-        provinces = self.load_provinces()
+        self.create_super_user("admin@example.com", PASSWORD)
 
-        if Province.objects.all().count() == 0:
+        provinces = self.load_provinces()
+        if federal.models.Province.objects.all().count() == 0:
             for province in provinces:
                 province.save()
 
         districts = self.load_districts()
-
-        if District.objects.all().count() == 0:
+        if federal.models.District.objects.all().count() == 0:
             for district in districts:
                 district.save()
+
+        municipalities = self.create_municipalities(districts)
+        incidents = self.create_incidents(municipalities)
+        programs = self.create_programs(incidents)
+        _ = self.create_volunteers(random.sample(municipalities, 30))
+        _ = self.create_jobs(programs)

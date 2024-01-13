@@ -94,7 +94,7 @@ class VolunteerSignupSerializer(serializers.ModelSerializer):
 class IncidentSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = models.Incident
-        fields = "__all__"
+        exclude = ("url",)
         extra_kwargs = {
             "url": {"view_name": "api:incident-detail"},
             "municipality": {"view_name": "api:municipality-detail"},
@@ -104,12 +104,21 @@ class IncidentSerializer(serializers.HyperlinkedModelSerializer):
 class ProgramSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = models.Program
-        fields = "__all__"
-        extra_kwargs = {"url": {"view_name": "api:program-detail"}}
+        exclude = ("url",)
+        extra_kwargs = {
+            "url": {"view_name": "api:program-detail"},
+            "incident": {"view_name": "api:incident-detail"},
+        }
 
 
 class JobSerializer(serializers.HyperlinkedModelSerializer):
+    status = ChoiceField(models.JobStatus.choices)
+
     class Meta:
         model = models.Job
-        fields = "__all__"
-        extra_kwargs = {"url": {"view_name": "api:job-detail"}}
+        exclude = ("url",)
+        extra_kwargs = {
+            "url": {"view_name": "api:job-detail"},
+            "program": {"view_name": "api:program-detail"},
+            "volunteer": {"view_name": "api:volunteer-detail"},
+        }

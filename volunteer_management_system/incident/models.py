@@ -88,7 +88,7 @@ class VolunteerProfile(models.Model):
         verbose_name=_("user"),
     )
 
-    full_name = models.CharField(max_length=20, verbose_name=_("full name"))
+    full_name = models.CharField(max_length=100, verbose_name=_("full name"))
 
     profile_image = models.ImageField(
         upload_to="uploads/images/profile_images/",
@@ -116,7 +116,10 @@ class VolunteerProfile(models.Model):
     )
 
     municipality = models.ForeignKey(
-        Municipality, on_delete=models.CASCADE, verbose_name=_("municipality")
+        Municipality,
+        on_delete=models.CASCADE,
+        verbose_name=_("municipality"),
+        related_name="volunteers",
     )
 
     def __str__(self):
@@ -133,11 +136,14 @@ class Incident(models.Model):
         verbose_name = _("Incident")
         verbose_name_plural = _("Incidents")
 
-    name = models.CharField(max_length=30, verbose_name=_("name"))
+    name = models.CharField(max_length=100, verbose_name=_("name"))
     description = RichTextField(verbose_name=_("description"))
     date = models.DateTimeField(verbose_name=_("date"))
     municipality = models.ForeignKey(
-        Municipality, on_delete=models.CASCADE, verbose_name=_("municipality")
+        Municipality,
+        on_delete=models.CASCADE,
+        verbose_name=_("municipality"),
+        related_name="incidents",
     )
     point = gis_models.PointField(verbose_name=_("point"))
 
@@ -150,9 +156,13 @@ class Program(models.Model):
         verbose_name = _("Program")
         verbose_name_plural = _("Programs")
 
-    name = models.CharField(max_length=30)
+    name = models.CharField(max_length=100)
     description = RichTextField()
-    incident = models.ForeignKey(Incident, on_delete=models.CASCADE)
+    incident = models.ForeignKey(
+        Incident,
+        on_delete=models.CASCADE,
+        related_name="programs",
+    )
 
     def __str__(self):
         return str(self.name)
@@ -163,7 +173,7 @@ class Job(models.Model):
         verbose_name = _("Job")
         verbose_name_plural = _("Jobs")
 
-    name = models.CharField(max_length=64, verbose_name=_("name"))
+    name = models.CharField(max_length=100, verbose_name=_("name"))
     start_date = models.DateTimeField(verbose_name=_("start date"))
     end_date = models.DateTimeField(verbose_name=_("end date"))
     vacancy = models.PositiveIntegerField(verbose_name=_("vacancy"))
@@ -172,7 +182,11 @@ class Job(models.Model):
         choices=JobStatus.choices,
         verbose_name=_("status"),
     )
-    program = models.ForeignKey(Program, on_delete=models.CASCADE)
+    program = models.ForeignKey(
+        Program,
+        on_delete=models.CASCADE,
+        related_name="jobs",
+    )
     volunteers = models.ManyToManyField(
         VolunteerProfile,
         related_name="jobs",
