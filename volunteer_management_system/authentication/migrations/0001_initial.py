@@ -35,7 +35,7 @@ class Migration(migrations.Migration):
                 'ordering': ('-date_joined',),
             },
             managers=[
-                ('objects', authentication.models.CustomUserManager()),
+                ('objects', authentication.models.UserManager()),
             ],
         ),
     ]
