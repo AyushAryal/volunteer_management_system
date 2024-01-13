@@ -7,6 +7,7 @@ import federal.models
 import incident.models
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group, Permission
 from django.contrib.gis.db.models.functions import PointOnSurface
 from django.contrib.gis.geos import Polygon
 from django.core.management.base import BaseCommand
@@ -18,7 +19,7 @@ PASSWORD = "shark@123"
 class Command(BaseCommand):
     help = "This command populates the database with default db"
 
-    def create_staff_user(self, email):
+    def create_federal_user(self, email):
         user = get_user_model().objects.create_user(
             email=email,
             password=PASSWORD,
@@ -26,8 +27,21 @@ class Command(BaseCommand):
         )
         user.is_staff = True
         user.save()
-        self.stdout.write(self.style.SUCCESS(f"Created staff {email}"))
+        user.groups.add(Group.objects.get_by_natural_key("federal"))
+        self.stdout.write(self.style.SUCCESS(f"Created federal user {email}"))
         return user
+
+    def create_federal_group(self):
+        federal_group, _ = Group.objects.get_or_create(name="federal")
+        actions = ["add", "view", "change", "delete"]
+        model_names = ["incident", "program", "job"]
+        for action in actions:
+            for model in model_names:
+                permission = f"{action}_{model}"
+                federal_group.permissions.add(
+                    Permission.objects.get(codename=permission)
+                )
+        return federal_group
 
     def load_provinces(self):
         filepath = settings.BASE_DIR / "shared" / "provinces.geojson.json"
@@ -39,7 +53,7 @@ class Command(BaseCommand):
                 polygon = Polygon(feature["geometry"]["coordinates"][0][0])
                 name = feature["properties"]["PROV_NAME"]
                 email = "{}@example.com".format(name.lower().strip().replace(" ", "_"))
-                admin = self.create_staff_user(email)
+                admin = self.create_federal_user(email)
                 province = federal.models.Province(
                     name=name,
                     shape=polygon,
@@ -59,7 +73,7 @@ class Command(BaseCommand):
                 name = feature["properties"]["title"]
                 province = feature["properties"]["province"]
                 email = "{}@example.com".format(name.lower().strip().replace(" ", "_"))
-                admin = self.create_staff_user(email)
+                admin = self.create_federal_user(email)
                 district = federal.models.District(
                     name=name,
                     shape=polygon,
@@ -84,7 +98,7 @@ class Command(BaseCommand):
                     district_name.lower().strip().replace(" ", "_"),
                     name.lower().strip().replace(" ", "_"),
                 )
-                admin = self.create_staff_user(email)
+                admin = self.create_federal_user(email)
                 municipality = federal.models.Municipality(
                     name=name,
                     shape=polygon,
@@ -312,6 +326,7 @@ class Command(BaseCommand):
         return user
 
     def handle(self, *_, **__):
+        self.create_federal_group()
         self.create_super_user("admin@example.com")
 
         provinces = self.load_provinces()

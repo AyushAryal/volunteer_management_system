@@ -11,7 +11,7 @@ class Province(models.Model):
 
     name = models.CharField(max_length=100, verbose_name=_("name"))
     shape = gis_models.PolygonField(verbose_name=_("shape"))
-    admin = models.ForeignKey(
+    admin = models.OneToOneField(
         get_user_model(),
         on_delete=models.CASCADE,
         verbose_name=_("admin"),
@@ -32,7 +32,7 @@ class District(models.Model):
     province = models.ForeignKey(
         Province, on_delete=models.CASCADE, verbose_name=_("province")
     )
-    admin = models.ForeignKey(
+    admin = models.OneToOneField(
         get_user_model(),
         on_delete=models.CASCADE,
         verbose_name=_("admin"),
@@ -53,7 +53,7 @@ class Municipality(models.Model):
     district = models.ForeignKey(
         District, on_delete=models.CASCADE, verbose_name=_("district")
     )
-    admin = models.ForeignKey(
+    admin = models.OneToOneField(
         get_user_model(),
         on_delete=models.CASCADE,
         verbose_name=_("admin"),

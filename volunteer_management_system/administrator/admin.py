@@ -8,6 +8,22 @@ from django.utils.translation import gettext_lazy as _
 from leaflet.admin import LeafletGeoAdmin
 
 
+def get_user_controlled_municipalities(user):
+    municipalities = []
+    if hasattr(user, "province_admin"):
+        province = user.province_admin
+        municipalities = federal.models.Municipality.objects.filter(
+            district__province=province
+        )
+    elif hasattr(user, "district_admin"):
+        district = user.district_admin
+        municipalities = federal.models.Municipality.objects.filter(district=district)
+    elif hasattr(user, "municipality_admin"):
+        district = user.municipality_admin
+        municipalities = [user.municipality_admin]
+    return municipalities
+
+
 class VolunteerProfileInline(admin.StackedInline):
     model = incident.models.VolunteerProfile
     readonly_fields = ("profile_image_preview",)
@@ -22,13 +38,27 @@ class JobAdmin(admin.ModelAdmin):
     def volunteer_employed(self, obj):
         return obj.volunteers.count()
 
+    def get_queryset(self, request):
+        if request.user.is_superuser:
+            return super().get_queryset(request)
+        municipalities = get_user_controlled_municipalities(request.user)
+        return self.model.objects.filter(
+            program__incident__municipality__in=municipalities
+        )
+
 
 class IncidentAdmin(LeafletGeoAdmin):
     model = incident.models.Incident
     list_display = ("__str__", "municipality", "formatted_date")
 
-    def formatted_date(self, obj):
-        return obj.date.strftime("%Y-%m-%d")
+    def formatted_date(self, incident):
+        return incident.date.strftime("%Y-%m-%d")
+
+    def get_queryset(self, request):
+        if request.user.is_superuser:
+            return super().get_queryset(request)
+        municipalities = get_user_controlled_municipalities(request.user)
+        return self.model.objects.filter(municipality__in=municipalities)
 
     formatted_date.short_description = "Date"
 
@@ -36,6 +66,12 @@ class IncidentAdmin(LeafletGeoAdmin):
 class ProgramAdmin(admin.ModelAdmin):
     model = incident.models.Program
     list_display = ("__str__", "incident")
+
+    def get_queryset(self, request):
+        if request.user.is_superuser:
+            return super().get_queryset(request)
+        municipalities = get_user_controlled_municipalities(request.user)
+        return self.model.objects.filter(incident__municipality__in=municipalities)
 
 
 class UserAdmin(BaseUserAdmin):
@@ -83,7 +119,6 @@ admin_site.register(Site)
 admin_site.register(federal.models.Province)
 admin_site.register(federal.models.District)
 admin_site.register(federal.models.Municipality)
-admin_site.register(federal.models.Ward)
 
 admin_site.register(incident.models.Incident, IncidentAdmin)
 admin_site.register(incident.models.Program, ProgramAdmin)
