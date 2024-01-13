@@ -37,6 +37,7 @@ class Municipality(models.Model):
         verbose_name_plural = _("Municipalities")
 
     name = models.CharField(max_length=100, verbose_name=_("name"))
+    shape = gis_models.PolygonField(verbose_name=_("shape"))
     district = models.ForeignKey(
         District, on_delete=models.CASCADE, verbose_name=_("district")
     )
