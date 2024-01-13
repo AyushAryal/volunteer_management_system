@@ -10,7 +10,7 @@ register = template.Library()
 def modelicon(model):
     return {
         get_user_model(): "fa-solid fa-user",
-        incident.models.Profile: "fa-solid fa-id-card-clip",
+        incident.models.VolunteerProfile: "fa-solid fa-id-card-clip",
         incident.models.Incident: "fa-solid fa-map-pin",
         incident.models.Job: "fa-solid fa-briefcase",
         federal.models.Province: "fa-solid fa-map",
@@ -22,4 +22,5 @@ def appicon(app):
     return {
         "federal": "fa-solid fa-map",
         "incident": "fa-solid fa-clock",
+        "authentication": "fa-solid fa-lock",
     }.get(app["app_label"], "fa-solid fa-box")
