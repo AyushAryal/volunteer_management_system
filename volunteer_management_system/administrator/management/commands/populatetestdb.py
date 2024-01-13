@@ -49,16 +49,21 @@ class Command(BaseCommand):
                 districts.append(district)
         return districts
 
-    def create_municipalities(self, districts):
+    def load_municipalities(self):
         municipalities = []
-        for district in districts:
-            for i in range(2):
-                details = {
-                    "name": f"{district.name} - {i}",
-                    "district": district,
-                }
-                municipality = federal.models.Municipality(**details)
-                municipality.save()
+        filepath = settings.BASE_DIR / "shared" / "municipalities.geojson.json"
+        with open(filepath, encoding="utf8") as j:
+            geojson_obj = json.load(j)
+            features = geojson_obj["features"]
+            for feature in features:
+                polygon = Polygon(feature["geometry"]["coordinates"][0][0])
+                name = feature["properties"]["Name"]
+                district = feature["properties"]["districtId"]
+                municipality = federal.models.Municipality(
+                    name=name,
+                    shape=polygon,
+                    district=federal.models.District.objects.get(pk=district),
+                )
                 municipalities.append(municipality)
         return municipalities
 
@@ -294,7 +299,11 @@ class Command(BaseCommand):
             for district in districts:
                 district.save()
 
-        municipalities = self.create_municipalities(districts)
+        municipalities = self.load_municipalities()
+        if federal.models.Municipality.objects.all().count() == 0:
+            for municipality in municipalities:
+                municipality.save()
+
         incidents = self.create_incidents(municipalities)
         programs = self.create_programs(incidents)
         _ = self.create_volunteers(random.sample(municipalities, 30))

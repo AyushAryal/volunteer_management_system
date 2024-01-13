@@ -1,12 +1,12 @@
 from types import DynamicClassAttribute
 
+import federal.models
 from ckeditor.fields import RichTextField
 from django.contrib.auth import get_user_model
 from django.contrib.gis.db import models as gis_models
 from django.db import models
 from django.utils.html import mark_safe
 from django.utils.translation import gettext_lazy as _
-from federal.models import Municipality
 
 
 class Nationality(models.IntegerChoices):
@@ -116,7 +116,7 @@ class VolunteerProfile(models.Model):
     )
 
     municipality = models.ForeignKey(
-        Municipality,
+        federal.models.Municipality,
         on_delete=models.CASCADE,
         verbose_name=_("municipality"),
         related_name="volunteers",
@@ -140,7 +140,7 @@ class Incident(models.Model):
     description = RichTextField(verbose_name=_("description"))
     date = models.DateTimeField(verbose_name=_("date"))
     municipality = models.ForeignKey(
-        Municipality,
+        federal.models.Municipality,
         on_delete=models.CASCADE,
         verbose_name=_("municipality"),
         related_name="incidents",
