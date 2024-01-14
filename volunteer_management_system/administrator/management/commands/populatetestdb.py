@@ -1,6 +1,7 @@
 import json
 import math
 import random
+import os
 from datetime import timedelta
 
 import federal.models
@@ -13,7 +14,7 @@ from django.contrib.gis.geos import Polygon
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
-PASSWORD = "shark@123"
+PASSWORD = os.getenv("ADMIN_PASSWORD", "shark@123")
 
 
 class Command(BaseCommand):
@@ -118,6 +119,9 @@ class Command(BaseCommand):
             "ankit",
             "aakash",
             "bishal",
+            "sishir",
+            "aavash",
+            "bigyan",
             "gita",
             "sita",
             "joti",
@@ -128,6 +132,9 @@ class Command(BaseCommand):
             "kalpana",
         ]
         genders = [
+            incident.models.Gender.Male,
+            incident.models.Gender.Male,
+            incident.models.Gender.Male,
             incident.models.Gender.Male,
             incident.models.Gender.Male,
             incident.models.Gender.Male,
@@ -155,6 +162,10 @@ class Command(BaseCommand):
             "panday",
             "aryal",
             "khanal",
+            "marhatta",
+            "wagle",
+            "gyanwali",
+            "dahal",
         ]
         domains = [
             "gmail.com",
