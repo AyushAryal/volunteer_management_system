@@ -1,4 +1,5 @@
 from rest_framework import viewsets
+from rest_framework.pagination import PageNumberPagination
 
 from . import models, serializers
 
@@ -17,8 +18,12 @@ class DistrictViewSet(
     viewsets.mixins.RetrieveModelMixin,
     viewsets.mixins.ListModelMixin,
 ):
+    class DistrictPaginator(PageNumberPagination):
+        page_size = 50
+
     queryset = models.District.objects.all()
     serializer_class = serializers.DistrictSerializer
+    pagination_class = DistrictPaginator
 
 
 class MunicipalityViewSet(
@@ -26,8 +31,12 @@ class MunicipalityViewSet(
     viewsets.mixins.RetrieveModelMixin,
     viewsets.mixins.ListModelMixin,
 ):
+    class MunicipalityPaginator(PageNumberPagination):
+        page_size = 500
+
     queryset = models.Municipality.objects.all()
     serializer_class = serializers.MunicipalitySerializer
+    pagination_class = MunicipalityPaginator
 
 
 class WardViewSet(
