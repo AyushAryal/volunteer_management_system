@@ -96,8 +96,11 @@ WSGI_APPLICATION = "volunteer_management_system.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.contrib.gis.db.backends.postgis",
-        "NAME": "vms",
-        "USER": "shark",
+        "NAME": os.getenv("DATABASE_NAME"),
+        "USER": os.getenv("DATABASE_USER"),
+        "HOST": os.getenv("DATABASE_HOST"),
+        "PASSWORD": os.getenv("DATABASE_PASSWORD"),
+        "PORT": os.getenv("DATABASE_PORT"),
     },
 }
 
