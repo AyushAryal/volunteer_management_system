@@ -10,3 +10,8 @@ EMAIL_FILE_PATH = BASE_DIR / "logs"
 PASSWORD_HASHERS = [
     "django.contrib.auth.hashers.MD5PasswordHasher",
 ]
+
+REST_FRAMEWORK["DEFAULT_RENDERER_CLASSES"] = (
+    "rest_framework.renderers.JSONRenderer",
+    "core.renderers.BrowsableAPIRenderer",
+)

@@ -33,6 +33,7 @@ router.registry.extend(federal_router.registry)
 favicon_view = RedirectView.as_view(url="/static/favicon.ico", permanent=True)
 
 urlpatterns = [
+    path("", include((router.urls, "api"))),
     path("admin/", include("administrator.urls")),
     path("api/", include((router.urls, "api"))),
     path("ckeditor/", include("ckeditor_uploader.urls")),

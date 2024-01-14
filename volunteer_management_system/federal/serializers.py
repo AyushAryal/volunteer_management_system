@@ -6,16 +6,14 @@ from . import models
 class ProvinceSerializer(HyperlinkedModelSerializer):
     class Meta:
         model = models.Province
-        fields = "__all__"
-        extra_kwargs = {"url": {"view_name": "api:province-detail"}}
+        exclude = ("url", "admin")
 
 
 class DistrictSerializer(HyperlinkedModelSerializer):
     class Meta:
         model = models.District
-        fields = "__all__"
+        exclude = ("url", "admin")
         extra_kwargs = {
-            "url": {"view_name": "api:district-detail"},
             "province": {"view_name": "api:province-detail"},
         }
 
@@ -23,9 +21,8 @@ class DistrictSerializer(HyperlinkedModelSerializer):
 class MunicipalitySerializer(HyperlinkedModelSerializer):
     class Meta:
         model = models.Municipality
-        fields = "__all__"
+        exclude = ("url", "admin")
         extra_kwargs = {
-            "url": {"view_name": "api:municipality-detail"},
             "district": {"view_name": "api:district-detail"},
         }
 
@@ -33,8 +30,7 @@ class MunicipalitySerializer(HyperlinkedModelSerializer):
 class WardSerializer(HyperlinkedModelSerializer):
     class Meta:
         model = models.Ward
-        fields = "__all__"
+        exclude = ("url", "admin")
         extra_kwargs = {
-            "url": {"view_name": "api:ward-detail"},
             "municipality": {"view_name": "api:municipality-detail"},
         }
