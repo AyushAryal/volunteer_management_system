@@ -78,6 +78,7 @@ class VolunteerProfile(models.Model):
     class Meta:
         verbose_name = _("Volunteer profile")
         verbose_name_plural = _("Volunteer profiles")
+        ordering = ("-pk",)
 
     user = models.OneToOneField(
         get_user_model(),
@@ -135,6 +136,7 @@ class Incident(models.Model):
     class Meta:
         verbose_name = _("Incident")
         verbose_name_plural = _("Incidents")
+        ordering = ("-date",)
 
     name = models.CharField(max_length=100, verbose_name=_("name"))
     description = RichTextField(verbose_name=_("description"))
@@ -155,6 +157,7 @@ class Program(models.Model):
     class Meta:
         verbose_name = _("Program")
         verbose_name_plural = _("Programs")
+        ordering = ("-pk",)
 
     name = models.CharField(max_length=100)
     description = RichTextField()
@@ -172,6 +175,7 @@ class Job(models.Model):
     class Meta:
         verbose_name = _("Job")
         verbose_name_plural = _("Jobs")
+        ordering = ("-start_date",)
 
     name = models.CharField(max_length=100, verbose_name=_("name"))
     start_date = models.DateTimeField(verbose_name=_("start date"))

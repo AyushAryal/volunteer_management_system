@@ -2,7 +2,7 @@
 {% load i18n static leaflet_tags %}
 
 {% block content_title %}{% endblock %}
-
+{% block nav-breadcrumbs %}{% endblock %}
 {% block extrahead %}
     {% leaflet_js %}
     {% leaflet_css %}
@@ -50,29 +50,10 @@
                         for (coordinate of shape) {
                             [coordinate[0], coordinate[1]] = [coordinate[1], coordinate[0]];
                         }
-                        L.polygon(shape, {color: '#8f091c', fillOpacity: 0, weight: 3}).addTo(map);
+                        L.polygon(shape, {color: '#8f091c', weight: 3}).addTo(map);
                     }
                 }
 
-                for await (let districts of depaginate("/api/district/")) {
-                    for (let district of districts) {
-                        let shape = district.shape.coordinates[0];
-                        for (coordinate of shape) {
-                            [coordinate[0], coordinate[1]] = [coordinate[1], coordinate[0]];
-                        }
-                        L.polygon(shape, {color: '#b31b31', fillOpacity: 0, weight: 2}).addTo(map);
-                    }
-                }
-
-                for await (let municipalities of depaginate("/api/municipality/")) {
-                    for (let municipality of municipalities) {
-                        let shape = municipality.shape.coordinates[0];
-                        for (coordinate of shape) {
-                            [coordinate[0], coordinate[1]] = [coordinate[1], coordinate[0]];
-                        }
-                        L.polygon(shape, {color: '#d12841', weight: 1}).addTo(map);
-                    }
-                }
 
                 for await(let incidents of depaginate("/api/incident")) {
                     for (let incident of incidents) {

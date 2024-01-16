@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework.authtoken",
     "rest_framework_gis",
+    "django_filters",
+    "corsheaders",
     "ckeditor",
     "leaflet",
     "core",
@@ -58,6 +60,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -171,13 +174,13 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.TokenAuthentication",
         "rest_framework.authentication.SessionAuthentication",
     ),
+    "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
-    "PAGE_SIZE": 20,
+    "PAGE_SIZE": 50,
 }
 
 LEAFLET_CONFIG = {
-    "DEFAULT_CENTER": (27.7172, 85.3240),
-    "DEFAULT_ZOOM": 8,
+    "SPATIAL_EXTENT": (80, 26, 89, 31),
     "TILES": [
         (
             "Open Street Map",
@@ -201,6 +204,7 @@ LEAFLET_CONFIG = {
             },
         ),
     ],
+    "MINIMAP": True,
 }
 
 CKEDITOR_UPLOAD_PATH = "editor/"
