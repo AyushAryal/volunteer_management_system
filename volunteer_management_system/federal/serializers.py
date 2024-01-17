@@ -1,12 +1,18 @@
 from rest_framework.serializers import HyperlinkedModelSerializer
+from rest_framework_gis.fields import GeometryField
 
 from . import models
 
 
 class ProvinceSerializer(HyperlinkedModelSerializer):
+    shape = GeometryField(auto_bbox=True)
+
     class Meta:
         model = models.Province
-        exclude = ("url", "admin")
+        exclude = ("admin",)
+        extra_kwargs = {
+            "url": {"view_name": "api:province-detail"},
+        }
 
 
 class ProvinceBriefSerializer(HyperlinkedModelSerializer):
@@ -19,10 +25,13 @@ class ProvinceBriefSerializer(HyperlinkedModelSerializer):
 
 
 class DistrictSerializer(HyperlinkedModelSerializer):
+    shape = GeometryField(auto_bbox=True)
+
     class Meta:
         model = models.District
-        exclude = ("url", "admin")
+        exclude = ("admin",)
         extra_kwargs = {
+            "url": {"view_name": "api:district-detail"},
             "province": {"view_name": "api:province-detail"},
         }
 
@@ -38,10 +47,13 @@ class DistrictBriefSerializer(HyperlinkedModelSerializer):
 
 
 class MunicipalitySerializer(HyperlinkedModelSerializer):
+    shape = GeometryField(auto_bbox=True)
+
     class Meta:
         model = models.Municipality
-        exclude = ("url", "admin")
+        exclude = ("admin",)
         extra_kwargs = {
+            "url": {"view_name": "api:municipality-detail"},
             "district": {"view_name": "api:district-detail"},
         }
 

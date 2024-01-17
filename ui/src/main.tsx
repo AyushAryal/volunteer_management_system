@@ -1,21 +1,27 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 
-import './assets/scss/bootstrap.scss';
+import 'primeflex/primeflex.css';
+import "primereact/resources/themes/viva-light/theme.css";
 
-import Map from './components/Map.tsx';
-import LoginForm from './pages/login.tsx';
-import Navbar from './components/Sidebar.tsx';
-import Footer from './components/footer.tsx';
+import 'leaflet/dist/leaflet.css';
+
 import './index.css';
 
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { fas } from '@fortawesome/free-solid-svg-icons'
+import { far } from '@fortawesome/free-regular-svg-icons'
+import { fab } from '@fortawesome/free-brands-svg-icons'
+library.add(fas, far, fab);
+
+import { PrimeReactProvider } from 'primereact/api';
+
+import { Map } from './components/Map.tsx';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
-    <Navbar/>
-    <LoginForm/>
-    <Map/>
-    <Footer/>
-
-  </React.StrictMode>,
+    <React.StrictMode>
+        <PrimeReactProvider>
+            <Map />
+        </PrimeReactProvider>
+    </React.StrictMode>,
 );

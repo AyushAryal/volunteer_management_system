@@ -1,23 +1,30 @@
+import { LatLngTuple } from "leaflet";
+
 const server = "http://localhost:8000";
 
-type Point = [number, number];
+export type BoundingBox = [number, number, number, number];
 
-type Polygon = {
+export type Polygon = {
     type: string,
-    coordinates: Point[][],
+    coordinates: LatLngTuple[][],
+    bbox: BoundingBox,
 }
-type Province = {
+
+export type Province = {
+    url: string,
     name: string,
     shape: Polygon,
 };
 
-type District = {
+export type District = {
+    url: string,
     name: string,
     shape: Polygon,
     province: string,
 }
 
-type Municipality = {
+export type Municipality = {
+    url: string,
     name: string,
     shape: Polygon,
     district: string,
@@ -69,9 +76,24 @@ export function get_list_factory<T>(url: string): (query?: {}) => Promise<T[]> {
     };
 }
 
-export const get_province_list = get_list_factory<Province>(`${server}/api/province`);
-export const get_district_list = get_list_factory<District>(`${server}/api/district`);
-export const get_municipality_list = get_list_factory<Municipality>(`${server}/api/municipality`);
+type HasShape = Province | District | Municipality;
+
+function fix_geojson<T extends HasShape>(fn: (query?: string) => Promise<T[]>): (query?: string) => Promise<T[]> {
+    return async (query?) => {
+        const list = await fn(query);
+        for (let body of list) {
+            for (let point of body.shape.coordinates[0]) {
+                [point[0], point[1]] = [point[1], point[0]];
+            }
+            body.shape.bbox = [body.shape.bbox[1], body.shape.bbox[0], body.shape.bbox[3], body.shape.bbox[2]]
+        }
+        return list;
+    }
+}
+
+export const get_province_list = fix_geojson(get_list_factory<Province>(`${server}/api/province`));
+export const get_district_list = fix_geojson(get_list_factory<District>(`${server}/api/district`));
+export const get_municipality_list = fix_geojson(get_list_factory<Municipality>(`${server}/api/municipality`));
 export const get_province_brief_list = get_list_factory<ProvinceBrief>(`${server}/api/province/brief`);
 export const get_district_brief_list = get_list_factory<DistrictBrief>(`${server}/api/district/brief`);
 export const get_municipality_brief_list = get_list_factory<MunicipalityBrief>(`${server}/api/municipality/brief`);
