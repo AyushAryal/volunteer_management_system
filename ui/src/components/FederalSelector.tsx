@@ -7,8 +7,8 @@ import {
     Province,
     District,
     Municipality
-} from '../api/federal';
-import { g_provinceList, g_districtList, g_municipalityList, g_currentProvince, g_currentDistrict, g_currentMunicipality } from '../api/state';
+} from '../models/federal';
+import { storeState } from '../models/store';
 
 import { Button } from 'primereact/button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -17,36 +17,31 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 export function FederalSelector() {
     const [expanded, setExpanded] = useState<boolean>(false);
 
-    const provinceList = useHookstate(g_provinceList);
-    const districtList = useHookstate(g_districtList);
-    const municipalityList = useHookstate(g_municipalityList);
-
-    const currentProvince = useHookstate(g_currentProvince);
-    const currentDistrict = useHookstate(g_currentDistrict);
-    const currentMunicipality = useHookstate(g_currentMunicipality);
+    const store = useHookstate(storeState);
+    const mapControls = store.mapControls;
 
     const updateProvince = (province: Province | undefined) => {
-        currentMunicipality.set(() => null);
-        currentDistrict.set(() => null);
-        currentProvince.set(() => province?.url ?? null);
+        mapControls.selectedMunicipality.set(() => null);
+        mapControls.selectedDistrict.set(() => null);
+        mapControls.selectedProvince.set(() => province?.url ?? null);
     };
 
     const updateDistrict = (district: District | undefined) => {
-        currentMunicipality.set(() => null);
-        currentDistrict.set(() => district?.url ?? null);
-        let province = provinceList.get().find((province) => province.url === district?.province);
+        mapControls.selectedMunicipality.set(() => null);
+        mapControls.selectedDistrict.set(() => district?.url ?? null);
+        let province = store.provinceList.get().find((province) => province.url === district?.province);
         if (province !== undefined) {
-            currentProvince.set(() => province?.url ?? null);
+            mapControls.selectedProvince.set(() => province?.url ?? null);
         }
     };
 
     const updateMunicipality = (municipality: Municipality | undefined) => {
-        currentMunicipality.set(() => municipality?.url ?? null);
-        let district = districtList.get().find((district) => district.url === municipality?.district);
+        mapControls.selectedMunicipality.set(() => municipality?.url ?? null);
+        let district = store.districtList.get().find((district) => district.url === municipality?.district);
         if (district !== undefined) {
-            currentDistrict.set(() => district?.url ?? null);
-            let province = provinceList.get().find((province) => province.url === district?.province);
-            currentProvince.set(() => province?.url ?? null);
+            mapControls.selectedDistrict.set(() => district?.url ?? null);
+            let province = store.provinceList.get().find((province) => province.url === district?.province);
+            mapControls.selectedProvince.set(() => province?.url ?? null);
         }
     };
 
@@ -70,28 +65,28 @@ export function FederalSelector() {
                 <FontAwesomeIcon icon="filter"></FontAwesomeIcon>
             </Button>
             <Dropdown
-                value={provinceList.get().find((province) => currentProvince.get() == province.url)}
+                value={store.provinceList.get().find((province) => mapControls.selectedProvince.get() == province.url)}
                 onChange={(ev) => { updateProvince(ev.value); }}
-                options={provinceList.get() as Province[]}
-                emptyMessage={provinceList.get().length == 0 ? progressSpinner : null}
+                options={store.provinceList.get() as Province[]}
+                emptyMessage={store.provinceList.get().length == 0 ? progressSpinner : null}
                 optionLabel="name"
                 showClear
                 placeholder="Select a province"
                 className="w-full md:w-20rem" />
             <Dropdown
-                value={districtList.get().find((district) => currentDistrict.get() == district.url)}
+                value={store.districtList.get().find((district) => mapControls.selectedDistrict.get() == district.url)}
                 onChange={(ev) => { updateDistrict(ev.value); }}
-                options={districtList.get() as District[]}
-                emptyMessage={districtList.get().length == 0 ? progressSpinner : null}
+                options={store.districtList.get() as District[]}
+                emptyMessage={store.districtList.get().length == 0 ? progressSpinner : null}
                 optionLabel="name"
                 showClear
                 filter
                 placeholder="Select a district" className="w-full md:w-20rem" />
             <Dropdown
-                value={municipalityList.get().find((municipality) => currentMunicipality.get() == municipality.url)}
+                value={store.municipalityList.get().find((municipality) => mapControls.selectedMunicipality.get() == municipality.url)}
                 onChange={(ev) => { updateMunicipality(ev.value); }}
-                options={municipalityList.get() as Municipality[]}
-                emptyMessage={municipalityList.get().length == 0 ? progressSpinner : null}
+                options={store.municipalityList.get() as Municipality[]}
+                emptyMessage={store.municipalityList.get().length == 0 ? progressSpinner : null}
                 optionLabel="name"
                 showClear
                 filter
