@@ -7,8 +7,8 @@ import {
     Province,
     District,
     Municipality
-} from '../models/federal';
-import { storeState } from '../models/store';
+} from '../../models/federal';
+import { storeState } from '../../models/store';
 
 import { Button } from 'primereact/button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -52,8 +52,8 @@ export function FederalSelector() {
         <FontAwesomeIcon icon="filter"></FontAwesomeIcon>
     </Button>;
 
-
     if (!expanded) { return expanded_icon; }
+
     const progressSpinner = <ProgressSpinner style={{ width: '50px', height: '50px' }} />;
 
     return (

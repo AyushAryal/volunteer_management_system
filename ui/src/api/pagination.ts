@@ -10,7 +10,7 @@ async function* depaginate<T>(url: string): AsyncGenerator<T[], void, void> {
 async function depaginate_full<T>(url: string): Promise<T[]> {
     let elements: T[] = [];
     for await (let element_page of depaginate<T>(url)) {
-        elements.push(...element_page);
+        elements = elements.concat(element_page);
     }
     return elements;
 }

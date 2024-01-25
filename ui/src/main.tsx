@@ -6,6 +6,8 @@ import "primereact/resources/themes/viva-light/theme.css";
 
 import 'leaflet/dist/leaflet.css';
 
+import Chart from 'chart.js/auto';
+
 import './index.css';
 
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -16,7 +18,7 @@ library.add(fas, far, fab);
 
 import { PrimeReactProvider } from 'primereact/api';
 
-import { Map } from './components/Map.tsx';
+import { Map } from './components/map/Map.tsx';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>

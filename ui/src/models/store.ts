@@ -3,7 +3,8 @@ import {
     Province,
     District,
     Municipality,
-} from '../models/federal';
+} from './federal';
+import { Incident, Job, Program } from './incident';
 
 import { hookstate } from '@hookstate/core';
 
@@ -22,6 +23,9 @@ export interface Store {
     provinceList: Province[],
     districtList: District[],
     municipalityList: Municipality[],
+    incidentList: Incident[],
+    jobList: Job[],
+    programList: Program[],
     mapControls: MapControls
 }
 
@@ -29,6 +33,9 @@ export const storeState = hookstate<Store>({
     provinceList: [],
     districtList: [],
     municipalityList: [],
+    incidentList: [],
+    jobList: [],
+    programList: [],
     mapControls: {
         selectedProvince: null,
         selectedDistrict: null,
@@ -41,6 +48,10 @@ export const storeState = hookstate<Store>({
     }
 })
 
-get_province_list().then((list) => storeState.provinceList.set(list));
-get_district_list().then((list) => storeState.districtList.set(list));
-get_municipality_list().then((list) => storeState.municipalityList.set(list));
+Promise.all([
+    get_province_list(), get_district_list(), get_municipality_list()
+]).then(([provinceList, districtList, municipalityList]) => {
+    storeState.provinceList.set(provinceList);
+    storeState.districtList.set(districtList);
+    storeState.municipalityList.set(municipalityList);
+})
