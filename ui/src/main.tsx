@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 
 import 'primeflex/primeflex.css';
-import "primereact/resources/themes/viva-light/theme.css";
+import 'primereact/resources/themes/viva-light/theme.css';
 
 import 'leaflet/dist/leaflet.css';
 
@@ -18,12 +18,27 @@ library.add(fas, far, fab);
 
 import { PrimeReactProvider } from 'primereact/api';
 
+import { Login } from './components/Login.tsx';
 import { Map } from './components/map/Map.tsx';
+import { Signup } from './pages/Signup.tsx';
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
-    <React.StrictMode>
-        <PrimeReactProvider>
+
+function Main() {
+    const pt = {
+        inputtext: {
+            root: {
+                style: {
+                    backgroundColor: "var(--surface-100)",
+                    border: "none",
+                }
+            }
+        }
+    };
+    return <React.StrictMode>
+        <PrimeReactProvider value={{ pt }}>
             <Map />
         </PrimeReactProvider>
-    </React.StrictMode>,
-);
+    </React.StrictMode>;
+}
+
+ReactDOM.createRoot(document.getElementById('root')!).render(<Main />);

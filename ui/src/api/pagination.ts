@@ -1,6 +1,8 @@
+import { token_aware_fetch } from "./token";
+
 async function* depaginate<T>(url: string): AsyncGenerator<T[], void, void> {
     while (url !== null) {
-        let response = await fetch(url);
+        let response = await token_aware_fetch(url);
         let json = await response.json();
         url = json["next"];
         yield json["results"];

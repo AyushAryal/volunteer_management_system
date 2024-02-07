@@ -23,7 +23,6 @@ django-filter = "^23.5"
 
 [tool.poetry.group.dev.dependencies]
 django-stubs = "^4.2.7"
-flake8 = "^7.0.0"
 black = "^23.12.1"
 pre-commit = "^3.6.0"
 
@@ -36,9 +35,3 @@ django_settings_module = "volunteer_management_system.settings"
 
 [tool.pyright]
 typeCheckingMode = "basic"
-
-[tool.black]
-force-exclude = "migrations|node_modules"
-
-[tool.isort]
-profile = "black"

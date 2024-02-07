@@ -13,6 +13,7 @@ import { storeState } from "../../models/store.ts";
 import { get_selected_local_body } from '../../utils.ts';
 import { DataView } from 'primereact/dataview';
 import { Incident, Job, Program } from '../../models/incident.ts';
+import { Login } from '../Login.tsx';
 
 
 function OverviewIncident() {
@@ -43,7 +44,7 @@ function OverviewJobs() {
 
     const template = (job: Job) => {
         const start_date = new Date(job.start_date);
-        const end_date = new Date(job.start_date);
+        const end_date = new Date(job.end_date);
         return <div className="flex flex-column flex-wrap p-2">
             <div className="m-1"> {job.name}</div>
             <div className="text-sm text-400">
@@ -183,7 +184,13 @@ function Visualizations() {
 }
 
 function OverviewTabpages() {
-    return <TabView className="overflow-y-scroll">
+    return <TabView
+        className="flex flex-column overflow-y-hidden"
+        pt={{
+            panelContainer: { className: "overflow-y-scroll h-full" },
+            navContainer: { style: { position: "initial" } }
+        }}
+    >
         <TabPanel header="Visualizations">
             <Visualizations />
         </TabPanel>
@@ -208,10 +215,13 @@ export function SideBar() {
 
     let federal_body = get_selected_local_body(store);
 
-    return <div className={"relative h-screen shadow-3"} style={{ width: show ? "50%" : "0", zIndex: 450 }}>
+    return <div className={"relative h-screen shadow-3"} style={{ width: show ? "80%" : "0", zIndex: 450 }}>
         <div className={`h-full overflow-x-hidden ${show ? "" : "hidden"}`}>
-            <div className="h-full flex flex-column px-5">
-                <h1 className="font-light"> {federal_body?.name ?? "National"} </h1>
+            <div className="h-full flex flex-column px-3 py-2">
+                <div className="flex flex-row justify-content-between align-items-center">
+                    <h1 className="font-light my-0"> {federal_body?.name ?? "National"} </h1>
+                    <Login />
+                </div>
                 <OverviewTabpages />
             </div>
         </div>
@@ -224,11 +234,11 @@ export function SideBar() {
                 width: "40px",
                 height: "40px",
                 overflow: "visible",
-                zIndex: 500
+                zIndex: 500,
             }}
             onClick={() => setShow((show) => !show)}
         >
-            <FontAwesomeIcon icon={`arrow-${show ? "left" : "right"}`}></FontAwesomeIcon>
+            <FontAwesomeIcon style={{ margin: "-50%" }} icon={`arrow-${show ? "left" : "right"}`}></FontAwesomeIcon>
         </Button>
     </div>;
 }

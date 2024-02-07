@@ -4,7 +4,7 @@ import {
     District,
     Municipality,
 } from './federal';
-import { Incident, Job, Program } from './incident';
+import { Incident, Job, Program, VolunteerProfile } from './incident';
 
 import { hookstate } from '@hookstate/core';
 
@@ -19,7 +19,15 @@ interface MapControls {
     expandSidebar: boolean,
 }
 
+export interface Token {
+    token: string,
+    user: string,
+}
+
+
 export interface Store {
+    token: Token | null,
+    volunteerProfile: VolunteerProfile | null,
     provinceList: Province[],
     districtList: District[],
     municipalityList: Municipality[],
@@ -29,7 +37,19 @@ export interface Store {
     mapControls: MapControls
 }
 
+function getTokenFromLocalStorage(): Token | null {
+    let storage = localStorage.getItem("token");
+    if (storage === null) {
+        return null;
+    } else {
+        return JSON.parse(storage);
+    }
+};
+
+
 export const storeState = hookstate<Store>({
+    token: getTokenFromLocalStorage(),
+    volunteerProfile: null,
     provinceList: [],
     districtList: [],
     municipalityList: [],
@@ -48,10 +68,14 @@ export const storeState = hookstate<Store>({
     }
 })
 
-Promise.all([
-    get_province_list(), get_district_list(), get_municipality_list()
-]).then(([provinceList, districtList, municipalityList]) => {
+get_province_list().then((provinceList) => {
     storeState.provinceList.set(provinceList);
+})
+
+get_district_list().then((districtList) => {
     storeState.districtList.set(districtList);
+})
+
+get_municipality_list().then((municipalityList) => {
     storeState.municipalityList.set(municipalityList);
 })

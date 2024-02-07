@@ -1,8 +1,12 @@
+import django_filters
+import federal.models
 from authentication import utils
 from authentication.signals import new_verification_link
 from django.contrib.auth import get_user_model
+from django.db.models import Count, F
 from django.utils.translation import gettext_lazy as _
 from rest_framework import permissions, status, viewsets
+from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from . import models
@@ -99,7 +103,8 @@ class VolunteerProfileViewSet(
             "create": [permissions.AllowAny],
             "update": [incident_permissions.IsOwner],
             "partial_update": [incident_permissions.IsOwner],
-        }.get(self.action, [permissions.IsAdminUser])
+            "count": [permissions.AllowAny],
+        }.get(self.action, [permissions.AllowAny])
         return (permission() for permission in permissions_classes)
 
     def list(self, request, *args, **kwargs):
@@ -112,6 +117,44 @@ class VolunteerProfileViewSet(
             )
         return Response(
             {"detail": _("No profile present for this user")},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    @action(detail=False, methods=["get"])
+    def count(self, request, *args, **kwargs):
+        # fmt: off
+        municipality = (
+            models.VolunteerProfile.objects
+                .values("municipality")
+                .annotate(volunteer_count=Count("municipality"))
+                .values(id=F("municipality"), volunteer_count=F("volunteer_count"))
+        )
+
+        district = (
+            models.VolunteerProfile.objects
+                .values("municipality__district")
+                .annotate(volunteer_count=Count("municipality"))
+                .values(id=F("municipality__district"), volunteer_count=F("volunteer_count"))
+        )
+
+        province = (
+            models.VolunteerProfile.objects
+                .values("municipality__district__province")
+                .annotate(volunteer_count=Count("municipality"))
+                .values(id=F("municipality__district__province"), volunteer_count=F("volunteer_count"))
+        )
+        # fmt: on
+
+        response = {
+            "province": list(province),
+            "district": list(district),
+            "muncipality": list(municipality),
+        }
+
+        print(response)
+
+        return Response(
+            response,
             status=status.HTTP_400_BAD_REQUEST,
         )
 
@@ -132,6 +175,30 @@ class IncidentViewSet(
     serializer_class = serializers.IncidentSerializer
     pagination_class = None
 
+    class IncidentFilter(django_filters.FilterSet):
+        date = django_filters.NumericRangeFilter(field_name="date", lookup_expr="range")
+        province = django_filters.ModelChoiceFilter(
+            label="Province",
+            field_name="municipality__district__province",
+            queryset=federal.models.Province.objects.all(),
+        )
+        district = django_filters.ModelChoiceFilter(
+            label="District",
+            field_name="municipality__district",
+            queryset=federal.models.District.objects.all(),
+        )
+        municipality = django_filters.ModelChoiceFilter(
+            label="Municipality",
+            field_name="municipality",
+            queryset=federal.models.Municipality.objects.all(),
+        )
+
+        class Meta:
+            model = models.Incident
+            fields = []
+
+    filterset_class = IncidentFilter
+
 
 class ProgramViewSet(
     viewsets.GenericViewSet,
@@ -142,6 +209,29 @@ class ProgramViewSet(
     serializer_class = serializers.ProgramSerializer
     pagination_class = None
 
+    class ProgramFilter(django_filters.FilterSet):
+        province = django_filters.ModelChoiceFilter(
+            label="Province",
+            field_name="incident__municipality__district__province",
+            queryset=federal.models.Province.objects.all(),
+        )
+        district = django_filters.ModelChoiceFilter(
+            label="District",
+            field_name="incident__municipality__district",
+            queryset=federal.models.District.objects.all(),
+        )
+        municipality = django_filters.ModelChoiceFilter(
+            label="Municipality",
+            field_name="incident__municipality",
+            queryset=federal.models.Municipality.objects.all(),
+        )
+
+        class Meta:
+            model = models.Program
+            fields = []
+
+    filterset_class = ProgramFilter
+
 
 class JobViewSet(
     viewsets.GenericViewSet,
@@ -151,3 +241,41 @@ class JobViewSet(
     queryset = models.Job.objects.all()
     serializer_class = serializers.JobSerializer
     pagination_class = None
+
+    class JobFilter(django_filters.FilterSet):
+        start_date = django_filters.NumericRangeFilter(
+            field_name="start_date", lookup_expr="range"
+        )
+        end_date = django_filters.NumericRangeFilter(
+            field_name="end_date", lookup_expr="range"
+        )
+        province = django_filters.ModelChoiceFilter(
+            label="Province",
+            field_name="program__incident__municipality__district__province",
+            queryset=federal.models.Province.objects.all(),
+        )
+        district = django_filters.ModelChoiceFilter(
+            label="District",
+            field_name="program__incident__municipality__district",
+            queryset=federal.models.District.objects.all(),
+        )
+        municipality = django_filters.ModelChoiceFilter(
+            label="Municipality",
+            field_name="program__incident__municipality",
+            queryset=federal.models.Municipality.objects.all(),
+        )
+
+        class Meta:
+            model = models.Job
+            fields = []
+
+    filterset_class = JobFilter
+    # filterset_fields = (
+    #     # "start_date__gt",
+    #     # "start_date__lt",
+    #     # "end_date__gt",
+    #     # "end_date__lt",
+    #     "program__incident__municipality",
+    #     "program__incident__municipality__district",
+    #     "program__incident__municipality__district__province",
+    # )

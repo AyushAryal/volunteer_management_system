@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-import { Canvas, LatLngBounds } from 'leaflet';
+import { LatLngBounds } from 'leaflet';
 import { TileLayer, MapContainer } from 'react-leaflet';
 import { useHookstate } from '@hookstate/core';
 
@@ -9,7 +9,8 @@ import { FederalBodyPolygons } from './FederalPolygons.tsx';
 import { FederalSelector } from './FederalSelector';
 import { SideBar } from './SideBar';
 import { storeState } from '../../models/store.ts';
-import { get_incident_list, get_job_list, get_program_list } from '../../api/incident.ts';
+import { get_id } from '../../api/utils.ts';
+import { FederalFilter, get_incident_list, get_job_list, get_program_list, get_volunteer_profile } from '../../api/incident.ts';
 
 export function Map() {
     const store = useHookstate(storeState);
@@ -17,13 +18,34 @@ export function Map() {
 
     useEffect(() => {
         let networkRequest = async () => {
-            get_incident_list().then((incidents) => {
+            if (store.volunteerProfile.get() === null) {
+                await get_volunteer_profile().then((volunteer) => {
+                    store.volunteerProfile.set(volunteer);
+                });
+
+            }
+        }
+        networkRequest();
+    }, [store.volunteerProfile]);
+
+    useEffect(() => {
+        let networkRequest = async () => {
+            let selectedProvince = store.mapControls.selectedProvince.get();
+            let selectedDistrict = store.mapControls.selectedDistrict.get();
+            let selectedMunicipality = store.mapControls.selectedMunicipality.get();
+
+            let query: FederalFilter = {}
+            if (selectedProvince !== null) { query.province = get_id(selectedProvince); }
+            if (selectedDistrict !== null) { query.district = get_id(selectedDistrict); }
+            if (selectedMunicipality !== null) { query.municipality = get_id(selectedMunicipality); }
+
+            get_incident_list(query).then((incidents) => {
                 store.incidentList.set(incidents);
             });
-            get_job_list().then((jobs) => {
+            get_job_list(query).then((jobs) => {
                 store.jobList.set(jobs);
             });
-            get_program_list().then((programs) => {
+            get_program_list(query).then((programs) => {
                 store.programList.set(programs);
             });
         }
@@ -50,14 +72,14 @@ export function Map() {
 
     return <div className="flex flex-row" style={{ width: "100vw", height: "100vh" }}>
         <SideBar />
-        <MapContainer bounds={bounds} style={{ width: "100%", height: "100%" }} renderer={new Canvas()}>;
+        <MapContainer bounds={bounds} style={{ width: "100%", height: "100%" }}>;
             <TileLayer
                 url='https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png'
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             />
             <FederalBodyPolygons />
             <div style={{ position: "absolute", right: "10px", top: "10px" }}>
-                <div className="leaflet-control">
+                <div className="leaflet-control flex flex-row align-items-start" style={{ gap: "1rem" }}>
                     <FederalSelector />
                 </div>
             </div>
