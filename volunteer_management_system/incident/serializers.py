@@ -92,6 +92,8 @@ class VolunteerSignupSerializer(serializers.ModelSerializer):
 
 
 class IncidentSerializer(serializers.HyperlinkedModelSerializer):
+    severity = ChoiceField(models.IncidentSeverity.choices)
+
     class Meta:
         model = models.Incident
         exclude = ("url",)

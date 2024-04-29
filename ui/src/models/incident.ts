@@ -10,6 +10,7 @@ export interface Incident {
     date: string,
     point: LatLngTuple,
     municipality: string,
+    severity: string,
 }
 
 export interface Program {

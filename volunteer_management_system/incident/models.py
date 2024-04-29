@@ -132,6 +132,20 @@ class VolunteerProfile(models.Model):
         )
 
 
+class IncidentSeverity(models.IntegerChoices):
+    Low, Moderate, High, Critical = range(4)
+
+    @DynamicClassAttribute
+    def label(self):
+        label = super().label
+        return {
+            "Low": _("Low"),
+            "Moderate": _("Moderate"),
+            "High": _("High"),
+            "Critical": _("Critical"),
+        }.get(label, _("None"))
+
+
 class Incident(models.Model):
     class Meta:
         verbose_name = _("Incident")
@@ -146,6 +160,10 @@ class Incident(models.Model):
         on_delete=models.CASCADE,
         verbose_name=_("municipality"),
         related_name="incidents",
+    )
+    severity = models.SmallIntegerField(
+        choices=IncidentSeverity.choices,
+        verbose_name=_("severity"),
     )
     point = gis_models.PointField(verbose_name=_("point"))
 

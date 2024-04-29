@@ -1,4 +1,4 @@
-import { ImmutableArray, useHookstate } from "@hookstate/core";
+import { useHookstate } from "@hookstate/core";
 import { storeState } from "../../models/store";
 import { Polygon } from "react-leaflet/Polygon";
 import { LatLngTuple } from "leaflet";

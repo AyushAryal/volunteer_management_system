@@ -272,12 +272,15 @@ class Command(BaseCommand):
                 .values("rand_point")
                 .first()["rand_point"]
             )
+
+            severity = random.choice(list(incident.models.IncidentSeverity))
             incident_ = incident.models.Incident(
                 name=name,
                 description=name,
                 municipality=municipality,
                 date=timezone.now() - timedelta(days=random.randint(0, 30 * 12 * 5)),
                 point=point,
+                severity=severity,
             )
             incident_.save()
             self.stdout.write(self.style.SUCCESS(f"Created incident: {name}"))

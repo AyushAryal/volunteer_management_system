@@ -21,7 +21,13 @@ function OverviewIncident() {
 
     const template = (incident: Incident) => {
         const date = new Date(incident.date);
-        return <div className="flex flex-column flex-wrap p-2">
+        const serverity_color_map = new Map([
+            ["Critical", "var(--red-300)"],
+            ["High", "var(--yellow-300)"],
+            ["Moderate", "var(--teal-300)"],
+            ["Low", "var(--gray-300)"],
+        ]);
+        return <div className="flex flex-column p-2" style={{ borderLeft: `5px solid ${serverity_color_map.get(incident.severity)}` }}>
             <div className="m-1"> {incident.name}</div>
             <div className="text-sm text-400">
                 <FontAwesomeIcon icon={faClock} className="mx-2" />
@@ -51,24 +57,6 @@ function OverviewJobs() {
                 <FontAwesomeIcon icon={faClock} className="mx-2" />
                 {start_date.toDateString()} - {end_date.toDateString()}
             </div>
-        </div>;
-    };
-
-    return <div>
-        <DataView
-            value={store.jobList.get().slice()}
-            itemTemplate={template}
-        >
-        </DataView>
-    </div>
-}
-
-function OverviewPrograms() {
-    const store = useHookstate(storeState);
-
-    const template = (program: Program) => {
-        return <div className="flex flex-column flex-wrap p-2">
-            <div className="m-1"> {program.name}</div>
         </div>;
     };
 
@@ -196,9 +184,6 @@ function OverviewTabpages() {
         </TabPanel>
         <TabPanel header="Incidents">
             <OverviewIncident />
-        </TabPanel>
-        <TabPanel header="Programs">
-            <OverviewPrograms />
         </TabPanel>
         <TabPanel header="Jobs">
             <OverviewJobs />

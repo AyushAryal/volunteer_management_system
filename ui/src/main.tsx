@@ -25,11 +25,14 @@ import { Signup } from './pages/Signup.tsx';
 
 function Main() {
     const pt = {
+        password: {
+            root: { style: { width: "100%" } },
+            input: { style: { width: "100%" } }
+        },
         inputtext: {
             root: {
                 style: {
-                    backgroundColor: "var(--surface-100)",
-                    border: "none",
+                    padding: "0.5em 0.5em",
                 }
             }
         }
