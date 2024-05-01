@@ -19,7 +19,6 @@ PASSWORD = os.getenv("ADMIN_PASSWORD", "shark@123")
 
 class Command(BaseCommand):
     help = "This command populates the database with default db"
-
     def create_federal_user(self, email):
         user = get_user_model().objects.create_user(
             email=email,
@@ -45,17 +44,28 @@ class Command(BaseCommand):
         return federal_group
 
     def load_provinces(self):
-        filepath = settings.BASE_DIR / "shared" / "provinces.geojson.json"
+        filepath = settings.BASE_DIR / "shared" / "province.geojson.json"
+        PROVINCES = {
+            "Province No 1": "Koshi Pradesh",
+            "Province No 2": "Madhesh Pradesh",
+            "Bagmati Pradesh": "Bagmati Pradesh",
+            "Gandaki Pradesh": "Gandaki Pradesh",
+            "Province No 5": "Lumbini Pradesh",
+            "Karnali Pradesh": "Karnali Pradesh",
+            "Sudurpashchim Pradesh": "Sudurpashchim Pradesh",
+        }
         provinces = []
         with open(filepath, encoding="utf8") as j:
             geojson_obj = json.load(j)
             features = geojson_obj["features"]
             for feature in features:
                 polygon = Polygon(feature["geometry"]["coordinates"][0][0])
-                name = feature["properties"]["PROV_NAME"]
+                # id = feature["id"]
+                name = PROVINCES[feature["properties"]["PR_NAME"]]
                 email = "{}@example.com".format(name.lower().strip().replace(" ", "_"))
                 admin = self.create_federal_user(email)
                 province = federal.models.Province(
+                    
                     name=name,
                     shape=polygon,
                     admin=admin,
@@ -65,17 +75,19 @@ class Command(BaseCommand):
 
     def load_districts(self):
         districts = []
-        filepath = settings.BASE_DIR / "shared" / "districts.geojson.json"
+        filepath = settings.BASE_DIR / "shared" / "district.geojson.json"
         with open(filepath, encoding="utf8") as j:
             geojson_obj = json.load(j)
             features = geojson_obj["features"]
             for feature in features:
+                # id = feature["id"]
                 polygon = Polygon(feature["geometry"]["coordinates"][0][0])
-                name = feature["properties"]["title"]
-                province = feature["properties"]["province"]
+                name = feature["properties"]["DISTRICT"]
+                province = feature["properties"]["PROVINCE"]
                 email = "{}@example.com".format(name.lower().strip().replace(" ", "_"))
                 admin = self.create_federal_user(email)
                 district = federal.models.District(
+                    
                     name=name,
                     shape=polygon,
                     province=federal.models.Province.objects.get(pk=province),
@@ -86,21 +98,27 @@ class Command(BaseCommand):
 
     def load_municipalities(self):
         municipalities = []
-        filepath = settings.BASE_DIR / "shared" / "municipalities.geojson.json"
+        filepath = settings.BASE_DIR / "shared" / "municipality.geojson.json"
         with open(filepath, encoding="utf8") as j:
             geojson_obj = json.load(j)
             features = geojson_obj["features"]
             for feature in features:
                 polygon = Polygon(feature["geometry"]["coordinates"][0][0])
-                name = feature["properties"]["Name"]
-                district = feature["properties"]["districtId"]
-                district_name = federal.models.District.objects.get(pk=district).name
-                email = "{}_{}@example.com".format(
+                # id = feature["id"]
+                name = feature["properties"]["LOCAL"]
+                # district = feature["properties"]["district"]
+                # district_name = federal.models.District.objects.get(pk=district).name
+                district_name = feature["properties"]["DISTRICT"]
+                district = federal.models.District.objects.get(name=district_name).pk
+                type = feature["properties"]["TYPE"]
+                email = "{}_{}_{}@example.com".format(
                     district_name.lower().strip().replace(" ", "_"),
                     name.lower().strip().replace(" ", "_"),
+                    type.lower().strip().replace(" ", "_") if type is not None else "",
                 )
                 admin = self.create_federal_user(email)
                 municipality = federal.models.Municipality(
+                    
                     name=name,
                     shape=polygon,
                     district=federal.models.District.objects.get(pk=district),

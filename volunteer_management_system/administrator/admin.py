@@ -74,6 +74,7 @@ class JobAdmin(admin.ModelAdmin):
 class IncidentAdmin(LeafletGeoAdmin):
     model = incident.models.Incident
     list_display = ("__str__", "municipality", "formatted_date")
+    search_fields = ("name", "municipality__name")
 
     def formatted_date(self, incident):
         return incident.date.strftime("%Y-%m-%d")
@@ -90,6 +91,7 @@ class IncidentAdmin(LeafletGeoAdmin):
 class ProgramAdmin(admin.ModelAdmin):
     model = incident.models.Program
     list_display = ("__str__", "incident")
+    search_fields = ("name", "incident__name", "program__name")
 
     def get_queryset(self, request):
         if request.user.is_superuser:
@@ -146,11 +148,29 @@ class MainAdminSite(admin.AdminSite):
 admin_site = MainAdminSite()
 
 admin_site.register(Site)
-admin_site.register(federal.models.Province)
-admin_site.register(federal.models.District)
-admin_site.register(federal.models.Municipality)
+
+
+class ProvinceAdmin(admin.ModelAdmin):
+    model = federal.models.Province
+    search_fields = ("name",)
+
+
+class DistrictAdmin(admin.ModelAdmin):
+    model = federal.models.District
+    search_fields = ("name",)
+
+
+class MunicipalityAdmin(admin.ModelAdmin):
+    model = federal.models.Municipality
+    search_fields = ("name",)
+
+
+admin_site.register(federal.models.Province, ProvinceAdmin)
+admin_site.register(federal.models.District, DistrictAdmin)
+admin_site.register(federal.models.Municipality, MunicipalityAdmin)
 
 admin_site.register(incident.models.Incident, IncidentAdmin)
 admin_site.register(incident.models.Program, ProgramAdmin)
 admin_site.register(incident.models.Job, JobAdmin)
+
 admin_site.register(get_user_model(), UserAdmin)
