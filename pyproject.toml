@@ -9,7 +9,6 @@ readme = "README.md"
 python = "^3.11"
 django = "^5.0"
 djangorestframework = "^3.14.0"
-django-ckeditor = "^6.7.0"
 django-leaflet = "^0.29.0"
 django-geojson = "^4.0.0"
 psycopg2-binary = "^2.9.9"
@@ -19,6 +18,9 @@ pillow = "^10.2.0"
 djangorestframework-gis = "^1.0"
 django-cors-headers = "^4.3.1"
 django-filter = "^23.5"
+django-ckeditor-5 = "^0.2.12"
+django-phonenumber-field = "^7.3.0"
+phonenumbers = "^8.13.35"
 
 
 [tool.poetry.group.dev.dependencies]

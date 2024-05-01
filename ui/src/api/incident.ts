@@ -24,3 +24,13 @@ export async function get_volunteer_profile(): Promise<VolunteerProfile> {
     const url = `${server}${endpoint}`;
     return token_aware_fetch(url).then((response) => response.json());
 }
+
+export async function signup(body: BodyInit): Promise<Response> {
+    const endpoint = "/api/volunteer";
+    const url = `${server}${endpoint}`;
+    return token_aware_fetch(url, {
+        "headers": { "Content-Type": "application/json" },
+        "method": "POST",
+        "body": body
+    });
+}

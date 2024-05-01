@@ -28,3 +28,8 @@ export function get_detail<T, I>(endpoint: string): (id: I) => Promise<T> {
         return await response.json();
     }
 }
+
+export function explain_form_errors(form_errors: object) {
+    return "";
+
+}

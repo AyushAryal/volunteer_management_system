@@ -42,14 +42,17 @@ class VolunteerProfileViewSet(
         "email": "profile@example.com",
         "password": "shark@123",
         "volunteer": {
-            "full_name": "Name",
+            "first_name": "Name",
+            "last_name": "Name",
             "profile_image": ???,
             "date_of_birth": "2022-01-01",
             "gender": "Male",
             "nationality": "National",
             "blood_group": "O Positive",
-            "municipality": "???",
-        }
+            "category": "General",
+            "temporary_municipality": "http://endpoint/to/municipality/1",
+            "permanent_municipality": "http://endpoint/to/municipality/1",
+        },
     }
     ```
 
@@ -70,7 +73,8 @@ class VolunteerProfileViewSet(
     ### Example request body:
     ```
         {
-            "full_name": "Name",
+            "first_name": "Name",
+            "last_name": "Name",
             "profile_image": ???,
             "date_of_birth": "2022-01-01",
             "gender": "Male",
@@ -270,12 +274,3 @@ class JobViewSet(
             fields = []
 
     filterset_class = JobFilter
-    # filterset_fields = (
-    #     # "start_date__gt",
-    #     # "start_date__lt",
-    #     # "end_date__gt",
-    #     # "end_date__lt",
-    #     "program__incident__municipality",
-    #     "program__incident__municipality__district",
-    #     "program__incident__municipality__district__province",
-    # )

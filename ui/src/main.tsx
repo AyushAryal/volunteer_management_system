@@ -39,7 +39,7 @@ function Main() {
     };
     return <React.StrictMode>
         <PrimeReactProvider value={{ pt }}>
-            <Map />
+            <Signup />
         </PrimeReactProvider>
     </React.StrictMode>;
 }

@@ -1,3 +1,4 @@
+from copy import deepcopy
 import federal.models
 import incident.models
 import incident.views
@@ -11,48 +12,65 @@ from rest_framework.test import APIRequestFactory, force_authenticate
 
 
 class VolunteerProfileTest(TestCase):
+    PASSWORD = "shark@123"
+
     def setup_geo(self):
+        self.province_admin = get_user_model().objects.create(
+            email="province@example.com"
+        )
+        self.province_admin.set_password(VolunteerProfileTest.PASSWORD)
         self.province = federal.models.Province.objects.create(
             name="Province",
+            admin=self.province_admin,
             shape=Polygon([(0, 0), (0, 1), (1, 1), (1, 0), (0, 0)]),
         )
 
+        self.district_admin = get_user_model().objects.create(
+            email="district@example.com"
+        )
+        self.district_admin.set_password(VolunteerProfileTest.PASSWORD)
         self.district = federal.models.District.objects.create(
             name="District",
             province=self.province,
+            admin=self.district_admin,
             shape=Polygon([(0, 0), (0, 1), (1, 1), (1, 0), (0, 0)]),
         )
 
+        self.municipality_admin = get_user_model().objects.create(
+            email="municipality@example.com"
+        )
+        self.municipality_admin.set_password(VolunteerProfileTest.PASSWORD)
         self.municipality = federal.models.Municipality.objects.create(
             name="Municipality",
             district=self.district,
+            admin=self.municipality_admin,
+            shape=Polygon([(0, 0), (0, 1), (1, 1), (1, 0), (0, 0)]),
         )
 
     def setUp(self):
         self.email = "shark@example.com"
-        self.password = "123"
-
         self.volunteer_email = "volunteer@example.com"
-        self.volunteer_password = "123"
 
         self.user = get_user_model().objects.create(email=self.email)
-        self.user.set_password(self.password)
+        self.user.set_password(VolunteerProfileTest.PASSWORD)
         self.user.is_superuser = True
         self.user.save()
 
         self.volunteer = get_user_model().objects.create(email=self.volunteer_email)
-        self.volunteer.set_password(self.volunteer_password)
+        self.volunteer.set_password(VolunteerProfileTest.PASSWORD)
         self.volunteer.save()
 
         self.setup_geo()
         self.volunteer_profile = incident.models.VolunteerProfile.objects.create(
             user=self.volunteer,
-            full_name="Name",
+            first_name="Name",
+            last_name="Name",
             date_of_birth="2022-01-01",
             gender=incident.models.Gender.Male,
             nationality=incident.models.Nationality.National,
             blood_group=incident.models.BloodGroup.O_Positive,
-            municipality=self.municipality,
+            temporary_municipality=self.municipality,
+            permanent_municipality=self.municipality,
         )
 
     def test_get_token(self):
@@ -108,39 +126,91 @@ class VolunteerProfileTest(TestCase):
         factory = APIRequestFactory()
         view = incident.views.VolunteerProfileViewSet.as_view({"post": "create"})
 
-        # Invalid data
+        # Empty data
         request = factory.post("/volunteer/", data={}, format="json")
         response = view(request)
         self.assertNotEqual(response.status_code, status.HTTP_200_OK)
 
         data = {
             "email": "profile@example.com",
-            "password": "123",
+            "password": "shark@123",
             "volunteer": {
-                "full_name": "Name",
-                # "profile_image": "...", !!!!!!!!!!!!!!!!!!! TODO: look
-                "date_of_birth": "2022-01-01",
+                "first_name": "Name",
+                "last_name": "Name",
+                "date_of_birth": "2005-01-01",
                 "gender": "Male",
                 "nationality": "National",
                 "blood_group": "O Positive",
-                "municipality": reverse(
+                "category": "General",
+                "temporary_municipality": reverse(
+                    "api:municipality-detail",
+                    args=[self.municipality.pk],
+                    request=request,
+                ),
+                "permanent_municipality": reverse(
                     "api:municipality-detail",
                     args=[self.municipality.pk],
                     request=request,
                 ),
             },
+            "citizenship": {
+                "id": "123",
+                "registration_date": "2001-01-01",
+                "registration_district": reverse(
+                    "api:district-detail",
+                    args=[self.district.pk],
+                    request=request,
+                ),
+            },
+            "passport": {
+                "id": "123",
+                "issue_date": "2001-01-01",
+                "expiry_date": "2002-01-10",
+            },
+            "national_id": {
+                "id": "123",
+                "registration_date": "2001-01-01",
+                "registration_district": reverse(
+                    "api:district-detail",
+                    args=[self.district.pk],
+                    request=request,
+                ),
+            },
         }
+        # Valid data
+        request = factory.post("/volunteer/", data=data, format="json")
+        response = view(request)
+        print(response.data)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        # Too young
+        invalid_data = deepcopy(data)
+        invalid_data["volunteer"]["date_of_bith"] = "2024-01-01"
+        request = factory.post("/volunteer/", data=data, format="json")
+        response = view(request)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        # Doesn't contain citizenship
+        invalid_data = deepcopy(data)
+        invalid_data["citizenship"] = None
+        request = factory.post("/volunteer/", data=data, format="json")
+        response = view(request)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        # International doesn't contain passport
+        invalid_data = deepcopy(data)
+        invalid_data["volunteer"]["nationality"] = "International"
+        invalid_data["passport"] = None
+        request = factory.post("/volunteer/", data=data, format="json")
+        response = view(request)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
         # Insecure password
+        invalid_data = deepcopy(data)
+        invalid_data["password"] = "123"
         request = factory.post("/volunteer/", data=data, format="json")
         response = view(request)
         self.assertNotEqual(response.status_code, status.HTTP_201_CREATED)
-
-        # Valid data
-        data["password"] = "shark@123"
-        request = factory.post("/volunteer/", data=data, format="json")
-        response = view(request)
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_put_volunteer_profile(self):
         factory = APIRequestFactory()
@@ -154,16 +224,27 @@ class VolunteerProfileTest(TestCase):
         self.assertNotEqual(response.status_code, status.HTTP_200_OK)
 
         data = {
-            "full_name": "Name",
-            "date_of_birth": "2022-01-01",
+            "first_name": "Name",
+            "last_name": "Name",
+            "date_of_birth": "2005-01-01",
             "gender": "Male",
             "nationality": "National",
             "blood_group": "O Positive",
-            "municipality": reverse(
+            "category": "General",
+            "temporary_municipality": reverse(
                 "api:municipality-detail",
                 args=[self.municipality.pk],
                 request=request,
             ),
+            "permanent_municipality": reverse(
+                "api:municipality-detail",
+                args=[self.municipality.pk],
+                request=request,
+            ),
+            "citizenship": None,
+            "passport": None,
+            "national_id": None,
+            "certificates": [],
         }
 
         # Unauthenticated, and valid data

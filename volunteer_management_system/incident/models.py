@@ -1,12 +1,15 @@
 from types import DynamicClassAttribute
 
-import federal.models
-from ckeditor.fields import RichTextField
 from django.contrib.auth import get_user_model
 from django.contrib.gis.db import models as gis_models
 from django.db import models
 from django.utils.html import mark_safe
 from django.utils.translation import gettext_lazy as _
+
+from django_ckeditor_5.fields import CKEditor5Field
+from phonenumber_field.modelfields import PhoneNumberField
+
+import federal.models
 
 
 class Nationality(models.IntegerChoices):
@@ -31,6 +34,47 @@ class JobStatus(models.IntegerChoices):
             "Completed": _("Completed"),
             "Inprogress": _("In Progress"),
             "Notassigned": _("Not Assigned"),
+        }.get(label, _("None"))
+
+
+class TrainingType(models.IntegerChoices):
+    Rescue, ReliefDistribution, Evacuation, Other = range(4)
+
+    @DynamicClassAttribute
+    def label(self):
+        label = super().label
+        return {
+            "Rescue": _("Rescue"),
+            "Reliefdistribution": _("Relief Distribution"),
+            "Evacuation": _("Evacuation"),
+            "Other": _("Other"),
+        }.get(label, _("None"))
+
+
+class VolunteerCategory(models.IntegerChoices):
+    (
+        Student,
+        RSS,
+        RetiredAPF,
+        RetiredArmy,
+        RetiredGovernmentService,
+        SeniorCitizen,
+        Community,
+        General,
+    ) = range(8)
+
+    @DynamicClassAttribute
+    def label(self):
+        label = super().label
+        return {
+            "Student": _("Student"),
+            "Rss": _("RSS"),
+            "Retiredapf": _("Retired APF"),
+            "Retiredarmy": _("Retired Army"),
+            "Retiredgovernmentservice": _("Retired Government Service"),
+            "Seniorcitizen": _("Senior Citizen"),
+            "Community": _("Community"),
+            "General": _("General"),
         }.get(label, _("None"))
 
 
@@ -74,6 +118,98 @@ class BloodGroup(models.IntegerChoices):
         }.get(label, _("None"))
 
 
+class Citizenship(models.Model):
+    class Meta:
+        verbose_name = _("Citizenship")
+        verbose_name_plural = _("Citizenships")
+        ordering = ("-pk",)
+
+    id = models.CharField(primary_key=True, max_length=100, verbose_name=_("id"))
+    user = models.OneToOneField(
+        get_user_model(),
+        on_delete=models.CASCADE,
+        related_name="citizenship",
+        blank=True,
+        null=True,
+        verbose_name=_("user"),
+    )
+    registration_date = models.DateField(verbose_name=_("registration date"))
+    registration_district = models.ForeignKey(
+        federal.models.District,
+        on_delete=models.CASCADE,
+        verbose_name=_("district"),
+        related_name="citizens",
+    )
+
+    def __str__(self):
+        return str(self.id)
+
+
+class Passport(models.Model):
+    class Meta:
+        verbose_name = _("Passport")
+        verbose_name_plural = _("Passports")
+        ordering = ("-pk",)
+
+    id = models.CharField(primary_key=True, max_length=100, verbose_name=_("id"))
+    user = models.OneToOneField(
+        get_user_model(),
+        on_delete=models.CASCADE,
+        related_name="passport",
+        blank=True,
+        null=True,
+        verbose_name=_("user"),
+    )
+    issue_date = models.DateField(verbose_name=_("issue date"))
+    expiry_date = models.DateField(verbose_name=_("expiry date"))
+
+    def __str__(self):
+        return str(self.id)
+
+
+class NationalId(models.Model):
+    class Meta:
+        verbose_name = _("National ID")
+        verbose_name_plural = _("National IDs")
+        ordering = ("-pk",)
+
+    id = models.CharField(primary_key=True, max_length=100, verbose_name=_("id"))
+    user = models.OneToOneField(
+        get_user_model(),
+        on_delete=models.CASCADE,
+        related_name="national_id",
+        blank=True,
+        null=True,
+        verbose_name=_("user"),
+    )
+    registration_date = models.DateField(verbose_name=_("registration date"))
+    registration_district = models.ForeignKey(
+        federal.models.District,
+        on_delete=models.CASCADE,
+        verbose_name=_("registration district"),
+        related_name="residents",
+    )
+
+    def __str__(self):
+        return str(self.id)
+
+
+class Certificate(models.Model):
+    class Meta:
+        verbose_name = _("Certificate")
+        verbose_name_plural = _("Certificates")
+        ordering = ("-pk",)
+
+    user = models.ForeignKey(
+        get_user_model(),
+        on_delete=models.CASCADE,
+        related_name="certificates",
+        verbose_name=_("user"),
+    )
+
+    file = models.FileField()
+
+
 class VolunteerProfile(models.Model):
     class Meta:
         verbose_name = _("Volunteer profile")
@@ -89,7 +225,9 @@ class VolunteerProfile(models.Model):
         verbose_name=_("user"),
     )
 
-    full_name = models.CharField(max_length=100, verbose_name=_("full name"))
+    first_name = models.CharField(max_length=100, verbose_name=_("first name"))
+    last_name = models.CharField(max_length=100, verbose_name=_("last name"))
+    phone_number = PhoneNumberField(verbose_name=_("phone number"))
 
     profile_image = models.ImageField(
         upload_to="uploads/images/profile_images/",
@@ -116,15 +254,55 @@ class VolunteerProfile(models.Model):
         verbose_name=_("nationality"),
     )
 
-    municipality = models.ForeignKey(
+    permanent_municipality = models.ForeignKey(
         federal.models.Municipality,
         on_delete=models.CASCADE,
-        verbose_name=_("municipality"),
-        related_name="volunteers",
+        verbose_name=_("permanent municipality"),
+        related_name="residing_volunteers",
+    )
+
+    temporary_municipality = models.ForeignKey(
+        federal.models.Municipality,
+        on_delete=models.CASCADE,
+        verbose_name=_("temporary municipality"),
+        related_name="transient_volunteers",
+    )
+
+    category = models.SmallIntegerField(
+        choices=VolunteerCategory.choices,
+        default=VolunteerCategory.General,
+        verbose_name=_("volunteer category"),
+    )
+
+    organization_name = models.CharField(
+        blank=True, max_length=100, verbose_name=_("organization name")
+    )
+
+    organization_phone_number = PhoneNumberField(
+        blank=True, verbose_name=_("organization phone number")
+    )
+
+    organization_website = models.CharField(
+        blank=True, max_length=100, verbose_name=_("organization website")
+    )
+
+    training_name = models.CharField(
+        blank=True, max_length=100, verbose_name=_("training name")
+    )
+
+    training_subject = models.CharField(
+        blank=True, max_length=100, verbose_name=_("training subject")
+    )
+
+    training_type = models.SmallIntegerField(
+        blank=True,
+        null=True,
+        choices=TrainingType.choices,
+        verbose_name=_("training type"),
     )
 
     def __str__(self):
-        return str(self.full_name)
+        return f"{self.first_name} {self.last_name}"
 
     def profile_image_preview(self):
         return mark_safe(
@@ -153,7 +331,7 @@ class Incident(models.Model):
         ordering = ("-date",)
 
     name = models.CharField(max_length=100, verbose_name=_("name"))
-    description = RichTextField(verbose_name=_("description"))
+    description = CKEditor5Field("Description", config_name="extends")
     date = models.DateTimeField(verbose_name=_("date"))
     municipality = models.ForeignKey(
         federal.models.Municipality,
@@ -178,7 +356,7 @@ class Program(models.Model):
         ordering = ("-pk",)
 
     name = models.CharField(max_length=100)
-    description = RichTextField()
+    description = CKEditor5Field("Description", config_name="extends")
     incident = models.ForeignKey(
         Incident,
         on_delete=models.CASCADE,
@@ -199,7 +377,7 @@ class Job(models.Model):
     start_date = models.DateTimeField(verbose_name=_("start date"))
     end_date = models.DateTimeField(verbose_name=_("end date"))
     vacancy = models.PositiveIntegerField(verbose_name=_("vacancy"))
-    description = RichTextField(verbose_name=_("description"))
+    description = CKEditor5Field("Description", config_name="extends")
     status = models.SmallIntegerField(
         choices=JobStatus.choices,
         verbose_name=_("status"),

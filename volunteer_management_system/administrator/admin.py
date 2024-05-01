@@ -24,6 +24,30 @@ def get_user_controlled_municipalities(user):
     return municipalities
 
 
+class CertificateInline(admin.StackedInline):
+    model = incident.models.Certificate
+    can_delete = True
+    extra = 0
+
+
+class CitizenshipInline(admin.StackedInline):
+    model = incident.models.Citizenship
+    can_delete = True
+    extra = 0
+
+
+class PassportInline(admin.StackedInline):
+    model = incident.models.Passport
+    can_delete = True
+    extra = 0
+
+
+class NationalIdInline(admin.StackedInline):
+    model = incident.models.NationalId
+    can_delete = True
+    extra = 0
+
+
 class VolunteerProfileInline(admin.StackedInline):
     model = incident.models.VolunteerProfile
     readonly_fields = ("profile_image_preview",)
@@ -75,7 +99,13 @@ class ProgramAdmin(admin.ModelAdmin):
 
 
 class UserAdmin(BaseUserAdmin):
-    inlines = (VolunteerProfileInline,)
+    inlines = (
+        VolunteerProfileInline,
+        CitizenshipInline,
+        PassportInline,
+        NationalIdInline,
+        CertificateInline,
+    )
     list_display = ("email", "email_verified")
     list_filter = ("is_superuser", "is_active", "email_verified")
     fieldsets = (

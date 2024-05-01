@@ -12,7 +12,8 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 import os
 from pathlib import Path
-from urllib.parse import quote_plus
+from urllib.parse import quote_plus, urljoin
+from django.core.files.storage import FileSystemStorage
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -47,7 +48,8 @@ INSTALLED_APPS = [
     "rest_framework_gis",
     "django_filters",
     "corsheaders",
-    "ckeditor",
+    "phonenumber_field",
+    "django_ckeditor_5",
     "leaflet",
     "core",
     "authentication",
@@ -149,7 +151,9 @@ STATICFILES_DIRS = (
 )
 
 MEDIA_ROOT = BASE_DIR / "media/"
-MEDIA_ROOT = os.getenv("MEDIA_ROOT") or MEDIA_ROOT
+MEDIA_ROOT = (
+    Path(os.getenv("MEDIA_ROOT") or "") if os.getenv("MEDIA_ROOT") else MEDIA_ROOT
+)
 
 MEDIA_URL = "media/"
 
@@ -207,4 +211,12 @@ LEAFLET_CONFIG = {
     "MINIMAP": True,
 }
 
-CKEDITOR_UPLOAD_PATH = "editor/"
+
+class CKEditorStorage(FileSystemStorage):
+    """Custom storage for django_ckeditor_5 images."""
+
+    location = MEDIA_ROOT / "editor/"
+    base_url = urljoin(MEDIA_URL, "django_ckeditor_5/")
+
+
+CKEDITOR_5_FILE_STORAGE = "volunteer_management_system.settings.CKEditorStorage"

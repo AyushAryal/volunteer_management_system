@@ -35,7 +35,9 @@ favicon_view = RedirectView.as_view(url="/static/favicon.ico", permanent=True)
 urlpatterns = [
     path("admin/", include("administrator.urls")),
     path("api/", include((router.urls, "api"))),
-    path("ckeditor/", include("ckeditor_uploader.urls")),
+    path(
+        "ckeditor5/", include("django_ckeditor_5.urls"), name="ck_editor_5_upload_file"
+    ),
     re_path(r"^favicon\.ico$", favicon_view),
 ]
 

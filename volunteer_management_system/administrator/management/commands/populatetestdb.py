@@ -212,7 +212,6 @@ class Command(BaseCommand):
                 domain = domains[domain_idx]
                 generator = generators[generator_idx]
                 email = generator(first_name, last_name, domain)
-                full_name = f"{first_name.capitalize()} {last_name.capitalize()}"
                 nationality = (
                     incident.models.Nationality.National
                     if random.random() < 0.95
@@ -227,14 +226,25 @@ class Command(BaseCommand):
                 )
                 user.email_verified = True
                 user.save()
+
+                citizenship = incident.models.Citizenship(
+                    id=incident.models.Citizenship.objects.all().count() + 1,
+                    user=user,
+                    registration_date=date_of_birth,
+                    registration_district=federal.models.District.objects.get(pk=1),
+                )
+                citizenship.save()
+
                 volunteer = incident.models.VolunteerProfile(
                     user=user,
-                    full_name=full_name,
+                    first_name=first_name.capitalize(),
+                    last_name=last_name.capitalize(),
                     gender=gender,
                     blood_group=random.choice(incident.models.BloodGroup.values),
                     nationality=nationality,
                     date_of_birth=date_of_birth,
-                    municipality=municipality,
+                    temporary_municipality=municipality,
+                    permanent_municipality=municipality,
                 )
                 volunteer.save()
                 self.stdout.write(self.style.SUCCESS(f"Created volunteer {email}"))
