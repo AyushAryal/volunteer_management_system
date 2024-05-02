@@ -1,3 +1,4 @@
+import { deepFlatten } from "utils";
 import { server } from "./api";
 import { token_aware_fetch } from "./token";
 
@@ -29,7 +30,15 @@ export function get_detail<T, I>(endpoint: string): (id: I) => Promise<T> {
     }
 }
 
-export function explain_form_errors(form_errors: object) {
-    return "";
-
+export function describeApiErrors(json: object) {
+    return Array.from(deepFlatten(json))
+        .map(([k, v], i) => {
+            if (Array.isArray(v)) {
+                let combined = v.join(" ");
+                return `${i + 1}. ${k}: ${combined}`;
+            } else {
+                return `${i + 1}. ${k}: ${v}`;
+            }
+        })
+        .join("\n");
 }

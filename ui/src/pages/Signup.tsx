@@ -10,6 +10,7 @@ import { SignupAddressInformation } from '@components/signup/SignupAddressInform
 import { SignupBasicInformation } from '@components/signup/SignupBasicInformation';
 import { SignupProfileInformation } from '@components/signup/SignupProfileInformation';
 import { signup } from '@api/incident';
+import { describeApiErrors } from '@api/utils';
 
 type VolunteerDetails = {
     email: string,
@@ -65,8 +66,7 @@ async function perform_signup(details: VolunteerDetails): Promise<string | null>
 
         let response = await signup(JSON.stringify(form));
         if (response.status != 201) {
-            let json = await response.json();
-            return JSON.stringify(json);
+            return describeApiErrors(await response.json());
         } else {
             return null;
         }
@@ -96,7 +96,7 @@ export function Signup() {
     const selectedPermanentMunicipalityState = useState("");
 
     const [termsAccepted, setTermsAccepted] = useState(false);
-    const [formErrors, setFormErrors] = useState("");
+    const [formErrors, setFormErrors] = useState<string>();
     const [sectionIndex, setSectionIndex] = useState(0);
 
     const onSubmit = async () => {
@@ -113,7 +113,7 @@ export function Signup() {
         const [gender,] = genderState;
         const [selectedTemporaryMunicipality,] = selectedTemporaryMunicipalityState;
         const [selectedPermanentMunicipality,] = selectedPermanentMunicipalityState;
-        setFormErrors(await perform_signup({
+        const signupFormResult = await perform_signup({
             email,
             password,
             confirmPassword,
@@ -127,8 +127,9 @@ export function Signup() {
             gender,
             selectedTemporaryMunicipality,
             selectedPermanentMunicipality,
-        }));
-    }
+        }) ?? "Network Failure. Please try again.";
+        setFormErrors(signupFormResult);
+    };
 
     let response;
     if (formErrors === "") {
@@ -141,23 +142,33 @@ export function Signup() {
             &nbsp; <span> Vertification Email Sent </span>
         </div>
 
-    } else {
+    } else if (typeof formErrors === "string") {
         response = <div className="flex flex-row align-items-center">
-            &nbsp; <span>{formErrors}</span>
-        </div>;
+            <pre style={{ whiteSpace: "pre-wrap", color: "var(--red-600)", fontWeight: "bold" }}>
+                {formErrors}
+            </pre>
+        </div >;
     }
 
     const submitAndFormErrors = <div className="flex flex-column w-full align-items-center">
-        <div className="text-sm text-400">
-            <Checkbox onChange={e => setTermsAccepted(e.checked ?? false)} checked={termsAccepted}></Checkbox>
-            <span className="ml-2"> Accept Terms & Conditions </span>
+        <div className="flex flex-row align-items-center justify-content-between w-full">
+            <div className="text-sm text-400">
+                <Checkbox
+                    onChange={e => setTermsAccepted(e.checked ?? false)}
+                    checked={termsAccepted}
+                />
+                <span className="ml-2"> Accept Terms & Conditions </span>
+            </div>
+            <Button
+                label="Submit"
+                disabled={!termsAccepted === true || formErrors === ""}
+                onClick={onSubmit}
+            />
         </div>
-        <Button label="Submit" disabled={!termsAccepted === true || formErrors === ""} onClick={onSubmit} />
         {response}
     </div>;
 
     const sections = [
-        { label: "Basic" },
         { label: "Profile" },
         { label: "Address" },
         { label: "Submit" },
@@ -166,24 +177,28 @@ export function Signup() {
     const PaginationWrapper = (component: JSX.Element) => {
         return <>
             {component}
-            <Button
-                label="Next"
-                disabled={sectionIndex >= sections.length - 1}
-                onClick={() => { setSectionIndex(sectionIndex + 1); }}
-            />
-            <Button
-                label="Previous"
-                disabled={sectionIndex == 0}
-                onClick={() => { setSectionIndex(sectionIndex - 1); }}
-            />
+            <div className="flex flex-row justify-content-between">
+                <Button
+                    rounded
+                    style={{ "visibility": sectionIndex == 0 ? "hidden" : "visible" }}
+                    disabled={sectionIndex == 0}
+                    onClick={() => { setSectionIndex(sectionIndex - 1); }}
+                >
+                    <FontAwesomeIcon icon="arrow-left" />
+                </Button>
+                <Button
+                    rounded
+                    style={{ "visibility": sectionIndex >= sections.length - 1 ? "hidden" : "visible" }}
+                    disabled={sectionIndex >= sections.length - 1}
+                    onClick={() => { setSectionIndex(sectionIndex + 1); }}
+                >
+                    <FontAwesomeIcon icon="arrow-right" />
+                </Button>
+            </div>
         </>;
     };
 
     const sectionComponents = [
-        <SignupBasicInformation
-            emailState={emailState}
-            passwordState={passwordState}
-            confirmPasswordState={confirmPasswordState} />,
         <SignupProfileInformation
             firstNameState={firstNameState}
             lastNameState={lastNameState}
@@ -201,22 +216,44 @@ export function Signup() {
             selectedPermanentProvinceState={selectedPermanentProvinceState}
             selectedPermanentDistrictState={selectedPermanentDistrictState}
             selectedPermanentMunicipalityState={selectedPermanentMunicipalityState}
-        />, submitAndFormErrors
+        />,
+        <>
+            <SignupBasicInformation
+                emailState={emailState}
+                passwordState={passwordState}
+                confirmPasswordState={confirmPasswordState} />
+            {submitAndFormErrors}
+        </>
     ].map(PaginationWrapper);
 
     return <div
-        className="flex py-5"
-        style={{ minHeight: "100vh", background: "radial-gradient(var(--red-600) 0%,var(--primary-color) 100%)" }}
+        className="flex align-items-center py-5"
+        style={{
+            minHeight: "100vh",
+            background: "radial-gradient(var(--red-600) 0%,var(--primary-color) 100%)"
+        }}
     >
         <div
             className="mx-auto border-round p-4 px-5"
-            style={{ maxWidth: "90ch", minWidth: "90ch", backgroundColor: "var(--surface-ground)" }}>
+            style={{
+                maxWidth: "60ch",
+                minWidth: "60ch",
+                backgroundColor: "var(--surface-ground)"
+            }}>
             <div className="mx-auto text-center text-2xl mb-5 pb-5 pt-2">
                 <span className="font-semibold" style={{ color: "var(--primary-color)" }}>
                     <FontAwesomeIcon icon={faUserPlus} />&nbsp;
                     Sign Up
-                </span> As
-                <span className="font-semibold" style={{ color: "var(--red-600)", borderBottom: "1px solid var(--red-600)" }}> Volunteers </span>
+                </span> As &nbsp;
+                <span
+                    className="font-semibold"
+                    style={{
+                        color: "var(--red-600)",
+                        borderBottom: "1px solid var(--red-600)"
+                    }}
+                >
+                    Volunteer
+                </span>
             </div>
             <div className="flex flex-column justify-content-evenly mx-3" style={{ gap: "2rem" }}>
                 <Steps
@@ -224,6 +261,7 @@ export function Signup() {
                     activeIndex={sectionIndex}
                     onSelect={(e) => setSectionIndex(e.index)}
                     readOnly={false}
+                    pt={{ action: { style: { background: "none" } } }}
                 />
                 {sectionComponents[sectionIndex]}
             </div>

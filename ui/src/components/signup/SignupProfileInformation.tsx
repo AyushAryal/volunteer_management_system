@@ -26,10 +26,10 @@ export function SignupProfileInformation(props: SingupProfileInformationProps) {
         genderState,
     } = props;
 
-    const [, setFirstName] = firstNameState;
-    const [, setLastName] = lastNameState;
-    const [, setContactNumber] = contactNumberState;
-    const [, setDateOfBirth] = dateOfBirthState;
+    const [firstName, setFirstName] = firstNameState;
+    const [lastName, setLastName] = lastNameState;
+    const [contactNumber, setContactNumber] = contactNumberState;
+    const [dateOfBirth, setDateOfBirth] = dateOfBirthState;
     const [nationality, setNationality] = nationalityState;
     const [volunteerType, setVolunteerType] = volunteerTypeState;
     const [bloodGroup, setBloodGroup] = bloodGroupState;
@@ -60,6 +60,7 @@ export function SignupProfileInformation(props: SingupProfileInformationProps) {
     return <div className="flex flex-column w-full align-items-stretch" style={{ gap: "2rem" }}>
         <span className="p-float-label">
             <InputText
+                value={firstName}
                 id="first-name"
                 className="p-inputtext-sm w-full"
                 onChange={(ev) => setFirstName(ev.target.value)}
@@ -68,6 +69,7 @@ export function SignupProfileInformation(props: SingupProfileInformationProps) {
         </span>
         <span className="p-float-label">
             <InputText
+                value={lastName}
                 id="last-name"
                 className="p-inputtext-sm w-full"
                 onChange={(ev) => setLastName(ev.target.value)}
@@ -76,6 +78,7 @@ export function SignupProfileInformation(props: SingupProfileInformationProps) {
         </span>
         <span className="p-float-label">
             <InputMask
+                value={contactNumber}
                 id="contact-number"
                 mask="+999 9999999999"
                 placeholder="+999 999999999"
@@ -86,6 +89,7 @@ export function SignupProfileInformation(props: SingupProfileInformationProps) {
         </span>
         <span className="p-float-label">
             <InputMask
+                value={dateOfBirth}
                 id="date-of-birth"
                 mask="9999-99-99"
                 placeholder="yyyy-mm-dd"

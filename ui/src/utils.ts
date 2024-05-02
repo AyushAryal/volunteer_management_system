@@ -23,3 +23,21 @@ export function get_selected_local_body(store: State<Store, {}>): ImmutableObjec
         return store.provinceList.get().find((body) => body.url == mapControls.selectedProvince.get());
     }
 }
+
+function titleCase(s: string) {
+    return s.replace(/^[-_]*(.)/, (_, c) => c.toUpperCase())
+        .replace(/[-_]+(.)/g, (_, c) => ' ' + c.toUpperCase());
+}
+
+export function deepFlatten(o: object, prefix = ''): Map<string, string | object> {
+    return Object.entries(o).reduce((acc, [k, v]) => {
+        const pre = prefix.length ? prefix + '_' : '';
+        if (typeof v === 'object' && !Array.isArray(v) && v !== null) {
+            let childMap = deepFlatten(v, pre + k);
+            return new Map([...childMap, ...acc]);
+        } else if (Array.isArray(v)) {
+            acc.set(titleCase(pre + k), v);
+        }
+        return acc;
+    }, new Map<string, string | object>());
+}

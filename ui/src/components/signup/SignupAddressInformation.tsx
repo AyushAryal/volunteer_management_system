@@ -32,13 +32,11 @@ export function SignupAddressInformation(props: SignupAddressInformationProps) {
         selectedMunicipalityState={selectedPermanentMunicipalityState}
     />;
 
-    return <div className="flex flex-column w-full align-items-center">
-        <div className="flex flex-column w-full" style={{ gap: "1rem" }}>
-            Current Address
-            {temporaryLocationSelector}
-            Permanent Address
-            {permanentLocationSelector}
-        </div>
+    return <div className="flex flex-column w-full" style={{ gap: "1rem" }}>
+        Current Address
+        {temporaryLocationSelector}
+        Permanent Address
+        {permanentLocationSelector}
     </div>;
 
 }
