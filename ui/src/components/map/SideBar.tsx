@@ -6,14 +6,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClock } from '@fortawesome/free-regular-svg-icons/faClock';
 
 import { Button } from 'primereact/button';
-import { TabPanel, TabView } from 'primereact/tabview';
 import { Chart } from 'primereact/chart';
+import { TabPanel, TabView } from 'primereact/tabview';
 
-import { storeState } from "../../models/store.ts";
-import { get_selected_local_body } from '../../utils.ts';
 import { DataView } from 'primereact/dataview';
-import { Incident, Job, Program } from '../../models/incident.ts';
-import { Login } from '../Login.tsx';
+import { Incident, Job } from '@models/incident.ts';
+import { Login } from '@components/Login.tsx';
+import { get_selected_local_body } from '../../utils.ts';
+import { storeState } from "@models/store.ts";
 
 
 function OverviewIncident() {

@@ -1,11 +1,10 @@
 import { useHookstate } from "@hookstate/core";
-import { storeState } from "../../models/store";
+import { storeState } from "@models/store";
 import { Polygon } from "react-leaflet/Polygon";
 import { LatLngTuple } from "leaflet";
 import { Tooltip } from "react-leaflet";
 import { useMemo } from "react";
 import { get_selected_federal_list, get_selected_local_body } from "../../utils";
-import { FederalBody } from "../../models/federal";
 
 
 export function SelectedFederalBodyPolygons() {

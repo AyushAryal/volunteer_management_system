@@ -1,6 +1,6 @@
-import { server } from "./api.ts";
+import { server } from "@api/api";
 
-import { Token, Store } from "../models/store.ts";
+import { Token, Store } from "@models/store";
 import { State } from "@hookstate/core";
 
 export function token_aware_fetch(resource: RequestInfo | URL, options?: RequestInit): Promise<Response> {

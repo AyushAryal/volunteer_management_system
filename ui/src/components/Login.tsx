@@ -2,16 +2,15 @@ import { Dialog } from 'primereact/dialog';
 import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
 import { Password } from 'primereact/password';
-import { TieredMenu } from 'primereact/tieredmenu';
 
 import { useRef, useState } from 'react';
 
 import EmblemOfNepal from '../emblem_of_nepal.svg';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faClose, faUser, faRightFromBracket, faRightToBracket } from '@fortawesome/free-solid-svg-icons';
+import { faClose, faUser, faRightFromBracket } from '@fortawesome/free-solid-svg-icons';
 import { useHookstate } from '@hookstate/core';
-import { storeState } from '../models/store';
-import { login, logout } from '../api/token';
+import { storeState } from '@models/store';
+import { login, logout } from '@api/token';
 
 export function Profile() {
     const store = useHookstate(storeState);

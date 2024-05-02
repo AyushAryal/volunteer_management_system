@@ -1,10 +1,10 @@
-import { get_district_list, get_municipality_list, get_province_list } from '../api/federal';
+import { get_district_list, get_municipality_list, get_province_list } from '@api/federal';
 import {
     Province,
     District,
     Municipality,
 } from './federal';
-import { Incident, Job, Program, VolunteerProfile } from './incident';
+import { Incident, Job, Program, VolunteerProfile } from '@models/incident';
 
 import { hookstate } from '@hookstate/core';
 

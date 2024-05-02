@@ -4,13 +4,13 @@ import { LatLngBounds } from 'leaflet';
 import { TileLayer, MapContainer } from 'react-leaflet';
 import { useHookstate } from '@hookstate/core';
 
-import { BoundingBox } from '../../models/geojson.ts';
-import { FederalBodyPolygons } from './FederalPolygons.tsx';
-import { FederalSelector } from './FederalSelector';
-import { SideBar } from './SideBar';
-import { storeState } from '../../models/store.ts';
-import { get_id } from '../../api/utils.ts';
-import { FederalFilter, get_incident_list, get_job_list, get_program_list, get_volunteer_profile } from '../../api/incident.ts';
+import { BoundingBox } from '@models/geojson.ts';
+import { FederalBodyPolygons } from '@components/map/FederalPolygons.tsx';
+import { FederalSelector } from '@components/map/FederalSelector';
+import { SideBar } from '@components/map/SideBar';
+import { storeState } from '@models/store.ts';
+import { get_id } from '@api/utils.ts';
+import { FederalFilter, get_incident_list, get_job_list, get_program_list, get_volunteer_profile } from '@api/incident.ts';
 
 export function Map() {
     const store = useHookstate(storeState);

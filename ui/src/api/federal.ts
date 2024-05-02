@@ -1,6 +1,6 @@
-import { District, FederalBody, Municipality, Province } from "../models/federal";
-import { server } from "./api";
-import { get_list_factory } from "./pagination";
+import { District, FederalBody, Municipality, Province } from "@models/federal";
+import { server } from "@api/api";
+import { get_list_factory } from "@api/pagination";
 
 function fix_geojson<T extends FederalBody>(fn: (query?: string) => Promise<T[]>): (query?: string) => Promise<T[]> {
     return async (query?) => {
