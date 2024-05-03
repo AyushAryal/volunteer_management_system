@@ -11,6 +11,56 @@ import {
 } from '@models/federal';
 import { StateTuple } from '@models/generics';
 
+export function ProvinceSelector({ selectedProvinceState }: { selectedProvinceState: StateTuple<string> }) {
+    const store = useHookstate(storeState);
+    const [selectedProvince, setProvince] = selectedProvinceState;
+    const progressSpinner = <ProgressSpinner style={{ width: '50px', height: '50px' }} />;
+    return <Dropdown
+        value={store.provinceList.get().find((province) => selectedProvince == province.url)}
+        onChange={(ev) => { setProvince(ev.value?.url ?? ""); }}
+        options={store.provinceList.get() as Province[]}
+        emptyMessage={store.provinceList.get().length == 0 ? progressSpinner : null}
+        optionLabel="name"
+        showClear
+        filter
+        placeholder="Select a province" />;
+}
+
+export function DistrictSelector({ selectedDistrictState }: { selectedDistrictState: StateTuple<string> }) {
+    const store = useHookstate(storeState);
+    const [selectedDistrict, setDistrict] = selectedDistrictState;
+    const progressSpinner = <ProgressSpinner style={{ width: '50px', height: '50px' }} />;
+
+    return <div className="flex flex-column justify-content-center align-content-center">
+        <Dropdown
+            value={store.districtList.get().find((district) => selectedDistrict == district.url)}
+            onChange={(ev) => { setDistrict(ev.value?.url ?? ""); }}
+            options={store.districtList.get() as District[]}
+            emptyMessage={store.districtList.get().length == 0 ? progressSpinner : null}
+            optionLabel="name"
+            showClear
+            filter
+            placeholder="Select a district" />
+    </div>;
+}
+
+export function MunicipalitySelector({ selectedMunicipalityState }: { selectedMunicipalityState: StateTuple<string> }) {
+    const store = useHookstate(storeState);
+    const [selectedMunicipality, setMunicipality] = selectedMunicipalityState;
+    const progressSpinner = <ProgressSpinner style={{ width: '50px', height: '50px' }} />;
+    return <div className="flex flex-column justify-content-center align-content-center">
+        <Dropdown
+            value={store.municipalityList.get().find((municipality) => selectedMunicipality == municipality.url)}
+            onChange={(ev) => { setMunicipality(ev.value?.url ?? ""); }}
+            options={store.municipalityList.get() as Municipality[]}
+            emptyMessage={store.municipalityList.get().length == 0 ? progressSpinner : null}
+            optionLabel="name"
+            showClear
+            filter
+            placeholder="Select a municipality" />
+    </div>;
+}
+
 type LocationSelectorProps = {
     selectedProvinceState: StateTuple<string>,
     selectedDistrictState: StateTuple<string>,

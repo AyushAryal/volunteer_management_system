@@ -34,6 +34,7 @@ class VolunteerProfileSerializer(serializers.HyperlinkedModelSerializer):
             "user",
             "first_name",
             "last_name",
+            "contact_number",
             "profile_image",
             "date_of_birth",
             "gender",
@@ -98,7 +99,7 @@ class SignupVolunteerProfileSerializer(serializers.HyperlinkedModelSerializer):
         fields = (
             "first_name",
             "last_name",
-            "profile_image",
+            "contact_number",
             "date_of_birth",
             "gender",
             "nationality",
@@ -120,6 +121,11 @@ class SignupVolunteerProfileSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class SignupCitizenshipSerializer(serializers.HyperlinkedModelSerializer):
+    def validate_registration_date(self, date):
+        if date > timezone.now().date():
+            raise serializers.ValidationError("Registration date is in the future.")
+        return date
+
     class Meta:
         model = models.Citizenship
         fields = (
@@ -133,6 +139,16 @@ class SignupCitizenshipSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class SignupPassportSerializer(serializers.ModelSerializer):
+    def validate_issue_date(self, date):
+        if date > timezone.now().date():
+            raise serializers.ValidationError("Issue date is in the future.")
+        return date
+
+    def validate_expiry_date(self, date):
+        if date < timezone.now().date():
+            raise serializers.ValidationError("Passport is expired.")
+        return date
+
     def validate(self, data):
         if data.get("expiry_date") < data.get("issue_date"):
             raise serializers.ValidationError(
@@ -149,17 +165,18 @@ class SignupPassportSerializer(serializers.ModelSerializer):
         )
 
 
-class SignupNationalIdSerializer(serializers.HyperlinkedModelSerializer):
+class SignupNationalIdSerializer(serializers.ModelSerializer):
+    def validate_registration_date(self, date):
+        if date > timezone.now().date():
+            raise serializers.ValidationError("Registration date is in the future.")
+        return date
+
     class Meta:
         model = models.NationalId
         fields = (
             "id",
             "registration_date",
-            "registration_district",
         )
-        extra_kwargs = {
-            "registration_district": {"view_name": "api:district-detail"},
-        }
 
 
 class SignupCertificateSerializer(serializers.ModelSerializer):

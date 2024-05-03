@@ -9,6 +9,8 @@ import { faUserPlus, faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 import { SignupAddressInformation } from '@components/signup/SignupAddressInformation';
 import { SignupBasicInformation } from '@components/signup/SignupBasicInformation';
 import { SignupProfileInformation } from '@components/signup/SignupProfileInformation';
+import { SignupIdentification } from '@components/signup/SignupIdentification';
+
 import { signup } from '@api/incident';
 import { describeApiErrors } from '@api/utils';
 
@@ -26,15 +28,24 @@ type VolunteerDetails = {
     gender: string,
     selectedTemporaryMunicipality: string,
     selectedPermanentMunicipality: string,
+    citizenshipId: string,
+    citizenshipRegistrationDate: string,
+    citizenshipDistrict: string,
+    nationalId: string,
+    nationalIdRegistrationDate: string,
+    passportNumber: string,
+    passportIssueDate: string,
+    passportExpiryDate: string,
 };
 
-async function perform_signup(details: VolunteerDetails): Promise<string | null> {
+async function perform_signup(details: VolunteerDetails): Promise<string | boolean> {
     const {
         email,
         password,
         confirmPassword,
         firstName,
         lastName,
+        contactNumber,
         dateOfBirth,
         nationality,
         volunteerType,
@@ -42,6 +53,14 @@ async function perform_signup(details: VolunteerDetails): Promise<string | null>
         gender,
         selectedTemporaryMunicipality,
         selectedPermanentMunicipality,
+        citizenshipId,
+        citizenshipRegistrationDate,
+        citizenshipDistrict,
+        nationalId,
+        nationalIdRegistrationDate,
+        passportNumber,
+        passportIssueDate,
+        passportExpiryDate,
     } = details;
 
     if (!password || !confirmPassword) {
@@ -49,11 +68,13 @@ async function perform_signup(details: VolunteerDetails): Promise<string | null>
     } else if (password != confirmPassword) {
         return "Password is not the same as confirm password";
     } else {
-        const form = {
-            email, password,
+        let form: any = {
+            "email": email,
+            "password": password,
             "volunteer": {
                 "first_name": firstName,
                 "last_name": lastName,
+                "contact_number": contactNumber.replace(" ", ""),
                 "date_of_birth": dateOfBirth,
                 "blood_group": bloodGroup,
                 "gender": gender,
@@ -61,14 +82,40 @@ async function perform_signup(details: VolunteerDetails): Promise<string | null>
                 "category": volunteerType,
                 "temporary_municipality": selectedTemporaryMunicipality,
                 "permanent_municipality": selectedPermanentMunicipality,
+            },
+            "citizenship": {
+                "id": citizenshipId,
+                "registration_district": citizenshipDistrict,
+                "registration_date": citizenshipRegistrationDate,
+            },
+            "national_id": {
+                "id": nationalId,
+                "registration_date": nationalIdRegistrationDate,
+            },
+            "passport": {
+                "id": passportNumber,
+                "issue_date": passportIssueDate,
+                "expiry_date": passportExpiryDate
             }
         };
 
+        if (citizenshipId.length + citizenshipDistrict.length + citizenshipRegistrationDate.length === 0) {
+            form = Object.fromEntries(Object.entries(form).filter(([k, _]) => k !== "citizenship"));
+        }
+        if (nationalId.length + nationalIdRegistrationDate.length === 0) {
+            form = Object.fromEntries(Object.entries(form).filter(([k, _]) => k !== "national_id"));
+        }
+        if (passportNumber.length + passportIssueDate.length + passportExpiryDate.length === 0) {
+            form = Object.fromEntries(Object.entries(form).filter(([k, _]) => k !== "passport"));
+        }
+
         let response = await signup(JSON.stringify(form));
-        if (response.status != 201) {
+        if (response.status == 400) {
             return describeApiErrors(await response.json());
+        } else if (response.status == 201) {
+            return true;
         } else {
-            return null;
+            return "Network failure. Please try again";
         }
     }
 }
@@ -95,8 +142,18 @@ export function Signup() {
     const selectedPermanentDistrictState = useState("");
     const selectedPermanentMunicipalityState = useState("");
 
+    const idTypeState = useState("")
+    const citizenshipIdState = useState("")
+    const citizenshipRegistrationDateState = useState("")
+    const citizenshipDistrictState = useState("")
+    const nationalIdState = useState("");
+    const nationalIdRegistrationdateState = useState("");
+    const passportNumberState = useState("")
+    const passportIssueDateState = useState("")
+    const passportExpiryDateState = useState("")
+
     const [termsAccepted, setTermsAccepted] = useState(false);
-    const [formErrors, setFormErrors] = useState<string>();
+    const [formErrors, setFormErrors] = useState<string | boolean>(false);
     const [sectionIndex, setSectionIndex] = useState(0);
 
     const onSubmit = async () => {
@@ -113,6 +170,15 @@ export function Signup() {
         const [gender,] = genderState;
         const [selectedTemporaryMunicipality,] = selectedTemporaryMunicipalityState;
         const [selectedPermanentMunicipality,] = selectedPermanentMunicipalityState;
+        const [citizenshipId,] = citizenshipIdState
+        const [citizenshipRegistrationDate,] = citizenshipRegistrationDateState
+        const [citizenshipDistrict,] = citizenshipDistrictState
+        const [nationalId,] = nationalIdState
+        const [nationalIdRegistrationDate,] = nationalIdRegistrationdateState
+        const [passportNumber,] = passportNumberState
+        const [passportIssueDate,] = passportIssueDateState
+        const [passportExpiryDate,] = passportExpiryDateState
+
         const signupFormResult = await perform_signup({
             email,
             password,
@@ -127,19 +193,27 @@ export function Signup() {
             gender,
             selectedTemporaryMunicipality,
             selectedPermanentMunicipality,
-        }) ?? "Network Failure. Please try again.";
+            citizenshipId,
+            citizenshipRegistrationDate,
+            citizenshipDistrict,
+            nationalId,
+            nationalIdRegistrationDate,
+            passportNumber,
+            passportIssueDate,
+            passportExpiryDate,
+        }) ?? undefined;
         setFormErrors(signupFormResult);
     };
 
     let response;
-    if (formErrors === "") {
-        response = <div className="flex flex-row align-items-center">
+    if (formErrors === true) {
+        response = <div className="flex flex-row align-items-center mt-5 text-sm text-400" style={{ gap: "0.5rem" }}>
             <FontAwesomeIcon
                 icon={faCheckCircle}
                 className="text-green-500"
-                style={{ fontSize: "2rem" }}
+                style={{ fontSize: "2.5rem" }}
             />
-            &nbsp; <span> Vertification Email Sent </span>
+            &nbsp; <span> A verification link has been sent to your email. <br /> Please use the link to activate your account. </span>
         </div>
 
     } else if (typeof formErrors === "string") {
@@ -161,7 +235,7 @@ export function Signup() {
             </div>
             <Button
                 label="Submit"
-                disabled={!termsAccepted === true || formErrors === ""}
+                disabled={!termsAccepted === true || formErrors === true}
                 onClick={onSubmit}
             />
         </div>
@@ -171,6 +245,7 @@ export function Signup() {
     const sections = [
         { label: "Profile" },
         { label: "Address" },
+        { label: "Identification" },
         { label: "Submit" },
     ]
 
@@ -216,6 +291,17 @@ export function Signup() {
             selectedPermanentProvinceState={selectedPermanentProvinceState}
             selectedPermanentDistrictState={selectedPermanentDistrictState}
             selectedPermanentMunicipalityState={selectedPermanentMunicipalityState}
+        />,
+        <SignupIdentification
+            idTypeState={idTypeState}
+            citizenshipIdState={citizenshipIdState}
+            citizenshipRegistrationDateState={citizenshipRegistrationDateState}
+            citizenshipDistrictState={citizenshipDistrictState}
+            nationalIdState={nationalIdState}
+            nationalIdRegistrationDateState={nationalIdRegistrationdateState}
+            passportNumberState={passportNumberState}
+            passportIssueDateState={passportIssueDateState}
+            passportExpiryDateState={passportExpiryDateState}
         />,
         <>
             <SignupBasicInformation

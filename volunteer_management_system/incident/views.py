@@ -155,8 +155,6 @@ class VolunteerProfileViewSet(
             "muncipality": list(municipality),
         }
 
-        print(response)
-
         return Response(
             response,
             status=status.HTTP_400_BAD_REQUEST,

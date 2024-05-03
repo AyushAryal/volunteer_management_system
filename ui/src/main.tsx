@@ -18,7 +18,6 @@ library.add(fas, far, fab);
 
 import { PrimeReactProvider } from 'primereact/api';
 
-import { Login } from './components/Login.tsx';
 import { Map } from './components/map/Map.tsx';
 import { Signup } from './pages/Signup.tsx';
 

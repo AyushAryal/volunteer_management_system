@@ -137,6 +137,7 @@ class VolunteerProfileTest(TestCase):
             "volunteer": {
                 "first_name": "Name",
                 "last_name": "Name",
+                "contact_number": "+9779840424017",
                 "date_of_birth": "2005-01-01",
                 "gender": "Male",
                 "nationality": "National",
@@ -165,7 +166,7 @@ class VolunteerProfileTest(TestCase):
             "passport": {
                 "id": "123",
                 "issue_date": "2001-01-01",
-                "expiry_date": "2002-01-10",
+                "expiry_date": "2032-01-10",
             },
             "national_id": {
                 "id": "123",
@@ -177,23 +178,18 @@ class VolunteerProfileTest(TestCase):
                 ),
             },
         }
-        # Valid data
-        request = factory.post("/volunteer/", data=data, format="json")
-        response = view(request)
-        print(response.data)
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         # Too young
         invalid_data = deepcopy(data)
-        invalid_data["volunteer"]["date_of_bith"] = "2024-01-01"
-        request = factory.post("/volunteer/", data=data, format="json")
+        invalid_data["volunteer"]["date_of_birth"] = "2222-01-01"
+        request = factory.post("/volunteer/", data=invalid_data, format="json")
         response = view(request)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
         # Doesn't contain citizenship
         invalid_data = deepcopy(data)
         invalid_data["citizenship"] = None
-        request = factory.post("/volunteer/", data=data, format="json")
+        request = factory.post("/volunteer/", data=invalid_data, format="json")
         response = view(request)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
@@ -201,16 +197,49 @@ class VolunteerProfileTest(TestCase):
         invalid_data = deepcopy(data)
         invalid_data["volunteer"]["nationality"] = "International"
         invalid_data["passport"] = None
-        request = factory.post("/volunteer/", data=data, format="json")
+        request = factory.post("/volunteer/", data=invalid_data, format="json")
         response = view(request)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
         # Insecure password
         invalid_data = deepcopy(data)
         invalid_data["password"] = "123"
-        request = factory.post("/volunteer/", data=data, format="json")
+        request = factory.post("/volunteer/", data=invalid_data, format="json")
         response = view(request)
         self.assertNotEqual(response.status_code, status.HTTP_201_CREATED)
+
+        # Expired passport
+        invalid_data = deepcopy(data)
+        invalid_data["passport"]["expiry_date"] = "2000-01-01"
+        request = factory.post("/volunteer/", data=invalid_data, format="json")
+        response = view(request)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        # Invalid issue date of passport
+        invalid_data = deepcopy(data)
+        invalid_data["passport"]["issue_date"] = "2222-01-01"
+        request = factory.post("/volunteer/", data=invalid_data, format="json")
+        response = view(request)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        # Invalid issue date of national id
+        invalid_data = deepcopy(data)
+        invalid_data["national_id"]["registration_date"] = "2222-01-01"
+        request = factory.post("/volunteer/", data=invalid_data, format="json")
+        response = view(request)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        # Invalid issue date of citizenship
+        invalid_data = deepcopy(data)
+        invalid_data["citizenship"]["registration_date"] = "2222-01-01"
+        request = factory.post("/volunteer/", data=invalid_data, format="json")
+        response = view(request)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        # Valid data
+        request = factory.post("/volunteer/", data=data, format="json")
+        response = view(request)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_put_volunteer_profile(self):
         factory = APIRequestFactory()
@@ -227,6 +256,7 @@ class VolunteerProfileTest(TestCase):
             "first_name": "Name",
             "last_name": "Name",
             "date_of_birth": "2005-01-01",
+            "contact_number": "+9779840424012",
             "gender": "Male",
             "nationality": "National",
             "blood_group": "O Positive",

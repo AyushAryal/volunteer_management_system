@@ -183,15 +183,30 @@ class NationalId(models.Model):
         verbose_name=_("user"),
     )
     registration_date = models.DateField(verbose_name=_("registration date"))
-    registration_district = models.ForeignKey(
-        federal.models.District,
-        on_delete=models.CASCADE,
-        verbose_name=_("registration district"),
-        related_name="residents",
-    )
 
     def __str__(self):
         return str(self.id)
+
+
+# class DocumentId(models.Model):
+#     class Meta:
+#         verbose_name = _("Document Id")
+#         verbose_name_plural = _("Document Ids")
+
+#     user = models.OneToOneField(
+#         get_user_model(),
+#         on_delete=models.CASCADE,
+#         related_name="other_id",
+#         blank=True,
+#         null=True,
+#         verbose_name=_("user"),
+#     )
+
+#     name = models.CharField(max_length=50)
+
+#     file = models.FileField(
+#         verbose_name=_("document id"),
+#     )
 
 
 class Certificate(models.Model):
@@ -227,7 +242,7 @@ class VolunteerProfile(models.Model):
 
     first_name = models.CharField(max_length=100, verbose_name=_("first name"))
     last_name = models.CharField(max_length=100, verbose_name=_("last name"))
-    phone_number = PhoneNumberField(verbose_name=_("phone number"))
+    contact_number = PhoneNumberField(verbose_name=_("contact number"))
 
     profile_image = models.ImageField(
         upload_to="uploads/images/profile_images/",
