@@ -27,13 +27,23 @@ function OverviewIncident() {
             ["Moderate", "var(--teal-300)"],
             ["Low", "var(--gray-300)"],
         ]);
-        return <div className="flex flex-column p-2" style={{ borderLeft: `5px solid ${serverity_color_map.get(incident.severity)}` }}>
-            <div className="m-1"> {incident.name}</div>
-            <div className="text-sm text-400">
+        return (
+          
+            <div
+              className="flex flex-column p-2 m-1 flex-wrap w-full"
+              style={{
+                borderLeft: `5px solid ${serverity_color_map.get(
+                  incident.severity
+                )}`,
+              }}
+            >
+              <div className="m-1"> {incident.name}</div>
+              <div className="text-sm text-400">
                 <FontAwesomeIcon icon={faClock} className="mx-2" />
                 {date.toDateString()}
+              </div>
             </div>
-        </div>;
+        );
     };
 
     return <div>
@@ -97,7 +107,7 @@ function countIncidentsInLastYearByMonth(incidents: ImmutableArray<Incident>): D
     return monthCounts;
 }
 
-function IncidentByMonth() {
+export function IncidentByMonth({chartType}: {chartType: String}) {
     const store = useHookstate(storeState);
     const dataset = countIncidentsInLastYearByMonth(store.incidentList.get());
     dataset.reverse();
@@ -117,7 +127,8 @@ function IncidentByMonth() {
                     label: 'Incident by Month',
                     data: dataset.map((o) => o.value),
                     fill: false,
-                    borderColor: documentStyle.getPropertyValue('--blue-500'),
+                    borderColor: documentStyle.getPropertyValue('--blue-600'),
+                    borderWidth: 2,
                     tension: 0.4
                 },
             ]
@@ -158,7 +169,7 @@ function IncidentByMonth() {
 
     return (
         <div className="card">
-            <Chart type="line" data={chartData} options={chartOptions} />
+            <Chart type={chartType} data={chartData} options={chartOptions} />
         </div>
     )
 }
@@ -166,7 +177,7 @@ function IncidentByMonth() {
 
 function Visualizations() {
     return <div>
-        <IncidentByMonth />
+        <IncidentByMonth chartType="line"/>
     </div>;
 
 }
@@ -195,7 +206,7 @@ function OverviewTabpages() {
 
 
 export function SideBar() {
-    let [show, setShow] = useState(false);
+    let [show, setShow] = useState(true);
     let store = useHookstate(storeState);
 
     let federal_body = get_selected_local_body(store);
@@ -203,8 +214,8 @@ export function SideBar() {
     return <div className={"relative h-screen shadow-3"} style={{ width: show ? "80%" : "0", zIndex: 450 }}>
         <div className={`h-full overflow-x-hidden ${show ? "" : "hidden"}`}>
             <div className="h-full flex flex-column px-3 py-2">
-                <div className="flex flex-row justify-content-between align-items-center">
-                    <h1 className="font-light my-0"> {federal_body?.name ?? "National"} </h1>
+                <div className="flex flex-row justify-content-between ">
+                    <h1 className="font-light my-1 mx-1 align-items-center"> {federal_body?.name ?? "National"} </h1>
                     <Login />
                 </div>
                 <OverviewTabpages />

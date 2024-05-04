@@ -214,7 +214,7 @@ class VolunteerSignupSerializer(serializers.ModelSerializer):
         id_present = any(data.get(field) for field in id_fields)
         if not id_present:
             raise serializers.ValidationError(
-                f"At least one ID ({", ".join(id_fields)}) must be present."
+                f"At least one ID ({', '.join(id_fields)}) must be present."
             )
 
         if data.get("volunteer")["nationality"] == "International" and not data.get(

@@ -70,19 +70,23 @@ export function Map() {
 
     let bounds = new LatLngBounds([[bbox[0], bbox[1]], [bbox[2], bbox[3]]]);
 
-    return <div className="flex flex-row" style={{ width: "100vw", height: "100vh" }}>
-        <SideBar />
-        <MapContainer bounds={bounds} style={{ width: "100%", height: "100%" }}>;
-            <TileLayer
-                url='https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png'
-                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            />
-            <FederalBodyPolygons />
-            <div style={{ position: "absolute", right: "10px", top: "10px" }}>
-                <div className="leaflet-control flex flex-row align-items-start" style={{ gap: "1rem" }}>
-                    <FederalSelector />
+    return (
+        <section className="w-full h-screen mx-auto flex">
+        <div className="flex flex-row" style={{ width: "100vw", height: "100vh" }}>
+            <SideBar />
+            <MapContainer bounds={bounds} style={{ width: "100%", height: "100%" }}>;
+                <TileLayer
+                    url='https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png'
+                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                />
+                <FederalBodyPolygons />
+                <div style={{ position: "absolute", right: "10px", top: "10px" }}>
+                    <div className="leaflet-control flex flex-row align-items-start" style={{ gap: "1rem" }}>
+                        <FederalSelector />
+                    </div>
                 </div>
-            </div>
-        </MapContainer>
-    </div>;
+            </MapContainer>
+        </div>
+        </section>
+    );
 }

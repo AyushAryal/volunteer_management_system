@@ -6,7 +6,7 @@ authors = ["AyushAryal <ayusharyal100@gmail.com>", "nitefury7 <ayush.infinity5@g
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = "^3.12"
 django = "^5.0"
 djangorestframework = "^3.14.0"
 django-leaflet = "^0.29.0"

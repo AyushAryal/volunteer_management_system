@@ -6,7 +6,6 @@ import 'primereact/resources/themes/viva-light/theme.css';
 
 import 'leaflet/dist/leaflet.css';
 
-import Chart from 'chart.js/auto';
 
 import './index.css';
 
@@ -17,9 +16,8 @@ import { fab } from '@fortawesome/free-brands-svg-icons'
 library.add(fas, far, fab);
 
 import { PrimeReactProvider } from 'primereact/api';
-
-import { Map } from './components/map/Map.tsx';
-import { Signup } from './pages/Signup.tsx';
+import App from './App.tsx';
+import { BrowserRouter } from 'react-router-dom';
 
 
 function Main() {
@@ -36,11 +34,15 @@ function Main() {
             }
         }
     };
-    return <React.StrictMode>
+    return (
+      <React.StrictMode>
         <PrimeReactProvider value={{ pt }}>
-            <Signup />
+          <BrowserRouter>
+            <App />
+          </BrowserRouter>
         </PrimeReactProvider>
-    </React.StrictMode>;
+      </React.StrictMode>
+    );
 }
 
 ReactDOM.createRoot(document.getElementById('root')!).render(<Main />);
