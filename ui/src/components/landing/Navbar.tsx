@@ -1,4 +1,3 @@
-import {React} from "react";
 import {Button} from "primereact/button";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import { useNavigate } from "react-router-dom";

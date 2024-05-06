@@ -19,6 +19,27 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
+<<<<<<< HEAD
+=======
+            name="SiteContent",
+            fields=[
+                (
+                    "label",
+                    models.CharField(
+                        max_length=100,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="label",
+                    ),
+                ),
+                (
+                    "content",
+                    django_ckeditor_5.fields.CKEditor5Field(verbose_name="content"),
+                ),
+            ],
+        ),
+        migrations.CreateModel(
+>>>>>>> 5a50394 (modify siteContents and fix visualizations)
             name="Certificate",
             fields=[
                 (
@@ -241,6 +262,55 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
+<<<<<<< HEAD
+=======
+            name="Job",
+            fields=[
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=100, verbose_name="name")),
+                ("start_date", models.DateTimeField(verbose_name="start date")),
+                ("end_date", models.DateTimeField(verbose_name="end date")),
+                ("vacancy", models.PositiveIntegerField(verbose_name="vacancy")),
+                (
+                    "description",
+                    django_ckeditor_5.fields.CKEditor5Field(verbose_name="Description"),
+                ),
+                (
+                    "status",
+                    models.SmallIntegerField(
+                        choices=[
+                            (0, "Completed"),
+                            (1, "In Progress"),
+                            (2, "Not Assigned"),
+                        ],
+                        verbose_name="status",
+                    ),
+                ),
+                (
+                    "program",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="jobs",
+                        to="incident.program",
+                    ),
+                ),
+            ],
+            options={
+                "verbose_name": "Job",
+                "verbose_name_plural": "Jobs",
+                "ordering": ("-start_date",),
+            },
+        ),
+        migrations.CreateModel(
+>>>>>>> 5a50394 (modify siteContents and fix visualizations)
             name="VolunteerProfile",
             fields=[
                 (
@@ -266,7 +336,11 @@ class Migration(migrations.Migration):
                 (
                     "contact_number",
                     phonenumber_field.modelfields.PhoneNumberField(
+<<<<<<< HEAD
                         max_length=128, region=None, verbose_name="phone number"
+=======
+                        max_length=128, region=None, verbose_name="contact number"
+>>>>>>> 5a50394 (modify siteContents and fix visualizations)
                     ),
                 ),
                 (
@@ -400,7 +474,11 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
+<<<<<<< HEAD
             name="Job",
+=======
+            name="JobApplication",
+>>>>>>> 5a50394 (modify siteContents and fix visualizations)
             fields=[
                 (
                     "id",
@@ -411,6 +489,7 @@ class Migration(migrations.Migration):
                         verbose_name="ID",
                     ),
                 ),
+<<<<<<< HEAD
                 ("name", models.CharField(max_length=100, verbose_name="name")),
                 ("start_date", models.DateTimeField(verbose_name="start date")),
                 ("end_date", models.DateTimeField(verbose_name="end date")),
@@ -427,10 +506,18 @@ class Migration(migrations.Migration):
                             (1, "In Progress"),
                             (2, "Not Assigned"),
                         ],
+=======
+                (
+                    "status",
+                    models.SmallIntegerField(
+                        choices=[(0, "Accepted"), (1, "Rejected"), (2, "Pending")],
+                        default=2,
+>>>>>>> 5a50394 (modify siteContents and fix visualizations)
                         verbose_name="status",
                     ),
                 ),
                 (
+<<<<<<< HEAD
                     "program",
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
@@ -445,13 +532,56 @@ class Migration(migrations.Migration):
                         related_name="jobs",
                         to="incident.volunteerprofile",
                         verbose_name="Volunteers Employed",
+=======
+                    "job",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="applications",
+                        to="incident.job",
+                        verbose_name="Job",
+                    ),
+                ),
+                (
+                    "volunteer",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="job_applications",
+                        to="incident.volunteerprofile",
+                        verbose_name="volunteer",
+>>>>>>> 5a50394 (modify siteContents and fix visualizations)
                     ),
                 ),
             ],
             options={
+<<<<<<< HEAD
                 "verbose_name": "Job",
                 "verbose_name_plural": "Jobs",
                 "ordering": ("-start_date",),
             },
         ),
+=======
+                "verbose_name": "Job Application",
+                "verbose_name_plural": "Job Applications",
+                "ordering": ("-pk",),
+            },
+        ),
+        migrations.AddField(
+            model_name="job",
+            name="leader",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="leading_jobs",
+                to="incident.volunteerprofile",
+                verbose_name="leader",
+            ),
+        ),
+        migrations.AddConstraint(
+            model_name="jobapplication",
+            constraint=models.UniqueConstraint(
+                fields=("volunteer", "job"), name="unique_volunteer_job"
+            ),
+        ),
+>>>>>>> 5a50394 (modify siteContents and fix visualizations)
     ]

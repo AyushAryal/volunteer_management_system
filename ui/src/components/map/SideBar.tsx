@@ -107,7 +107,7 @@ function countIncidentsInLastYearByMonth(incidents: ImmutableArray<Incident>): D
     return monthCounts;
 }
 
-export function IncidentByMonth({chartType}: {chartType: String}) {
+export function IncidentByMonth({chartType}: {chartType: string}) {
     const store = useHookstate(storeState);
     const dataset = countIncidentsInLastYearByMonth(store.incidentList.get());
     dataset.reverse();

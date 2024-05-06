@@ -1,4 +1,4 @@
-import Signup from "./Signup";
+import { Signup } from "./Signup";
 import Landing  from "./Landing";
 
 export {
