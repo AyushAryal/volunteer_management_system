@@ -256,7 +256,7 @@ class IncidentSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = models.Incident
-        exclude = ("url",)
+        fields = "__all__"
         extra_kwargs = {
             "url": {"view_name": "api:incident-detail"},
             "municipality": {"view_name": "api:municipality-detail"},
@@ -266,7 +266,7 @@ class IncidentSerializer(serializers.HyperlinkedModelSerializer):
 class ProgramSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = models.Program
-        exclude = ("url",)
+        fields = "__all__"
         extra_kwargs = {
             "url": {"view_name": "api:program-detail"},
             "incident": {"view_name": "api:incident-detail"},
@@ -278,7 +278,7 @@ class JobSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = models.Job
-        exclude = ("url",)
+        fields = "__all__"
         extra_kwargs = {
             "url": {"view_name": "api:job-detail"},
             "program": {"view_name": "api:program-detail"},

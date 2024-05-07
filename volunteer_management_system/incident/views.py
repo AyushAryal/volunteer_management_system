@@ -212,6 +212,11 @@ class ProgramViewSet(
     pagination_class = None
 
     class ProgramFilter(django_filters.FilterSet):
+        incident = django_filters.ModelChoiceFilter(
+            label="Incident",
+            field_name="incident",
+            queryset=models.Incident.objects.all(),
+        )
         province = django_filters.ModelChoiceFilter(
             label="Province",
             field_name="incident__municipality__district__province",
@@ -245,6 +250,16 @@ class JobViewSet(
     pagination_class = None
 
     class JobFilter(django_filters.FilterSet):
+        incident = django_filters.ModelChoiceFilter(
+            label="Incident",
+            field_name="program__incident",
+            queryset=models.Incident.objects.all(),
+        )
+        program = django_filters.ModelChoiceFilter(
+            label="Program",
+            field_name="program",
+            queryset=models.Program.objects.all(),
+        )
         start_date = django_filters.NumericRangeFilter(
             field_name="start_date", lookup_expr="range"
         )
