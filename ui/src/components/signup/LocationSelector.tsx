@@ -26,7 +26,7 @@ export function ProvinceSelector({ selectedProvinceState }: { selectedProvinceSt
         placeholder="Select a province" />;
 }
 
-export function DistrictSelector({ selectedDistrictState }: { selectedDistrictState: StateTuple<string> }) {
+export function DistrictSelector({ label, selectedDistrictState }: { label: string, selectedDistrictState: StateTuple<string> }) {
     const store = useHookstate(storeState);
     const [selectedDistrict, setDistrict] = selectedDistrictState;
     const progressSpinner = <ProgressSpinner style={{ width: '50px', height: '50px' }} />;
@@ -40,7 +40,7 @@ export function DistrictSelector({ selectedDistrictState }: { selectedDistrictSt
             optionLabel="name"
             showClear
             filter
-            placeholder="Select a district" />
+            placeholder={label} />
     </div>;
 }
 
