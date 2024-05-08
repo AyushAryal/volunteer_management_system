@@ -27,10 +27,12 @@ class VolunteerProfileSerializer(serializers.HyperlinkedModelSerializer):
     gender = ChoiceField(models.Gender.choices)
     blood_group = ChoiceField(models.BloodGroup.choices)
     nationality = ChoiceField(models.Nationality.choices)
+    category = ChoiceField(models.VolunteerCategory.choices)
 
     class Meta:
         model = models.VolunteerProfile
         fields = (
+            "url",
             "user",
             "first_name",
             "last_name",
@@ -38,6 +40,7 @@ class VolunteerProfileSerializer(serializers.HyperlinkedModelSerializer):
             "profile_image",
             "date_of_birth",
             "gender",
+            "category",
             "nationality",
             "blood_group",
             "temporary_municipality",
@@ -45,6 +48,7 @@ class VolunteerProfileSerializer(serializers.HyperlinkedModelSerializer):
         )
         read_only_fields = ("user",)
         extra_kwargs = {
+            "url": {"view_name": "api:volunteer-detail"},
             "user": {"view_name": "api:user-detail"},
             "temporary_municipality": {"view_name": "api:municipality-detail"},
             "permanent_municipality": {"view_name": "api:municipality-detail"},

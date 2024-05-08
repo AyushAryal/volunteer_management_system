@@ -74,7 +74,7 @@ async function perform_signup(details: VolunteerDetails): Promise<string | boole
             "volunteer": {
                 "first_name": firstName,
                 "last_name": lastName,
-                "contact_number": contactNumber.replace(" ", ""),
+                "contact_number": contactNumber,
                 "date_of_birth": dateOfBirth,
                 "blood_group": bloodGroup,
                 "gender": gender,

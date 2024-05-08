@@ -1,5 +1,3 @@
-import { useEffect, useState } from 'react';
-
 import { ImmutableArray, useHookstate } from '@hookstate/core';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -14,42 +12,55 @@ import { Incident, Job } from '@models/incident.ts';
 import { Login } from '@components/Login.tsx';
 import { get_selected_local_body } from '../../utils.ts';
 import { storeState } from "@models/store.ts";
+import { faAngleRight } from '@fortawesome/free-solid-svg-icons';
+import { IncidentDetailModal } from '@components/map/IncidentDetailModal';
+import { useEffect, useState } from 'react';
 
+
+type IncidentRibbonProps = { incident: Incident }
+
+function IncidentRibbon({ incident }: IncidentRibbonProps) {
+    let [visible, setVisible] = useState(false);
+
+    const serverity_color_map = new Map([
+        ["Critical", "var(--red-300)"],
+        ["High", "var(--yellow-300)"],
+        ["Moderate", "var(--teal-300)"],
+        ["Low", "var(--gray-300)"],
+    ]);
+
+    const viewIncidentDetail = <IncidentDetailModal
+        incident={incident.url}
+        visible={visible}
+        setVisible={setVisible}
+    />;
+
+    const date = new Date(incident.date);
+    return (<div
+        className="flex flex-column p-2 m-1 flex-wrap w-full"
+        style={{
+            borderLeft: `5px solid ${serverity_color_map.get(incident.severity)}`,
+        }}>
+        <div className="m-1"> {incident.name}</div>
+        <div className="text-sm text-400 flex flex-row justify-content-between">
+            <div>
+                <FontAwesomeIcon icon={faClock} className="mx-2" />
+                {date.toDateString()}
+            </div>
+            <FontAwesomeIcon icon={faAngleRight} onClick={() => setVisible(true)} />
+            {visible ? viewIncidentDetail : null}
+        </div>
+    </div>
+    );
+
+}
 
 function OverviewIncident() {
     const store = useHookstate(storeState);
-
-    const template = (incident: Incident) => {
-        const date = new Date(incident.date);
-        const serverity_color_map = new Map([
-            ["Critical", "var(--red-300)"],
-            ["High", "var(--yellow-300)"],
-            ["Moderate", "var(--teal-300)"],
-            ["Low", "var(--gray-300)"],
-        ]);
-        return (
-          
-            <div
-              className="flex flex-column p-2 m-1 flex-wrap w-full"
-              style={{
-                borderLeft: `5px solid ${serverity_color_map.get(
-                  incident.severity
-                )}`,
-              }}
-            >
-              <div className="m-1"> {incident.name}</div>
-              <div className="text-sm text-400">
-                <FontAwesomeIcon icon={faClock} className="mx-2" />
-                {date.toDateString()}
-              </div>
-            </div>
-        );
-    };
-
     return <div>
         <DataView
             value={store.incidentList.get().slice()}
-            itemTemplate={template}
+            itemTemplate={(incident: Incident) => <IncidentRibbon incident={incident} />}
         >
         </DataView>
     </div>
@@ -107,7 +118,7 @@ function countIncidentsInLastYearByMonth(incidents: ImmutableArray<Incident>): D
     return monthCounts;
 }
 
-export function IncidentByMonth({chartType}: {chartType: string}) {
+export function IncidentByMonth({ chartType }: { chartType: string }) {
     const store = useHookstate(storeState);
     const dataset = countIncidentsInLastYearByMonth(store.incidentList.get());
     dataset.reverse();
@@ -177,7 +188,7 @@ export function IncidentByMonth({chartType}: {chartType: string}) {
 
 function Visualizations() {
     return <div>
-        <IncidentByMonth chartType="line"/>
+        <IncidentByMonth chartType="line" />
     </div>;
 
 }
@@ -206,7 +217,7 @@ function OverviewTabpages() {
 
 
 export function SideBar() {
-    let [show, setShow] = useState(true);
+    let [show, setShow] = useState(false);
     let store = useHookstate(storeState);
 
     let federal_body = get_selected_local_body(store);
