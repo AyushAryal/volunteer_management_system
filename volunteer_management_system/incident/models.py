@@ -12,6 +12,19 @@ from phonenumber_field.modelfields import PhoneNumberField
 import federal.models
 
 
+class SiteContent(models.Model):
+    label = models.CharField(
+        primary_key=True,
+        max_length=100,
+        verbose_name=_("label"),
+        blank=False,
+    )
+    content = CKEditor5Field("content", config_name="extends")
+
+    def __str__(self):
+        return self.label
+
+
 class Nationality(models.IntegerChoices):
     National, International = range(2)
 
@@ -402,12 +415,60 @@ class Job(models.Model):
         on_delete=models.CASCADE,
         related_name="jobs",
     )
-    volunteers = models.ManyToManyField(
+    leader = models.ForeignKey(
         VolunteerProfile,
-        related_name="jobs",
+        on_delete=models.CASCADE,
         blank=True,
-        verbose_name=_("Volunteers Employed"),
+        null=True,
+        verbose_name=_("leader"),
+        related_name="leading_jobs",  # Hard to name correctly
     )
 
     def __str__(self):
         return str(self.name)
+
+
+class JobApplicationStatus(models.IntegerChoices):
+    Accepted, Rejected, Pending = range(3)
+
+    @DynamicClassAttribute
+    def label(self):
+        label = super().label
+        return {
+            "Accepted": _("Accepted"),
+            "Rejected": _("Rejected"),
+            "Pending": _("Pending"),
+        }.get(label, _("None"))
+
+
+class JobApplication(models.Model):
+    class Meta:
+        verbose_name = _("Job Application")
+        verbose_name_plural = _("Job Applications")
+        ordering = ("-pk",)
+        constraints = [
+            models.UniqueConstraint(
+                fields=["volunteer", "job"], name="unique_volunteer_job"
+            )
+        ]
+
+    volunteer = models.ForeignKey(
+        VolunteerProfile,
+        on_delete=models.CASCADE,
+        verbose_name=_("volunteer"),
+        related_name="job_applications",
+    )
+    job = models.ForeignKey(
+        Job,
+        on_delete=models.CASCADE,
+        verbose_name=_("Job"),
+        related_name="applications",
+    )
+    status = models.SmallIntegerField(
+        choices=JobApplicationStatus.choices,
+        default=JobApplicationStatus.Pending,
+        verbose_name=_("status"),
+    )
+
+    def __str__(self):
+        return str(self.job)

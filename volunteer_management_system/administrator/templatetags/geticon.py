@@ -11,6 +11,7 @@ register = template.Library()
 def modelicon(model):
     return {
         get_user_model(): "fa-solid fa-user",
+        incident.models.SiteContent: "fa-solid fa-book",
         incident.models.VolunteerProfile: "fa-solid fa-id-card-clip",
         incident.models.Incident: "fa-solid fa-user-injured",
         incident.models.Job: "fa-solid fa-briefcase",

@@ -58,7 +58,7 @@ class Command(BaseCommand):
     def create_federal_group(self):
         federal_group, _ = Group.objects.get_or_create(name="federal")
         actions = ["add", "view", "change", "delete"]
-        model_names = ["incident", "program", "job"]
+        model_names = ["incident", "program", "job", "jobapplication"]
         for action in actions:
             for model in model_names:
                 permission = f"{action}_{model}"

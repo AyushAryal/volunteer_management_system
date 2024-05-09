@@ -6,6 +6,7 @@ app_name = "incident"
 
 router = routers.DefaultRouter()
 
+router.register("site_content", views.SiteContentViewSet, basename="site_content")
 router.register("volunteer", views.VolunteerProfileViewSet, basename="volunteer")
 router.register("incident", views.IncidentViewSet, basename="incident")
 router.register("program", views.ProgramViewSet, basename="program")

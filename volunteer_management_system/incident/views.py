@@ -14,6 +14,20 @@ from . import permissions as incident_permissions
 from . import serializers
 
 
+class SiteContentViewSet(
+    viewsets.GenericViewSet,
+    viewsets.mixins.RetrieveModelMixin,
+    viewsets.mixins.ListModelMixin,
+):
+    queryset = models.SiteContent.objects.all()
+    serializer_class = serializers.SiteContentSerializer
+
+    def get_serializer_class(self):
+        return {
+            "brief": serializers.SiteContentSerializer,
+        }.get(self.action, super().get_serializer_class())
+
+
 class VolunteerProfileViewSet(
     viewsets.mixins.ListModelMixin,
     viewsets.mixins.RetrieveModelMixin,
@@ -248,6 +262,72 @@ class JobViewSet(
     queryset = models.Job.objects.all()
     serializer_class = serializers.JobSerializer
     pagination_class = None
+
+    @action(detail=True, methods=["post"])
+    def withdraw(self, request, *args, **kwargs):
+        if hasattr(request.user, "volunteer"):
+            return (
+                Response(
+                    {
+                        "detail": {
+                            "You have to be logged in as a volunteer to perform this action."
+                        }
+                    },
+                    status=status.HTTP_401_UNAUTHORIZED,
+                ),
+            )
+
+        job = self.get_object()
+        application = models.JobApplication.objects.filter(
+            job=job,
+            volunteer=request.user.volunteer,
+        )
+
+        if application.exists():
+            if application.first().status != models.JobApplicationStatus.Rejected:
+                application.delete()
+                return Response(status=status.HTTP_200_OK)
+            else:
+                return Response(
+                    {"detail": _("Job application has already been processed.")},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
+        return Response(
+            {"detail": _("Job application does not exist.")},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    @action(detail=True, methods=["post"])
+    def apply(self, request, *args, **kwargs):
+        if hasattr(request.user, "volunteer"):
+            return (
+                Response(
+                    {
+                        "detail": {
+                            "You have to be logged in as a volunteer to perform this action."
+                        }
+                    },
+                    status=status.HTTP_401_UNAUTHORIZED,
+                ),
+            )
+
+        job = self.get_object()
+        if not models.JobApplication.objects.filter(
+            job=job,
+            volunteer=request.user.volunteer,
+        ).exists():
+            application = models.JobApplication(
+                job=job,
+                volunteer=request.user.volunteer,
+            )
+            application.save()
+            return Response(status=status.HTTP_200_OK)
+
+        return Response(
+            {"detail": _("Job application exists.")},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
 
     class JobFilter(django_filters.FilterSet):
         incident = django_filters.ModelChoiceFilter(

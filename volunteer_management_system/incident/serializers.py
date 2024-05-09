@@ -7,6 +7,12 @@ from rest_framework import serializers
 from . import models
 
 
+class SiteContentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.SiteContent
+        fields = "__all__"
+
+
 class ChoiceField(serializers.ChoiceField):
     def to_representation(self, obj):
         if obj == "" and self.allow_blank:
@@ -286,5 +292,5 @@ class JobSerializer(serializers.HyperlinkedModelSerializer):
         extra_kwargs = {
             "url": {"view_name": "api:job-detail"},
             "program": {"view_name": "api:program-detail"},
-            "volunteer": {"view_name": "api:volunteer-detail"},
+            "leader": {"view_name": "api:volunteer-detail"},
         }

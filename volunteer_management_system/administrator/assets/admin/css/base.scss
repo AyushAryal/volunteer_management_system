@@ -32,3 +32,8 @@ a.deletelink,
 select {
   height: auto !important;
 }
+
+/* Fixes for ckeditor5 */
+.ck-editor-container {
+  max-width: 40rem;
+}

@@ -1,9 +1,9 @@
 import { server } from "@api/api";
 
-import { Token, Store } from "@models/store";
+import { Token, Store, storeState } from "@models/store";
 import { State } from "@hookstate/core";
 
-export function token_aware_fetch(resource: RequestInfo | URL, options?: RequestInit): Promise<Response> {
+export async function token_aware_fetch(resource: RequestInfo | URL, options?: RequestInit): Promise<Response> {
     let encoded_token = localStorage.getItem("token");
     if (encoded_token === null) {
         return fetch(resource, options);
@@ -12,7 +12,11 @@ export function token_aware_fetch(resource: RequestInfo | URL, options?: Request
         let headers = { ...options?.headers ?? {}, Authorization: `Token ${token.token}` };
         let extended_options = options ?? {};
         extended_options.headers = headers;
-        return fetch(resource, extended_options);
+        const response = await fetch(resource, extended_options);
+        if (response.status === 401) {
+            logout(storeState);
+        }
+        return response;
     }
 }
 

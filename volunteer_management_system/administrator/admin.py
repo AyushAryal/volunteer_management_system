@@ -57,10 +57,10 @@ class VolunteerProfileInline(admin.StackedInline):
 
 class JobAdmin(admin.ModelAdmin):
     model = incident.models.Job
-    list_display = ("__str__", "vacancy", "volunteer_employed", "status")
+    list_display = ("__str__", "vacancy", "leader", "status")
 
-    def volunteer_employed(self, obj):
-        return obj.volunteers.count()
+    def leader(self, obj):
+        return obj.leader
 
     def get_queryset(self, request):
         if request.user.is_superuser:
@@ -71,10 +71,27 @@ class JobAdmin(admin.ModelAdmin):
         )
 
 
+class JobApplicationAdmin(admin.ModelAdmin):
+    model = incident.models.JobApplication
+    list_display = ("__str__", "job", "volunteer", "status")
+
+    def get_queryset(self, request):
+        if request.user.is_superuser:
+            return super().get_queryset(request)
+        municipalities = get_user_controlled_municipalities(request.user)
+        return self.model.objects.filter(
+            job__program__incident__municipality__in=municipalities
+        )
+
+
 class IncidentAdmin(LeafletGeoAdmin):
     model = incident.models.Incident
     list_display = ("__str__", "municipality", "formatted_date")
     search_fields = ("name", "municipality__name")
+
+    def get_form(self, request, obj, *args, **kwargs):
+        print(request, obj, args, kwargs)
+        return super().get_form(request, obj, *args, **kwargs)
 
     def formatted_date(self, incident):
         return incident.date.strftime("%Y-%m-%d")
@@ -178,8 +195,10 @@ admin_site.register(federal.models.District, DistrictAdmin)
 admin_site.register(federal.models.Municipality, MunicipalityAdmin)
 admin_site.register(federal.models.Ward, WardAdmin)
 
+admin_site.register(incident.models.SiteContent)
 admin_site.register(incident.models.Incident, IncidentAdmin)
 admin_site.register(incident.models.Program, ProgramAdmin)
+admin_site.register(incident.models.JobApplication, JobApplicationAdmin)
 admin_site.register(incident.models.Job, JobAdmin)
 
 admin_site.register(get_user_model(), UserAdmin)
