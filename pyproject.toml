@@ -21,6 +21,7 @@ django-filter = "^23.5"
 django-ckeditor-5 = "^0.2.12"
 django-phonenumber-field = "^7.3.0"
 phonenumbers = "^8.13.35"
+requests = "^2.31.0"
 
 
 [tool.poetry.group.dev.dependencies]

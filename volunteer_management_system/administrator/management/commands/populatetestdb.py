@@ -6,6 +6,8 @@ from datetime import timedelta
 
 import federal.models
 import incident.models
+
+import requests
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group, Permission
@@ -19,6 +21,27 @@ PASSWORD = os.getenv("ADMIN_PASSWORD", "shark@123")
 
 class Command(BaseCommand):
     help = "This command populates the database with default db"
+
+    def download_geojson_files(self):
+        BASE_URL = "https://bipadportal.gov.np/api/v1/"
+        QUERY_PARAMS = "format=geojson&limit=1000000000"
+
+        ENDPOINTS = ["province", "district", "municipality", "ward"]
+        for endpoint in ENDPOINTS:
+            filename = f"{endpoint}.geojson.json"
+            path = settings.BASE_DIR / "shared" / filename
+            if not os.path.exists(path):
+                self.stdout.write(self.style.SUCCESS(f"Downloading {filename}"))
+                response = requests.get(f"{BASE_URL}{endpoint}/?{QUERY_PARAMS}")
+                with open(path, "wb") as file:
+                    file.write(response.content)
+                    self.stdout.write(self.style.SUCCESS(f"Downloaded {filename}"))
+            else:
+                self.stdout.write(
+                    self.style.SUCCESS(
+                        f"File {filename} already exists, skipping download."
+                    )
+                )
 
     def create_federal_user(self, email):
         user = get_user_model().objects.create_user(
@@ -400,6 +423,7 @@ class Command(BaseCommand):
         return user
 
     def handle(self, *_, **__):
+        self.download_geojson_files()
         self.create_federal_group()
         self.create_super_user("admin@example.com")
 

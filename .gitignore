@@ -9,3 +9,4 @@ node_modules/
 .parcel-cache/
 administrator/static/admin/dist
 build.sh
+*.geojson.json
