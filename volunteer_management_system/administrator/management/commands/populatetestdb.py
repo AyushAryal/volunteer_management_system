@@ -152,34 +152,25 @@ class Command(BaseCommand):
 
     def load_wards(self):
         wards = []
-        files = [
-            "ward.json",
-            "ward2.json",
-            "ward3.json",
-            "ward4.json",
-            "ward5.json",
-            "ward6.json",
-            "ward7.json",
-        ]
-        for file in files:
-            filepath = settings.BASE_DIR / "shared" / file
-            with open(filepath, encoding="utf8") as j:
-                geojson_obj = json.load(j)
-                features = geojson_obj["features"]
-                for feature in features:
-                    polygon = Polygon(feature["geometry"]["coordinates"][0][0])
-                    id = feature["id"]
-                    name = feature["properties"]["title"]
-                    municipality = feature["properties"]["municipality"]
-                    ward = federal.models.Ward(
-                        pk=id,
-                        name=name,
-                        shape=polygon,
-                        municipality=federal.models.Municipality.objects.get(
-                            pk=municipality
-                        ),
-                    )
-                    wards.append(ward)
+        with open(
+            settings.BASE_DIR / "shared" / "ward.geojson.json", encoding="utf8"
+        ) as j:
+            geojson_obj = json.load(j)
+            features = geojson_obj["features"]
+            for feature in features:
+                polygon = Polygon(feature["geometry"]["coordinates"][0][0])
+                id = feature["id"]
+                name = feature["properties"]["title"]
+                municipality = feature["properties"]["municipality"]
+                ward = federal.models.Ward(
+                    pk=id,
+                    name=name,
+                    shape=polygon,
+                    municipality=federal.models.Municipality.objects.get(
+                        pk=municipality
+                    ),
+                )
+                wards.append(ward)
         return wards
 
     def create_volunteers(self, municipalities):
