@@ -69,9 +69,22 @@ class MunicipalityBriefSerializer(HyperlinkedModelSerializer):
 
 
 class WardSerializer(HyperlinkedModelSerializer):
+    shape = GeometryField(auto_bbox=True)
+
     class Meta:
         model = models.Ward
-        exclude = ("url", "admin")
+        fields = "__all__"
         extra_kwargs = {
+            "url": {"view_name": "api:ward-detail"},
             "municipality": {"view_name": "api:municipality-detail"},
+        }
+
+
+class WardBriefSerializer(HyperlinkedModelSerializer):
+    class Meta:
+        model = models.Ward
+        exclude = ("shape",)
+        extra_kwargs = {
+            "url": {"view_name": "api:ward-detail"},
+            "district": {"view_name": "api:district-detail"},
         }

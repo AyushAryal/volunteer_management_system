@@ -44,15 +44,18 @@ class Command(BaseCommand):
         return federal_group
 
     def load_provinces(self):
-        filepath = settings.BASE_DIR / "shared" / "province.geojson.json"
+        filepath = settings.BASE_DIR / "shared" / "province.json"
         PROVINCES = {
-            "Province No 1": "Koshi Pradesh",
-            "Province No 2": "Madhesh Pradesh",
-            "Bagmati Pradesh": "Bagmati Pradesh",
-            "Gandaki Pradesh": "Gandaki Pradesh",
-            "Province No 5": "Lumbini Pradesh",
-            "Karnali Pradesh": "Karnali Pradesh",
-            "Sudurpashchim Pradesh": "Sudurpashchim Pradesh",
+            "Province No 1": "Koshi",
+            "Province No 2": "Madhesh",
+            "Bagmati": "Bagmati",
+            "Gandaki": "Gandaki",
+            "Province No 5": "Lumbini",
+            "Karnali": "Karnali",
+            "Sudurpashchim": "Sudurpashchim",
+            "Koshi": "Koshi",
+            "Madhesh": "Madhesh",
+            "Lumbini": "Lumbini",
         }
         provinces = []
         with open(filepath, encoding="utf8") as j:
@@ -60,12 +63,12 @@ class Command(BaseCommand):
             features = geojson_obj["features"]
             for feature in features:
                 polygon = Polygon(feature["geometry"]["coordinates"][0][0])
-                # id = feature["id"]
-                name = PROVINCES[feature["properties"]["PR_NAME"]]
+                id = feature["id"]
+                name = PROVINCES[feature["properties"]["title"]]
                 email = "{}@example.com".format(name.lower().strip().replace(" ", "_"))
                 admin = self.create_federal_user(email)
                 province = federal.models.Province(
-                    
+                    id=id,
                     name=name,
                     shape=polygon,
                     admin=admin,
@@ -75,19 +78,19 @@ class Command(BaseCommand):
 
     def load_districts(self):
         districts = []
-        filepath = settings.BASE_DIR / "shared" / "district.geojson.json"
+        filepath = settings.BASE_DIR / "shared" / "district.json"
         with open(filepath, encoding="utf8") as j:
             geojson_obj = json.load(j)
             features = geojson_obj["features"]
             for feature in features:
-                # id = feature["id"]
+                id = feature["id"]
                 polygon = Polygon(feature["geometry"]["coordinates"][0][0])
-                name = feature["properties"]["DISTRICT"]
-                province = feature["properties"]["PROVINCE"]
+                name = feature["properties"]["title"]
+                province = feature["properties"]["province"]
                 email = "{}@example.com".format(name.lower().strip().replace(" ", "_"))
                 admin = self.create_federal_user(email)
                 district = federal.models.District(
-                    
+                    id=id,
                     name=name,
                     shape=polygon,
                     province=federal.models.Province.objects.get(pk=province),
@@ -98,19 +101,19 @@ class Command(BaseCommand):
 
     def load_municipalities(self):
         municipalities = []
-        filepath = settings.BASE_DIR / "shared" / "municipality.geojson.json"
+        filepath = settings.BASE_DIR / "shared" / "municipality.json"
         with open(filepath, encoding="utf8") as j:
             geojson_obj = json.load(j)
             features = geojson_obj["features"]
             for feature in features:
                 polygon = Polygon(feature["geometry"]["coordinates"][0][0])
-                # id = feature["id"]
-                name = feature["properties"]["LOCAL"]
-                # district = feature["properties"]["district"]
-                # district_name = federal.models.District.objects.get(pk=district).name
-                district_name = feature["properties"]["DISTRICT"]
-                district = federal.models.District.objects.get(name=district_name).pk
-                type = feature["properties"]["TYPE"]
+                id = feature["id"]
+                name = feature["properties"]["title"]
+                district = feature["properties"]["district"]
+                district_name = federal.models.District.objects.get(pk=district).name
+                # district_name = feature["properties"]["DISTRICT"]
+                # district = federal.models.District.objects.get(name=district_name).pk
+                type = feature["properties"]["type"]
                 email = "{}_{}_{}@example.com".format(
                     district_name.lower().strip().replace(" ", "_"),
                     name.lower().strip().replace(" ", "_"),
@@ -118,7 +121,7 @@ class Command(BaseCommand):
                 )
                 admin = self.create_federal_user(email)
                 municipality = federal.models.Municipality(
-                    
+                    id=id,
                     name=name,
                     shape=polygon,
                     district=federal.models.District.objects.get(pk=district),
@@ -126,6 +129,29 @@ class Command(BaseCommand):
                 )
                 municipalities.append(municipality)
         return municipalities
+
+    def load_wards(self):
+        wards = []
+        files = ["ward.json", "ward2.json", "ward3.json", "ward4.json",
+                 "ward5.json", "ward6.json", "ward7.json"]
+        for file in files:
+            filepath = settings.BASE_DIR / "shared" / file
+            with open(filepath, encoding="utf8") as j:
+                geojson_obj = json.load(j)
+                features = geojson_obj["features"]
+                for feature in features:
+                    polygon = Polygon(feature["geometry"]["coordinates"][0][0])
+                    id = feature["id"]
+                    name = feature["properties"]["title"]
+                    municipality = feature["properties"]["municipality"]
+                    ward = federal.models.Ward(
+                        id=id,
+                        name=name,
+                        shape=polygon,
+                        municipality=federal.models.Municipality.objects.get(pk=municipality),
+                    )
+                    wards.append(ward)
+        return wards
 
     def create_volunteers(self, municipalities):
         volunteers = []
@@ -385,6 +411,11 @@ class Command(BaseCommand):
         if federal.models.Municipality.objects.all().count() == 0:
             for municipality in municipalities:
                 municipality.save()
+
+        wards = self.load_wards()
+        if federal.models.Ward.objects.all().count() == 0:
+            for ward in wards:
+                ward.save()
 
         incidents = self.create_incidents(municipalities)
         programs = self.create_programs(incidents)

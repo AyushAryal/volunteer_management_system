@@ -74,6 +74,7 @@ class Ward(models.Model):
         ordering = ("pk",)
 
     name = models.CharField(max_length=100)
+    shape = gis_models.PolygonField(verbose_name=_("shape"))
     municipality = models.ForeignKey(Municipality, on_delete=models.CASCADE)
 
     def __str__(self):

@@ -157,17 +157,26 @@ class ProvinceAdmin(admin.ModelAdmin):
 
 class DistrictAdmin(admin.ModelAdmin):
     model = federal.models.District
-    search_fields = ("name",)
+    list_display = ("__str__", "province")
+    search_fields = ("name", "province")
 
 
 class MunicipalityAdmin(admin.ModelAdmin):
     model = federal.models.Municipality
-    search_fields = ("name",)
+    list_display = ("__str__", "district")
+    search_fields = ("name", "district__name")
+
+
+class WardAdmin(admin.ModelAdmin):
+    model = federal.models.Ward
+    list_display = ("__str__", "municipality")
+    search_fields = ("name", "municipality__name")
 
 
 admin_site.register(federal.models.Province, ProvinceAdmin)
 admin_site.register(federal.models.District, DistrictAdmin)
 admin_site.register(federal.models.Municipality, MunicipalityAdmin)
+admin_site.register(federal.models.Ward, WardAdmin)
 
 admin_site.register(incident.models.Incident, IncidentAdmin)
 admin_site.register(incident.models.Program, ProgramAdmin)
