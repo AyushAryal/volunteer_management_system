@@ -78,4 +78,4 @@ class Ward(models.Model):
     municipality = models.ForeignKey(Municipality, on_delete=models.CASCADE)
 
     def __str__(self):
-        return str(self.name)
+        return f"{self.municipality.name} - {self.name}"

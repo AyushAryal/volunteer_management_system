@@ -158,7 +158,7 @@ class ProvinceAdmin(admin.ModelAdmin):
 class DistrictAdmin(admin.ModelAdmin):
     model = federal.models.District
     list_display = ("__str__", "province")
-    search_fields = ("name", "province")
+    search_fields = ("name", "province__name")
 
 
 class MunicipalityAdmin(admin.ModelAdmin):

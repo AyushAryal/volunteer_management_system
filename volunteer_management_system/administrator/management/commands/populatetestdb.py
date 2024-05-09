@@ -19,6 +19,7 @@ PASSWORD = os.getenv("ADMIN_PASSWORD", "shark@123")
 
 class Command(BaseCommand):
     help = "This command populates the database with default db"
+
     def create_federal_user(self, email):
         user = get_user_model().objects.create_user(
             email=email,
@@ -44,7 +45,7 @@ class Command(BaseCommand):
         return federal_group
 
     def load_provinces(self):
-        filepath = settings.BASE_DIR / "shared" / "province.json"
+        filepath = settings.BASE_DIR / "shared" / "province.geojson.json"
         PROVINCES = {
             "Province No 1": "Koshi",
             "Province No 2": "Madhesh",
@@ -68,7 +69,7 @@ class Command(BaseCommand):
                 email = "{}@example.com".format(name.lower().strip().replace(" ", "_"))
                 admin = self.create_federal_user(email)
                 province = federal.models.Province(
-                    id=id,
+                    pk=id,
                     name=name,
                     shape=polygon,
                     admin=admin,
@@ -78,7 +79,7 @@ class Command(BaseCommand):
 
     def load_districts(self):
         districts = []
-        filepath = settings.BASE_DIR / "shared" / "district.json"
+        filepath = settings.BASE_DIR / "shared" / "district.geojson.json"
         with open(filepath, encoding="utf8") as j:
             geojson_obj = json.load(j)
             features = geojson_obj["features"]
@@ -90,7 +91,7 @@ class Command(BaseCommand):
                 email = "{}@example.com".format(name.lower().strip().replace(" ", "_"))
                 admin = self.create_federal_user(email)
                 district = federal.models.District(
-                    id=id,
+                    pk=id,
                     name=name,
                     shape=polygon,
                     province=federal.models.Province.objects.get(pk=province),
@@ -101,7 +102,7 @@ class Command(BaseCommand):
 
     def load_municipalities(self):
         municipalities = []
-        filepath = settings.BASE_DIR / "shared" / "municipality.json"
+        filepath = settings.BASE_DIR / "shared" / "municipality.geojson.json"
         with open(filepath, encoding="utf8") as j:
             geojson_obj = json.load(j)
             features = geojson_obj["features"]
@@ -111,17 +112,13 @@ class Command(BaseCommand):
                 name = feature["properties"]["title"]
                 district = feature["properties"]["district"]
                 district_name = federal.models.District.objects.get(pk=district).name
-                # district_name = feature["properties"]["DISTRICT"]
-                # district = federal.models.District.objects.get(name=district_name).pk
-                type = feature["properties"]["type"]
-                email = "{}_{}_{}@example.com".format(
+                email = "{}_{}@example.com".format(
                     district_name.lower().strip().replace(" ", "_"),
                     name.lower().strip().replace(" ", "_"),
-                    type.lower().strip().replace(" ", "_") if type is not None else "",
                 )
                 admin = self.create_federal_user(email)
                 municipality = federal.models.Municipality(
-                    id=id,
+                    pk=id,
                     name=name,
                     shape=polygon,
                     district=federal.models.District.objects.get(pk=district),
@@ -132,8 +129,15 @@ class Command(BaseCommand):
 
     def load_wards(self):
         wards = []
-        files = ["ward.json", "ward2.json", "ward3.json", "ward4.json",
-                 "ward5.json", "ward6.json", "ward7.json"]
+        files = [
+            "ward.json",
+            "ward2.json",
+            "ward3.json",
+            "ward4.json",
+            "ward5.json",
+            "ward6.json",
+            "ward7.json",
+        ]
         for file in files:
             filepath = settings.BASE_DIR / "shared" / file
             with open(filepath, encoding="utf8") as j:
@@ -145,10 +149,12 @@ class Command(BaseCommand):
                     name = feature["properties"]["title"]
                     municipality = feature["properties"]["municipality"]
                     ward = federal.models.Ward(
-                        id=id,
+                        pk=id,
                         name=name,
                         shape=polygon,
-                        municipality=federal.models.Municipality.objects.get(pk=municipality),
+                        municipality=federal.models.Municipality.objects.get(
+                            pk=municipality
+                        ),
                     )
                     wards.append(ward)
         return wards

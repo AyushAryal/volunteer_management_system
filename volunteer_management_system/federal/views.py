@@ -81,14 +81,17 @@ class WardViewSet(
     viewsets.mixins.ListModelMixin,
     BriefInfoMixin,
 ):
-
     class WardPaginator(PageNumberPagination):
         page_size = 1000
 
     queryset = models.Ward.objects.all()
     serializer_class = serializers.WardSerializer
     pagination_class = WardPaginator
-    filterset_fields = ("municipality", "municipality__district")
+    filterset_fields = (
+        "municipality",
+        "municipality__district",
+        "municipality__district__province",
+    )
 
     def get_serializer_class(self):
         return {
