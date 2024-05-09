@@ -86,5 +86,5 @@ class WardBriefSerializer(HyperlinkedModelSerializer):
         exclude = ("shape",)
         extra_kwargs = {
             "url": {"view_name": "api:ward-detail"},
-            "district": {"view_name": "api:district-detail"},
+            "municipality": {"view_name": "api:municipality-detail"},
         }
