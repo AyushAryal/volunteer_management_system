@@ -64,7 +64,12 @@ export function Profile() {
             onClick={(event) => menu?.current?.toggle(event)}
             className="shadow-4 mb-2"
             src={profile.profile_image}
-            style={{ width: "3rem", height: "3rem", borderRadius: "50%" }}
+            style={{
+                width: "3rem",
+                height: "3rem",
+                objectFit: "cover",
+                borderRadius: "50%"
+            }}
         />
         <Menu ref={menu} model={menuItems} popup />
     </div>;

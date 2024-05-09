@@ -2,20 +2,47 @@ import { Dialog } from 'primereact/dialog';
 import { useState } from 'react';
 import { SignupProfileInformation } from '@components/signup/SignupProfileInformation';
 import { SignupAddressInformation } from '@components/signup/SignupAddressInformation';
-import { VolunteerProfile } from '@models/incident';
+import { BloodGroup, Gender, Nationality, VolunteerCategory, VolunteerProfile } from '@models/incident';
 import { Button } from 'primereact/button';
 import { update_volunteer_profile } from '@api/incident';
-//import { describeApiErrors, get_id } from '@api/utils';
-//import { useHookstate } from '@hookstate/core';
-//import { storeState } from '@models/store';
-//
-async function onVolunteerProfileUpdateSubmit(volunteer: VolunteerProfile, form: any) {
-    let response = await update_volunteer_profile(volunteer.url, JSON.stringify(form))
-    if (response.status == 200 || response.status == 204) {
-        // store.volunteerProfile.set()
+import { describeApiErrors } from '@api/utils';
+import { useHookstate } from '@hookstate/core';
+import { storeState } from '@models/store';
 
+type VolunteerProfileForm = {
+    firstName: string,
+    lastName: string,
+    contactNumber: string,
+    dateOfBirth: string,
+    nationality: Nationality,
+    volunteerType: VolunteerCategory,
+    bloodGroup: BloodGroup,
+    gender: Gender,
+    temporaryMunicipality: string,
+    permanentMunicipality: string,
+}
+
+async function perform_volunteer_profile_update(url: string, form: VolunteerProfileForm): Promise<string | VolunteerProfile> {
+    let response = await update_volunteer_profile(url, JSON.stringify({
+        "volunteer": {
+            "first_name": form.firstName,
+            "last_name": form.lastName,
+            "contact_number": form.contactNumber,
+            "date_of_birth": form.dateOfBirth,
+            "nationality": form.nationality,
+            "volunteer_type": form.volunteerType,
+            "blood_group": form.bloodGroup,
+            "gender": form.gender,
+            "temporary_municipality": form.temporaryMunicipality,
+            "permanent_municipality": form.permanentMunicipality,
+        }
+    }));
+    if (response.status == 200 || response.status == 204) {
+        return await response.json();
+    } else if (response.status == 400) {
+        return describeApiErrors(await response.json());
     } else {
-        //describeApiErrors()
+        return "Network failure. Please try again";
     }
 }
 
@@ -26,6 +53,8 @@ type VolunteerProfileUpdateFormProps = {
 }
 
 export function VolunteerProfileUpdate(props: VolunteerProfileUpdateFormProps) {
+    const store = useHookstate(storeState);
+
     const firstNameState = useState(props.volunteer.first_name);
     const lastNameState = useState(props.volunteer.last_name);
     const contactNumberState = useState(props.volunteer.contact_number);
@@ -41,6 +70,7 @@ export function VolunteerProfileUpdate(props: VolunteerProfileUpdateFormProps) {
     const selectedPermanentProvinceState = useState("");
     const selectedPermanentDistrictState = useState("");
     const selectedPermanentMunicipalityState = useState(props.volunteer.permanent_municipality);
+    const [formErrors, setFormErrors] = useState<string | boolean>(false);
 
     const [firstName,] = firstNameState;
     const [lastName,] = lastNameState;
@@ -53,27 +83,66 @@ export function VolunteerProfileUpdate(props: VolunteerProfileUpdateFormProps) {
     const [selectedTemporaryMunicipality,] = selectedTemporaryMunicipalityState;
     const [selectedPermanentMunicipality,] = selectedPermanentMunicipalityState;
 
-    let form: any = {
-        "volunteer": {
-            "first_name": firstName,
-            "last_name": lastName,
-            "contact_number": contactNumber,
-            "date_of_birth": dateOfBirth,
-            "blood_group": bloodGroup,
-            "gender": gender,
-            "nationality": nationality,
-            "category": volunteerType,
-            "temporary_municipality": selectedTemporaryMunicipality,
-            "permanent_municipality": selectedPermanentMunicipality,
+
+    const onSubmit = async () => {
+        let newProfile = await perform_volunteer_profile_update(props.volunteer.url, {
+            firstName,
+            lastName,
+            contactNumber,
+            dateOfBirth,
+            bloodGroup,
+            gender,
+            nationality,
+            volunteerType,
+            temporaryMunicipality: selectedTemporaryMunicipality,
+            permanentMunicipality: selectedPermanentMunicipality,
+        });
+        if (typeof newProfile === "object") {
+            store.volunteerProfile.set(newProfile);
+            setFormErrors(true);
+        } else {
+            setFormErrors(newProfile);
         }
     };
 
+    let response;
+    if (formErrors === true) {
+        response = <div
+            style={{ color: "var(--green-600)", fontWeight: "bold" }}
+            className="my-2"
+        >
+            <span>Profile Updated!</span>
+        </div>
+    } else if (typeof formErrors === "string") {
+        response = <div className="flex flex-row align-items-center">
+            <pre style={{ whiteSpace: "pre-wrap", color: "var(--red-600)", fontWeight: "bold" }}>
+                {formErrors}
+            </pre>
+        </div >;
+    }
+
     return <Dialog
-        header={`${firstName} ${lastName}`}
         visible={props.visible}
         style={{ width: '50vw' }}
         onHide={() => { props.setVisible(false); }}>
         <div className="flex flex-column gap-2">
+            <div className="flex gap-5 align-items-center mb-4">
+                <div className="flex flex-column justify-content-center align-items-center">
+                    <img
+                        onClick={() => { alert("Change image not implemented") }}
+                        className="shadow-4 mb-2"
+                        src={props.volunteer.profile_image}
+                        style={{
+                            width: "8rem",
+                            height: "8rem",
+                            objectFit: "cover",
+                            borderRadius: "100%"
+                        }}
+                    />
+                </div>
+                <h1>{`${firstName} ${lastName}`}</h1>
+            </div>
+
             <h2> Profile Information </h2>
             <SignupProfileInformation
                 firstNameState={firstNameState}
@@ -94,11 +163,13 @@ export function VolunteerProfileUpdate(props: VolunteerProfileUpdateFormProps) {
                 selectedPermanentDistrictState={selectedPermanentDistrictState}
                 selectedPermanentMunicipalityState={selectedPermanentMunicipalityState}
             />
-            <Button
-                className="mt-5 align-self-end"
-                label="Save"
-                onSubmit={() => { onVolunteerProfileUpdateSubmit(props.volunteer, form); }}
-            />
+            <div className="flex gap-4 align-self-end align-items-center mt-5">
+                {response}
+                <Button
+                    label="Save"
+                    onClick={onSubmit}
+                />
+            </div>
         </div>
     </Dialog>;
 }

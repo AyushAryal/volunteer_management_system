@@ -13,6 +13,7 @@ import { SignupIdentification } from '@components/signup/SignupIdentification';
 
 import { signup } from '@api/incident';
 import { describeApiErrors } from '@api/utils';
+import { BloodGroup, Gender, Nationality, VolunteerCategory } from '@models/incident';
 
 type VolunteerDetails = {
     email: string,
@@ -22,10 +23,10 @@ type VolunteerDetails = {
     lastName: string,
     contactNumber: string,
     dateOfBirth: string,
-    nationality: string,
-    volunteerType: string,
-    bloodGroup: string,
-    gender: string,
+    nationality: Nationality,
+    volunteerType: VolunteerCategory,
+    bloodGroup: BloodGroup,
+    gender: Gender,
     selectedTemporaryMunicipality: string,
     selectedPermanentMunicipality: string,
     citizenshipId: string,
@@ -130,10 +131,10 @@ export function Signup() {
     const lastNameState = useState("");
     const contactNumberState = useState("");
     const dateOfBirthState = useState("");
-    const nationalityState = useState("");
-    const volunteerTypeState = useState("");
-    const bloodGroupState = useState("");
-    const genderState = useState("");
+    const nationalityState = useState<Nationality>("National");
+    const volunteerTypeState = useState<VolunteerCategory>("General");
+    const bloodGroupState = useState<BloodGroup>("O Positive");
+    const genderState = useState<Gender>("Male");
 
     const selectedTemporaryProvinceState = useState("");
     const selectedTemporaryDistrictState = useState("");
@@ -179,7 +180,7 @@ export function Signup() {
         const [passportIssueDate,] = passportIssueDateState
         const [passportExpiryDate,] = passportExpiryDateState
 
-        const signupFormResult = await perform_signup({
+        setFormErrors(await perform_signup({
             email,
             password,
             confirmPassword,
@@ -201,8 +202,7 @@ export function Signup() {
             passportNumber,
             passportIssueDate,
             passportExpiryDate,
-        }) ?? undefined;
-        setFormErrors(signupFormResult);
+        }));
     };
 
     let response;
