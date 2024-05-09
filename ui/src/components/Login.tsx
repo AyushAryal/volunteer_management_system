@@ -7,7 +7,7 @@ import { ReactNode, useRef, useState } from 'react';
 
 import EmblemOfNepal from '../emblem_of_nepal.svg';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faClose, faUser, faRightFromBracket, faEdit, faSignOut } from '@fortawesome/free-solid-svg-icons';
+import { faClose, faUser, faRightFromBracket, faEdit, faSignOut, faPaperclip, faPassport, faLock, faKey } from '@fortawesome/free-solid-svg-icons';
 import { useHookstate } from '@hookstate/core';
 import { storeState } from '@models/store';
 import { login, logout } from '@api/token';
@@ -38,7 +38,20 @@ export function Profile() {
         icon: faEdit,
         template: itemRenderer,
         command: (_) => setVolunteerProfileEditVisible(true),
-    }, {
+    },
+    {
+        label: 'Edit documents',
+        icon: faPaperclip,
+        template: itemRenderer,
+        command: () => setVolunteerProfileEditVisible(true),
+    },
+    {
+        label: 'change password',
+        icon: faKey,
+        template: itemRenderer,
+        command: () => setVolunteerProfileEditVisible(true),
+    },
+    {
         label: 'Logout',
         icon: faSignOut,
         template: itemRenderer,
