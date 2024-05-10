@@ -2,6 +2,7 @@ import json
 import math
 import random
 import os
+import inspect
 from datetime import timedelta
 
 import federal.models
@@ -401,6 +402,34 @@ class Command(BaseCommand):
             jobs.append(job)
         return jobs
 
+    def create_site_contents(self):
+        contents = [
+            {
+                "label": "hero",
+                "content": inspect.cleandoc(
+                    """
+                    The National Volunteer Bureau formation and Mobilization Platform is
+                    a robust platform that houses records of all volunteers based on
+                    age, skills, preferences, and availability along with the
+                    functionality to manage them. It is built upon the concept of
+                    creating a national portal embedded with independent platforms for
+                    national, provincial, district, and municipal governments with a
+                    bottom-up approach of disaster data partnership focusing on the
+                    principle of user centric design.
+                    """
+                ),
+            },
+        ]
+        site_contents = []
+        for content in contents:
+            site_content = incident.models.SiteContent(**content)
+            site_content.save()
+            self.stdout.write(
+                self.style.SUCCESS(f"Created site-content {content['label']}")
+            )
+            site_contents.append(site_content)
+        return site_contents
+
     def create_super_user(self, email):
         user = get_user_model().objects.create_user(
             password=PASSWORD,
@@ -418,21 +447,25 @@ class Command(BaseCommand):
         self.create_federal_group()
         self.create_super_user("admin@example.com")
 
+        self.stdout.write(self.style.SUCCESS("Creating provinces"))
         provinces = self.load_provinces()
         if federal.models.Province.objects.all().count() == 0:
             for province in provinces:
                 province.save()
 
+        self.stdout.write(self.style.SUCCESS("Creating districts"))
         districts = self.load_districts()
         if federal.models.District.objects.all().count() == 0:
             for district in districts:
                 district.save()
 
+        self.stdout.write(self.style.SUCCESS("Creating municipalities"))
         municipalities = self.load_municipalities()
         if federal.models.Municipality.objects.all().count() == 0:
             for municipality in municipalities:
                 municipality.save()
 
+        self.stdout.write(self.style.SUCCESS("Creating wards"))
         wards = self.load_wards()
         if federal.models.Ward.objects.all().count() == 0:
             for ward in wards:
@@ -442,3 +475,4 @@ class Command(BaseCommand):
         programs = self.create_programs(incidents)
         _ = self.create_volunteers(municipalities)
         _ = self.create_jobs(programs)
+        _ = self.create_site_contents()

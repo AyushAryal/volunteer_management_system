@@ -1,4 +1,4 @@
-import { Incident, Job, Program, VolunteerProfile } from "@models/incident";
+import { Incident, Job, Program, SiteContent, VolunteerProfile } from "@models/incident";
 import { get_detail, get_filtered_list, get_id } from "@api/utils";
 import { server } from "@api/api";
 import { token_aware_fetch } from "@api/token";
@@ -21,6 +21,7 @@ export interface JobFilter extends FederalFilter {
 export let get_incident_list = get_filtered_list<Incident, IncidentFilter>("/api/incident");
 export let get_program_list = get_filtered_list<Program, ProgramFilter>("/api/program");
 export let get_job_list = get_filtered_list<Job, JobFilter>("/api/job");
+export let get_site_content_list = get_filtered_list<SiteContent, {}>("/api/site_content");
 
 export let get_incident_detail = get_detail<Incident, number>("/api/incident");
 export let get_program_detail = get_detail<Program, number>("/api/program");
