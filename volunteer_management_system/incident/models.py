@@ -261,6 +261,7 @@ class VolunteerProfile(models.Model):
         upload_to="uploads/images/profile_images/",
         blank=True,
         verbose_name=_("profile image"),
+        default="default_profile_image.png",
     )
 
     date_of_birth = models.DateField(verbose_name=_("date of birth"))
@@ -358,7 +359,7 @@ class Incident(models.Model):
         verbose_name_plural = _("Incidents")
         ordering = ("-date",)
 
-    name = models.CharField(max_length=100, verbose_name=_("name"))
+    name = models.CharField(max_length=200, verbose_name=_("name"))
     description = CKEditor5Field("Description", config_name="extends")
     date = models.DateTimeField(verbose_name=_("date"))
     municipality = models.ForeignKey(
@@ -383,7 +384,7 @@ class Program(models.Model):
         verbose_name_plural = _("Programs")
         ordering = ("-pk",)
 
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=200)
     description = CKEditor5Field("Description", config_name="extends")
     incident = models.ForeignKey(
         Incident,
@@ -401,7 +402,7 @@ class Job(models.Model):
         verbose_name_plural = _("Jobs")
         ordering = ("-start_date",)
 
-    name = models.CharField(max_length=100, verbose_name=_("name"))
+    name = models.CharField(max_length=200, verbose_name=_("name"))
     start_date = models.DateTimeField(verbose_name=_("start date"))
     end_date = models.DateTimeField(verbose_name=_("end date"))
     vacancy = models.PositiveIntegerField(verbose_name=_("vacancy"))

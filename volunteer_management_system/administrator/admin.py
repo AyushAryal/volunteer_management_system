@@ -90,7 +90,6 @@ class IncidentAdmin(LeafletGeoAdmin):
     search_fields = ("name", "municipality__name")
 
     def get_form(self, request, obj, *args, **kwargs):
-        print(request, obj, args, kwargs)
         return super().get_form(request, obj, *args, **kwargs)
 
     def formatted_date(self, incident):

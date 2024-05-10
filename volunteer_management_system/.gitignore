@@ -1,12 +1,14 @@
 *.pyc
 __pycache__/
-db.sqlite3
 *.mo
-media/
+media/*
+!media/default_profile_image.png
 /logs/*
 .env
 staticfiles/
 node_modules/
 .parcel-cache/
 administrator/static/admin/dist
-res/downloaded_images/*.webp
+build.sh
+*.geojson.json
+incidents.json
