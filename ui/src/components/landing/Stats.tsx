@@ -11,8 +11,7 @@ const Stats = () => {
 
   useEffect(() => {
     let networkRequest = async () => {
-      let query = {}
-      get_incident_list(query).then((incidents) => {
+      get_incident_list({}).then((incidents) => {
         store.incidentList.set(incidents);
       });
     };

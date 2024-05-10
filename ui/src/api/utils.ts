@@ -1,12 +1,14 @@
 import { deepFlatten } from "utils";
 import { server } from "./api";
 import { token_aware_fetch } from "./token";
+import { GenericDeserializer, IDeserializer } from "@models/deserializer";
 
 export function get_id(url: string): number {
     return +url.split("/").reverse()[0];
 }
 
-export function get_filtered_list<T, F>(endpoint: string): (query?: F) => Promise<T[]> {
+export function get_filtered_list<T, F>(endpoint: string, deserializer?: IDeserializer<T>): (query?: F) => Promise<T[]> {
+    deserializer = deserializer || GenericDeserializer<T>();
     return async (query?: F) => {
         if (typeof (query) !== "undefined") {
             const query_string = Object.entries(query ?? {})
@@ -14,19 +16,20 @@ export function get_filtered_list<T, F>(endpoint: string): (query?: F) => Promis
                 .join("&");
             const url = `${server}${endpoint}?${query_string}`;
             let response = await token_aware_fetch(url);
-            return await response.json();
+            return (await response.json()).map(deserializer);
         }
         const url = `${server}${endpoint}`;
         let response = await token_aware_fetch(url);
-        return await response.json();
+        return (await response.json()).map(deserializer);
     }
 }
 
-export function get_detail<T, I>(endpoint: string): (id: I) => Promise<T> {
+export function get_detail<T, I>(endpoint: string, deserializer?: IDeserializer<T>): (id: I) => Promise<T> {
+    deserializer = deserializer || GenericDeserializer<T>();
     return async (id: I) => {
         const url = `${server}${endpoint}/${id}`;
         let response = await token_aware_fetch(url);
-        return await response.json();
+        return deserializer(await response.json());
     }
 }
 

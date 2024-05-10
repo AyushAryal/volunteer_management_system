@@ -1,4 +1,6 @@
 import { LatLngTuple } from "leaflet";
+import { IDeserializer } from "./deserializer";
+import { flip_point } from "./geojson";
 
 export type Gender = "Male" | "Female" | "Other";
 export type Nationality = "National" | "International";
@@ -24,6 +26,11 @@ export interface Incident {
     point: LatLngTuple,
     municipality: string,
     severity: string,
+}
+
+export const IncidentDeserializer: IDeserializer<Incident> = (json: any) => {
+    flip_point(json.point);
+    return json as Incident;
 }
 
 export interface Program {

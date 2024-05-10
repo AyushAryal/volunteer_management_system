@@ -40,24 +40,6 @@ export function AllFederalBodyPolygons() {
         });
     }, [store.provinceList]);
 
-    // const districtPolygons = useMemo(() => {
-    //     return store.districtList.get().map((body) => {
-    //         let points = body.shape.coordinates as LatLngTuple[][];
-    //         return <Polygon key={body.url} positions={points} color="black" weight={1}>
-    //             <Tooltip sticky>{body.name}</Tooltip>
-    //         </Polygon >;
-    //     });
-    // }, [store.districtList]);
-
-    // const municipalityPolygons = useMemo(() => {
-    //     return store.municipalityList.get().map((body) => {
-    //         let points = body.shape.coordinates as LatLngTuple[][];
-    //         return <Polygon key={body.url} positions={points} color="black" weight={1}>
-    //             <Tooltip sticky>{body.name}</Tooltip>
-    //         </Polygon >;
-    //     });
-    // }, [store.municipalityList]);
-
     return <>
         <div className={store.mapControls.showProvinceBorders ? "" : "hidden"}>
             {provincePolygons}

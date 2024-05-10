@@ -15,7 +15,7 @@ import { storeState } from "@models/store.ts";
 import { faAngleRight } from '@fortawesome/free-solid-svg-icons';
 import { IncidentDetailModal } from '@components/map/IncidentDetailModal';
 import { RefObject, useEffect, useState } from 'react';
-import { Map } from 'leaflet';
+import { Map as LeafletMap } from 'leaflet';
 
 
 type IncidentRibbonProps = { incident: Incident }
@@ -120,8 +120,8 @@ function countIncidentsInLastYearByMonth(incidents: ImmutableArray<Incident>): D
 }
 
 export function IncidentByMonth({ chartType }: { chartType: string }) {
-    const store = useHookstate(storeState);
-    const dataset = countIncidentsInLastYearByMonth(store.incidentList.get());
+    const incidentList = useHookstate(storeState.incidentList);
+    const dataset = countIncidentsInLastYearByMonth(incidentList.get());
     dataset.reverse();
 
     const [chartData, setChartData] = useState({});
@@ -177,7 +177,7 @@ export function IncidentByMonth({ chartType }: { chartType: string }) {
 
         setChartData(data);
         setChartOptions(options);
-    }, [store.incidentList]);
+    }, [incidentList]);
 
     return (
         <div className="card">
@@ -216,7 +216,7 @@ function OverviewTabpages() {
 }
 
 
-type SideBarProps = { mapRef: RefObject<Map> }
+type SideBarProps = { mapRef: RefObject<LeafletMap> }
 export function SideBar({ mapRef }: SideBarProps) {
     let store = useHookstate(storeState);
     let federal_body = get_selected_local_body(store);
