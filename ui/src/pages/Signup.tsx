@@ -12,10 +12,11 @@ import { SignupProfileInformation } from '@components/signup/SignupProfileInform
 import { SignupIdentification } from '@components/signup/SignupIdentification';
 
 import { signup } from '@api/incident';
-import { describeApiErrors } from '@api/utils';
+import { describe_api_errors } from '@api/utils';
 import { BloodGroup, Gender, Nationality, VolunteerCategory } from '@models/incident';
+import { FormState } from '@api/form.tsx';
 
-type VolunteerDetails = {
+type VolunteerSignupForm = {
     email: string,
     password: string,
     confirmPassword: string,
@@ -39,7 +40,7 @@ type VolunteerDetails = {
     passportExpiryDate: string,
 };
 
-async function perform_signup(details: VolunteerDetails): Promise<string | boolean> {
+async function perform_signup(form: VolunteerSignupForm): Promise<FormState> {
     const {
         email,
         password,
@@ -62,14 +63,14 @@ async function perform_signup(details: VolunteerDetails): Promise<string | boole
         passportNumber,
         passportIssueDate,
         passportExpiryDate,
-    } = details;
+    } = form;
 
     if (!password || !confirmPassword) {
-        return "Password cannot be empty";
+        return FormState.fromError("Password cannot be empty");
     } else if (password != confirmPassword) {
-        return "Password is not the same as confirm password";
+        return FormState.fromError("Password is not the same as confirm password");
     } else {
-        let form: any = {
+        let body: any = {
             "email": email,
             "password": password,
             "volunteer": {
@@ -101,22 +102,22 @@ async function perform_signup(details: VolunteerDetails): Promise<string | boole
         };
 
         if (citizenshipId.length + citizenshipDistrict.length + citizenshipRegistrationDate.length === 0) {
-            form = Object.fromEntries(Object.entries(form).filter(([k, _]) => k !== "citizenship"));
+            body = Object.fromEntries(Object.entries(body).filter(([k, _]) => k !== "citizenship"));
         }
         if (nationalId.length + nationalIdRegistrationDate.length === 0) {
-            form = Object.fromEntries(Object.entries(form).filter(([k, _]) => k !== "national_id"));
+            body = Object.fromEntries(Object.entries(body).filter(([k, _]) => k !== "national_id"));
         }
         if (passportNumber.length + passportIssueDate.length + passportExpiryDate.length === 0) {
-            form = Object.fromEntries(Object.entries(form).filter(([k, _]) => k !== "passport"));
+            body = Object.fromEntries(Object.entries(body).filter(([k, _]) => k !== "passport"));
         }
 
-        let response = await signup(JSON.stringify(form));
+        let response = await signup(JSON.stringify(body));
         if (response.status == 400) {
-            return describeApiErrors(await response.json());
+            return FormState.fromError(describe_api_errors(await response.json()));
         } else if (response.status == 201) {
-            return true;
+            return FormState.fromSubmitted(true);
         } else {
-            return "Network failure. Please try again";
+            return FormState.fromError("Network failure. Please try again");
         }
     }
 }
@@ -154,7 +155,7 @@ export function Signup() {
     const passportExpiryDateState = useState("")
 
     const [termsAccepted, setTermsAccepted] = useState(false);
-    const [formErrors, setFormErrors] = useState<string | boolean>(false);
+    const [formState, setFormState] = useState(FormState.init());
     const [sectionIndex, setSectionIndex] = useState(0);
 
     const onSubmit = async () => {
@@ -180,7 +181,7 @@ export function Signup() {
         const [passportIssueDate,] = passportIssueDateState
         const [passportExpiryDate,] = passportExpiryDateState
 
-        setFormErrors(await perform_signup({
+        setFormState(await perform_signup({
             email,
             password,
             confirmPassword,
@@ -205,8 +206,12 @@ export function Signup() {
         }));
     };
 
-    let response;
-    if (formErrors === true) {
+    let response: undefined | JSX.Element;
+    if (formState.hasErrors()) {
+        response = <div className="flex flex-row align-items-center">
+            {formState.getErrorAsElement()}
+        </div >;
+    } else if (formState.isSubmitted()) {
         response = <div className="flex flex-row align-items-center mt-5 text-sm text-400" style={{ gap: "0.5rem" }}>
             <FontAwesomeIcon
                 icon={faCheckCircle}
@@ -214,14 +219,7 @@ export function Signup() {
                 style={{ fontSize: "2.5rem" }}
             />
             &nbsp; <span> A verification link has been sent to your email. <br /> Please use the link to activate your account. </span>
-        </div>
-
-    } else if (typeof formErrors === "string") {
-        response = <div className="flex flex-row align-items-center">
-            <pre style={{ whiteSpace: "pre-wrap", color: "var(--red-600)", fontWeight: "bold" }}>
-                {formErrors}
-            </pre>
-        </div >;
+        </div>;
     }
 
     const submitAndFormErrors = <div className="flex flex-column w-full align-items-center">
@@ -235,7 +233,7 @@ export function Signup() {
             </div>
             <Button
                 label="Submit"
-                disabled={!termsAccepted === true || formErrors === true}
+                disabled={!termsAccepted === true || formState.isSubmitted()}
                 onClick={onSubmit}
             />
         </div>

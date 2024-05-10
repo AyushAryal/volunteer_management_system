@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useHookstate } from '@hookstate/core';
 
 import { Dropdown } from 'primereact/dropdown';
@@ -10,9 +10,12 @@ import {
 } from '@models/federal';
 import { storeState } from '@models/store';
 
+import { useMap } from 'react-leaflet/hooks';
 import { Button } from 'primereact/button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Card } from 'primereact/card';
+import { BoundingBox } from '@models/geojson';
+import { LatLngBounds } from 'leaflet';
 
 
 export function FederalSelector() {
@@ -20,6 +23,23 @@ export function FederalSelector() {
 
     const store = useHookstate(storeState);
     const mapControls = store.mapControls;
+    const map = useMap();
+
+    useEffect(() => {
+        let bbox: BoundingBox = [26, 80, 31, 89];
+        if (mapControls.selectedMunicipality.get() !== null) {
+            let municipality = store.municipalityList.get().find((body) => body.url == mapControls.selectedMunicipality.get());
+            bbox = municipality?.shape.bbox as BoundingBox ?? bbox;
+        } else if (mapControls.selectedDistrict.get() !== null) {
+            let district = store.districtList.get().find((body) => body.url == mapControls.selectedDistrict.get());
+            bbox = district?.shape.bbox as BoundingBox ?? bbox;
+        } else if (mapControls.selectedProvince.get() !== null) {
+            let province = store.provinceList.get().find((body) => body.url == mapControls.selectedProvince.get());
+            bbox = province?.shape.bbox as BoundingBox ?? bbox;
+        }
+        let bounds = new LatLngBounds([[bbox[0], bbox[1]], [bbox[2], bbox[3]]]);
+        map.flyToBounds(bounds);
+    }, [mapControls.selectedProvince, mapControls.selectedDistrict, mapControls.selectedMunicipality]);
 
     const updateProvince = (province: Province | undefined) => {
         mapControls.selectedMunicipality.set(() => null);
@@ -58,69 +78,69 @@ export function FederalSelector() {
     const progressSpinner = <ProgressSpinner style={{ width: '50px', height: '50px' }} />;
 
     return (
-      <Card>
-        <div className="flex flex-column justify-content-center align-content-center">
-          <Button label="Filter" onClick={() => setExpanded(!expanded)}>
-            <FontAwesomeIcon icon="filter"></FontAwesomeIcon>
-          </Button>
-          <Dropdown
-            value={store.provinceList
-              .get()
-              .find(
-                (province) => mapControls.selectedProvince.get() == province.url
-              )}
-            onChange={(ev) => {
-              updateProvince(ev.value);
-            }}
-            options={store.provinceList.get() as Province[]}
-            emptyMessage={
-              store.provinceList.get().length == 0 ? progressSpinner : null
-            }
-            optionLabel="name"
-            showClear
-            placeholder="Select a province"
-            className="w-full md:w-20rem"
-          />
-          <Dropdown
-            value={store.districtList
-              .get()
-              .find(
-                (district) => mapControls.selectedDistrict.get() == district.url
-              )}
-            onChange={(ev) => {
-              updateDistrict(ev.value);
-            }}
-            options={store.districtList.get() as District[]}
-            emptyMessage={
-              store.districtList.get().length == 0 ? progressSpinner : null
-            }
-            optionLabel="name"
-            showClear
-            filter
-            placeholder="Select a district"
-            className="w-full md:w-20rem"
-          />
-          <Dropdown
-            value={store.municipalityList
-              .get()
-              .find(
-                (municipality) =>
-                  mapControls.selectedMunicipality.get() == municipality.url
-              )}
-            onChange={(ev) => {
-              updateMunicipality(ev.value);
-            }}
-            options={store.municipalityList.get() as Municipality[]}
-            emptyMessage={
-              store.municipalityList.get().length == 0 ? progressSpinner : null
-            }
-            optionLabel="name"
-            showClear
-            filter
-            placeholder="Select a municipality"
-            className="w-full md:w-20rem"
-          />
-        </div>
-      </Card>
+        <Card>
+            <div className="flex flex-column justify-content-center align-content-center">
+                <Button label="Filter" onClick={() => setExpanded(!expanded)}>
+                    <FontAwesomeIcon icon="filter"></FontAwesomeIcon>
+                </Button>
+                <Dropdown
+                    value={store.provinceList
+                        .get()
+                        .find(
+                            (province) => mapControls.selectedProvince.get() == province.url
+                        )}
+                    onChange={(ev) => {
+                        updateProvince(ev.value);
+                    }}
+                    options={store.provinceList.get() as Province[]}
+                    emptyMessage={
+                        store.provinceList.get().length == 0 ? progressSpinner : null
+                    }
+                    optionLabel="name"
+                    showClear
+                    placeholder="Select a province"
+                    className="w-full md:w-20rem"
+                />
+                <Dropdown
+                    value={store.districtList
+                        .get()
+                        .find(
+                            (district) => mapControls.selectedDistrict.get() == district.url
+                        )}
+                    onChange={(ev) => {
+                        updateDistrict(ev.value);
+                    }}
+                    options={store.districtList.get() as District[]}
+                    emptyMessage={
+                        store.districtList.get().length == 0 ? progressSpinner : null
+                    }
+                    optionLabel="name"
+                    showClear
+                    filter
+                    placeholder="Select a district"
+                    className="w-full md:w-20rem"
+                />
+                <Dropdown
+                    value={store.municipalityList
+                        .get()
+                        .find(
+                            (municipality) =>
+                                mapControls.selectedMunicipality.get() == municipality.url
+                        )}
+                    onChange={(ev) => {
+                        updateMunicipality(ev.value);
+                    }}
+                    options={store.municipalityList.get() as Municipality[]}
+                    emptyMessage={
+                        store.municipalityList.get().length == 0 ? progressSpinner : null
+                    }
+                    optionLabel="name"
+                    showClear
+                    filter
+                    placeholder="Select a municipality"
+                    className="w-full md:w-20rem"
+                />
+            </div>
+        </Card>
     );
 }
