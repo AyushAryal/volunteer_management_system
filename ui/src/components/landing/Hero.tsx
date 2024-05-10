@@ -26,7 +26,7 @@ const Hero = () => {
 
     return (
         <section className="relative w-full h-auto min-h-screen mx-auto flex flex-col bg-indigo-700">
-            <div className="max-w-6xl mx-auto flex flex-row p-8">
+            <div className="max-w-6xl mx-auto flex flex-row p-8 py-7">
                 <div className="max-w-2xl">
                     <h1 className="text-4xl text-white">
                         Welcome To
@@ -37,6 +37,7 @@ const Hero = () => {
                     <Button
                         className="my-3"
                         label="Dashboard"
+                        raised
                         onClick={() => navigate("/dashboard")}
                     />
                 </div>

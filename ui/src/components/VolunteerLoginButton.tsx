@@ -160,8 +160,8 @@ export function VolunteerLoginButton() {
         if (modalVisible) {
             return <VolunteerLoginModal visible={modalVisible} setVisible={setModalVisible} />;
         } else {
-            return <Button label='Login' onClick={() => setModalVisible(true)} >
-                <FontAwesomeIcon icon={faUser} className="mx-2" />
+            return <Button className="mx-1" label='Login' raised onClick={() => setModalVisible(true)} >
+                <FontAwesomeIcon className="p-1 text-red-500" icon={faUser} />
             </Button>;
         }
     } else {
