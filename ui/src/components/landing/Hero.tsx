@@ -14,9 +14,9 @@ const Hero = () => {
   console.log(siteContents)
   return (
     <section className="relative w-full h-auto min-h-screen mx-auto flex flex-col bg-indigo-700">
-      <div className="max-w-6xl mx-auto flex flex-row p-8">
+      <div className="max-w-6xl mx-auto flex flex-row p-8 pt-7">
         <div className="max-w-2xl">
-          <h1 className="text-4xl text-white">
+          <h1 className="text-white text-4xl">
             Welcome To
             <br />
             <span className="">Volunteer Management System</span>
@@ -25,7 +25,7 @@ const Hero = () => {
             <div key={content.label}>
               {content.label === "Hero_description" && (
                 <p
-                  className="text-white text-xl"
+                  className="text-white text-lg"
                   dangerouslySetInnerHTML={{ __html: content.content }}
                 />
               )}
@@ -42,8 +42,9 @@ const Hero = () => {
             principle of user centric design.
           </p> */}
           <Button
-            className="my-3"
+            className="my-3 bg-red-600 border-red-600"
             label="Dashboard"
+            raised
             onClick={() => navigate("/dashboard")}
           />
         </div>

@@ -9,7 +9,8 @@
     "paths": {
       "@models/*": ["models/*"],
       "@components/*": ["components/*"],
-      "@api/*": ["api/*"]
+      "@api/*": ["api/*"],
+      "@styles/*": ["styles/*"],
     },
     /* Bundler mode */
     "moduleResolution": "bundler",
