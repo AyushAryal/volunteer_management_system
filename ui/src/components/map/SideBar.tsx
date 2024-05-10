@@ -72,7 +72,7 @@ function OverviewJobs() {
     const template = (job: Job) => {
         const start_date = new Date(job.start_date);
         const end_date = new Date(job.end_date);
-        return <div className="flex flex-column flex-wrap p-2">
+        return <div className="flex flex-column flex-wrap p-2 w-full">
             <div className="m-1"> {job.name}</div>
             <div className="text-sm text-400">
                 <FontAwesomeIcon icon={faClock} className="mx-2" />
