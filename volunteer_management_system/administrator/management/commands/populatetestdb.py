@@ -1,8 +1,8 @@
 import json
-import math
 import random
 import os
-from datetime import timedelta
+import inspect
+from datetime import timedelta, datetime
 
 import federal.models
 import incident.models
@@ -11,7 +11,7 @@ import requests
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group, Permission
-from django.contrib.gis.db.models.functions import PointOnSurface
+from django.contrib.gis.geos import Point
 from django.contrib.gis.geos import Polygon
 from django.core.management.base import BaseCommand
 from django.utils import timezone
@@ -22,24 +22,41 @@ PASSWORD = os.getenv("ADMIN_PASSWORD", "shark@123")
 class Command(BaseCommand):
     help = "This command populates the database with default db"
 
-    def download_geojson_files(self):
+    def download_incidents(self):
+        path = settings.BASE_DIR / "shared" / "incidents.json"
+        if not os.path.exists(path):
+            response = requests.get(
+                "https://bipadportal.gov.np/api/v1/incident/?format=json&limit=1000000000"
+            )
+
+            if response.status_code == 200:
+                with open(path, "wb") as file:
+                    file.write(response.content)
+                self.stdout.write(self.style.SUCCESS(f"Downloaded {path}"))
+            else:
+                raise RuntimeError("Could not get a response")
+
+    def download_federal_geojson_files(self):
         BASE_URL = "https://bipadportal.gov.np/api/v1/"
         QUERY_PARAMS = "format=geojson&limit=1000000000"
 
         ENDPOINTS = ["province", "district", "municipality", "ward"]
         for endpoint in ENDPOINTS:
-            filename = f"{endpoint}.geojson.json"
-            path = settings.BASE_DIR / "shared" / filename
+            path = settings.BASE_DIR / "shared" / f"{endpoint}.geojson.json"
             if not os.path.exists(path):
-                self.stdout.write(self.style.SUCCESS(f"Downloading {filename}"))
+                self.stdout.write(self.style.SUCCESS(f"Downloading {path}"))
                 response = requests.get(f"{BASE_URL}{endpoint}/?{QUERY_PARAMS}")
+
+                if response.status_code != 200:
+                    raise RuntimeError("Cannot connect to API from bipadportal.gov.np")
+
                 with open(path, "wb") as file:
                     file.write(response.content)
-                    self.stdout.write(self.style.SUCCESS(f"Downloaded {filename}"))
+                self.stdout.write(self.style.SUCCESS(f"Downloaded {path}"))
             else:
                 self.stdout.write(
                     self.style.SUCCESS(
-                        f"File {filename} already exists, skipping download."
+                        f"File {path} already exists, skipping download."
                     )
                 )
 
@@ -314,52 +331,27 @@ class Command(BaseCommand):
                 self.stdout.write(self.style.SUCCESS(f"Created volunteer {email}"))
         return volunteers
 
-    def create_incidents(self, municipalities):
-        incidents = []
-        disasters = [
-            "Earthquake",
-            "Landslide",
-            "Food",
-            "Forest Fire",
-            "Avalance",
-            "Glacial Flood",
-            "Volcanic Eruption",
-        ]
-        adjectives = [
-            "Severe",
-            "Mild",
-            "Dangerous",
-            "Devestating",
-            "Violent",
-            "Critical",
-        ]
-        for _ in range(math.floor(len(municipalities) * 0.6)):
-            municipality = random.choice(municipalities)
-            name = "{} {} in {}".format(
-                random.choice(adjectives),
-                random.choice(disasters),
-                municipality.name,
-            )
-            point = (
-                federal.models.Municipality.objects.filter(pk=municipality.pk)
-                .annotate(rand_point=PointOnSurface("shape"))
-                .values("rand_point")
-                .first()["rand_point"]
-            )
-
-            severity = random.choice(list(incident.models.IncidentSeverity))
-            incident_ = incident.models.Incident(
-                name=name,
-                description=name,
-                municipality=municipality,
-                date=timezone.now() - timedelta(days=random.randint(0, 30 * 12 * 5)),
-                point=point,
-                severity=severity,
-            )
-            incident_.save()
-            self.stdout.write(self.style.SUCCESS(f"Created incident: {name}"))
-            incidents.append(incident_)
-        return incidents
+    def load_incidents(self):
+        filepath = settings.BASE_DIR / "shared" / "incidents.json"
+        with open(filepath, encoding="utf8") as j:
+            response = json.load(j)
+            results = response["results"]
+            incidents = []
+            for result in random.sample(results, int(len(results) * 0.25)):
+                # At point of writing only one ward in ward list
+                ward_id = result["wards"][0]
+                ward = federal.models.Ward.objects.get(pk=ward_id)
+                date = datetime.fromisoformat(result["incidentOn"])
+                incident_ = incident.models.Incident(
+                    name=result["title"],
+                    date=date,
+                    description=result["description"] or "",
+                    municipality=ward.municipality,
+                    severity=incident.models.IncidentSeverity.Moderate,
+                    point=Point(result["point"]["coordinates"]),
+                )
+                incidents.append(incident_)
+            return incidents
 
     def create_programs(self, incidents):
         programs = []
@@ -377,8 +369,6 @@ class Command(BaseCommand):
                 name=name,
                 description=name,
             )
-            program.save()
-            self.stdout.write(self.style.SUCCESS(f"Created program: {name}"))
             programs.append(program)
         return programs
 
@@ -396,10 +386,36 @@ class Command(BaseCommand):
                 description=program.name,
                 status=incident.models.JobStatus.NotAssigned,
             )
-            job.save()
-            self.stdout.write(self.style.SUCCESS(f"Created job: {program.name}"))
             jobs.append(job)
         return jobs
+
+    def create_site_contents(self):
+        contents = [
+            {
+                "label": "hero",
+                "content": inspect.cleandoc(
+                    """
+                    The National Volunteer Bureau formation and Mobilization Platform is
+                    a robust platform that houses records of all volunteers based on
+                    age, skills, preferences, and availability along with the
+                    functionality to manage them. It is built upon the concept of
+                    creating a national portal embedded with independent platforms for
+                    national, provincial, district, and municipal governments with a
+                    bottom-up approach of disaster data partnership focusing on the
+                    principle of user centric design.
+                    """
+                ),
+            },
+        ]
+        site_contents = []
+        for content in contents:
+            site_content = incident.models.SiteContent(**content)
+            site_content.save()
+            self.stdout.write(
+                self.style.SUCCESS(f"Created site-content {content['label']}")
+            )
+            site_contents.append(site_content)
+        return site_contents
 
     def create_super_user(self, email):
         user = get_user_model().objects.create_user(
@@ -414,31 +430,42 @@ class Command(BaseCommand):
         return user
 
     def handle(self, *_, **__):
-        self.download_geojson_files()
+        self.download_federal_geojson_files()
+        self.download_incidents()
+
         self.create_federal_group()
         self.create_super_user("admin@example.com")
 
+        self.stdout.write(self.style.SUCCESS("Creating provinces"))
         provinces = self.load_provinces()
-        if federal.models.Province.objects.all().count() == 0:
-            for province in provinces:
-                province.save()
+        federal.models.Province.objects.bulk_create(provinces)
 
+        self.stdout.write(self.style.SUCCESS("Creating districts"))
         districts = self.load_districts()
-        if federal.models.District.objects.all().count() == 0:
-            for district in districts:
-                district.save()
+        federal.models.District.objects.bulk_create(districts)
 
+        self.stdout.write(self.style.SUCCESS("Creating municipalities"))
         municipalities = self.load_municipalities()
-        if federal.models.Municipality.objects.all().count() == 0:
-            for municipality in municipalities:
-                municipality.save()
+        federal.models.Municipality.objects.bulk_create(municipalities)
 
+        self.stdout.write(self.style.SUCCESS("Creating wards"))
         wards = self.load_wards()
-        if federal.models.Ward.objects.all().count() == 0:
-            for ward in wards:
-                ward.save()
+        federal.models.Ward.objects.bulk_create(wards)
 
-        incidents = self.create_incidents(municipalities)
-        programs = self.create_programs(incidents)
+        self.stdout.write(self.style.SUCCESS("Loading incidents from bipad"))
+        incidents = self.load_incidents()
+        incident.models.Incident.objects.bulk_create(incidents)
+
+        self.stdout.write(self.style.SUCCESS("Creating programs"))
+        programs = self.create_programs(
+            random.sample(incidents, int(len(incidents) * 0.05))
+        )
+        incident.models.Program.objects.bulk_create(programs)
+
         _ = self.create_volunteers(municipalities)
-        _ = self.create_jobs(programs)
+
+        self.stdout.write(self.style.SUCCESS("Creating jobs"))
+        jobs = self.create_jobs(programs)
+        incident.models.Job.objects.bulk_create(jobs)
+
+        _ = self.create_site_contents()

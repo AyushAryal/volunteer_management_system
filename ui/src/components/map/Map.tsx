@@ -1,10 +1,9 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
-import { LatLngBounds } from 'leaflet';
+import { LatLngBounds, Map } from 'leaflet';
 import { TileLayer, MapContainer } from 'react-leaflet';
 import { useHookstate } from '@hookstate/core';
 
-import { BoundingBox } from '@models/geojson.ts';
 import { FederalBodyPolygons } from '@components/map/FederalPolygons.tsx';
 import { FederalSelector } from '@components/map/FederalSelector';
 import { SideBar } from '@components/map/SideBar';
@@ -12,9 +11,9 @@ import { storeState } from '@models/store.ts';
 import { get_id } from '@api/utils.ts';
 import { FederalFilter, get_incident_list, get_job_list, get_program_list, get_volunteer_profile } from '@api/incident.ts';
 
-export function Map() {
+export function VmsMap() {
     const store = useHookstate(storeState);
-    const mapControls = store.mapControls;
+    const mapRef = useRef<Map>(null);
 
     useEffect(() => {
         let networkRequest = async () => {
@@ -56,37 +55,27 @@ export function Map() {
         store.mapControls.selectedProvince
     ]);
 
-    let bbox: BoundingBox = [26, 80, 31, 89];
-    if (mapControls.selectedMunicipality.get() !== null) {
-        let municipality = store.municipalityList.get().find((body) => body.url == mapControls.selectedMunicipality.get());
-        bbox = municipality?.shape.bbox as BoundingBox ?? bbox;
-    } else if (mapControls.selectedDistrict.get() !== null) {
-        let district = store.districtList.get().find((body) => body.url == mapControls.selectedDistrict.get());
-        bbox = district?.shape.bbox as BoundingBox ?? bbox;
-    } else if (mapControls.selectedProvince.get() !== null) {
-        let province = store.provinceList.get().find((body) => body.url == mapControls.selectedProvince.get());
-        bbox = province?.shape.bbox as BoundingBox ?? bbox;
-    }
-
-    let bounds = new LatLngBounds([[bbox[0], bbox[1]], [bbox[2], bbox[3]]]);
-
     return (
         <section className="w-full h-screen mx-auto flex">
-        <div className="flex flex-row" style={{ width: "100vw", height: "100vh" }}>
-            <SideBar />
-            <MapContainer bounds={bounds} style={{ width: "100%", height: "100%" }}>;
-                <TileLayer
-                    url='https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png'
-                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                />
-                <FederalBodyPolygons />
-                <div style={{ position: "absolute", right: "10px", top: "10px" }}>
-                    <div className="leaflet-control flex flex-row align-items-start" style={{ gap: "1rem" }}>
-                        <FederalSelector />
+            <div className="flex flex-row align-items-stretch" style={{ width: "100vw", height: "100vh" }}>
+                <SideBar mapRef={mapRef} />
+                <MapContainer
+                    bounds={new LatLngBounds([[26, 80], [31, 89]])}
+                    style={{ width: "100%", height: "100%" }}
+                    ref={mapRef}
+                >
+                    <TileLayer
+                        url='https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png'
+                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                    />
+                    <FederalBodyPolygons />
+                    <div style={{ position: "absolute", right: "10px", top: "10px" }}>
+                        <div className="leaflet-control flex flex-row align-items-start" style={{ gap: "1rem" }}>
+                            <FederalSelector />
+                        </div>
                     </div>
-                </div>
-            </MapContainer>
-        </div>
+                </MapContainer>
+            </div>
         </section>
     );
 }

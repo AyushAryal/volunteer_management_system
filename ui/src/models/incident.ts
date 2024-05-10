@@ -65,3 +65,8 @@ export interface VolunteerProfile {
     passport_issue_date: string,
     passpoert_expiry_date: string,
 }
+
+export interface SiteContent {
+    label: string;
+    content: string;
+}

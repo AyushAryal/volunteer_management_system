@@ -20,19 +20,14 @@ export async function token_aware_fetch(resource: RequestInfo | URL, options?: R
     }
 }
 
-export async function login(email: string, password: string, store: State<Store, {}>) {
+export async function login(email: string, password: string): Promise<Response> {
     let body = JSON.stringify({ email, password });
     let response = await fetch(`${server}/api/token`, {
         "headers": { "Content-Type": "application/json" },
         "method": "POST",
         "body": body,
     });
-
-    if (response.status == 200) {
-        let token: Token = await response.json();
-        store.token.set(token);
-        localStorage.setItem("token", JSON.stringify(token));
-    }
+    return response;
 }
 
 export async function logout(store: State<Store, {}>) {

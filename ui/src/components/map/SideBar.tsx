@@ -9,12 +9,13 @@ import { TabPanel, TabView } from 'primereact/tabview';
 
 import { DataView } from 'primereact/dataview';
 import { Incident, Job } from '@models/incident.ts';
-import { Login } from '@components/Login.tsx';
+import { VolunteerLoginButton } from '@components/VolunteerLoginButton.tsx';
 import { get_selected_local_body } from '../../utils.ts';
 import { storeState } from "@models/store.ts";
 import { faAngleRight } from '@fortawesome/free-solid-svg-icons';
 import { IncidentDetailModal } from '@components/map/IncidentDetailModal';
-import { useEffect, useState } from 'react';
+import { RefObject, useEffect, useState } from 'react';
+import { Map } from 'leaflet';
 
 
 type IncidentRibbonProps = { incident: Incident }
@@ -215,18 +216,23 @@ function OverviewTabpages() {
 }
 
 
-export function SideBar() {
-    let [show, setShow] = useState(false);
+type SideBarProps = { mapRef: RefObject<Map> }
+export function SideBar({ mapRef }: SideBarProps) {
     let store = useHookstate(storeState);
-
     let federal_body = get_selected_local_body(store);
 
-    return <div className={"relative h-screen shadow-3"} style={{ width: show ? "80%" : "0", zIndex: 450 }}>
-        <div className={`h-full overflow-x-hidden ${show ? "" : "hidden"}`}>
+    let [visible, setVisible] = useState(false);
+
+    useEffect(() => {
+        mapRef.current?.invalidateSize(true);
+    }, [visible]);
+
+    return <div className={"relative h-screen shadow-3"} style={{ width: visible ? "80%" : "0", zIndex: 450 }}>
+        <div className={`h-full overflow-x-hidden ${visible ? "" : "hidden"}`}>
             <div className="h-full flex flex-column px-3 py-2">
                 <div className="flex flex-row justify-content-between ">
                     <h1 className="font-light my-1 mx-1 align-items-center"> {federal_body?.name ?? "National"} </h1>
-                    <Login />
+                    <VolunteerLoginButton />
                 </div>
                 <OverviewTabpages />
             </div>
@@ -242,9 +248,9 @@ export function SideBar() {
                 overflow: "visible",
                 zIndex: 500,
             }}
-            onClick={() => setShow((show) => !show)}
+            onClick={() => setVisible(!visible)}
         >
-            <FontAwesomeIcon style={{ margin: "-50%" }} icon={`arrow-${show ? "left" : "right"}`}></FontAwesomeIcon>
+            <FontAwesomeIcon style={{ margin: "-50%" }} icon={`arrow-${visible ? "left" : "right"}`}></FontAwesomeIcon>
         </Button>
     </div>;
 }

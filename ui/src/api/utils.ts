@@ -30,7 +30,8 @@ export function get_detail<T, I>(endpoint: string): (id: I) => Promise<T> {
     }
 }
 
-export function describeApiErrors(json: object) {
+export function describe_api_errors(json: object): string {
+    if ("detail" in json) return json["detail"] as string;
     return Array.from(deepFlatten(json))
         .map(([k, v], i) => {
             if (Array.isArray(v)) {

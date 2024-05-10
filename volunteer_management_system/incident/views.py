@@ -21,6 +21,7 @@ class SiteContentViewSet(
 ):
     queryset = models.SiteContent.objects.all()
     serializer_class = serializers.SiteContentSerializer
+    pagination_class = None
 
     def get_serializer_class(self):
         return {

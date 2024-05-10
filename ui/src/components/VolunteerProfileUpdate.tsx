@@ -5,7 +5,7 @@ import { SignupAddressInformation } from '@components/signup/SignupAddressInform
 import { BloodGroup, Gender, Nationality, VolunteerCategory, VolunteerProfile } from '@models/incident';
 import { Button } from 'primereact/button';
 import { update_volunteer_profile } from '@api/incident';
-import { describeApiErrors } from '@api/utils';
+import { describe_api_errors } from '@api/utils';
 import { useHookstate } from '@hookstate/core';
 import { storeState } from '@models/store';
 
@@ -40,7 +40,7 @@ async function perform_volunteer_profile_update(url: string, form: VolunteerProf
     if (response.status == 200 || response.status == 204) {
         return await response.json();
     } else if (response.status == 400) {
-        return describeApiErrors(await response.json());
+        return describe_api_errors(await response.json());
     } else {
         return "Network failure. Please try again";
     }
@@ -53,7 +53,7 @@ type VolunteerProfileUpdateFormProps = {
 }
 
 export function VolunteerProfileUpdate(props: VolunteerProfileUpdateFormProps) {
-    const store = useHookstate(storeState);
+    const volunteerProfile = useHookstate(storeState.volunteerProfile);
 
     const firstNameState = useState(props.volunteer.first_name);
     const lastNameState = useState(props.volunteer.last_name);
@@ -98,7 +98,7 @@ export function VolunteerProfileUpdate(props: VolunteerProfileUpdateFormProps) {
             permanentMunicipality: selectedPermanentMunicipality,
         });
         if (typeof newProfile === "object") {
-            store.volunteerProfile.set(newProfile);
+            volunteerProfile.set(newProfile);
             setFormErrors(true);
         } else {
             setFormErrors(newProfile);

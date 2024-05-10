@@ -7,6 +7,7 @@ import {
 import { Incident, Job, Program, VolunteerProfile } from '@models/incident';
 
 import { hookstate } from '@hookstate/core';
+import { get_volunteer_profile } from '@api/incident';
 
 interface MapControls {
     selectedProvince: string | null,
@@ -67,6 +68,10 @@ export const storeState = hookstate<Store>({
         expandSidebar: false,
     }
 })
+
+get_volunteer_profile().then((volunteer) => {
+    storeState.volunteerProfile.set(volunteer);
+});
 
 get_province_list().then((provinceList) => {
     storeState.provinceList.set(provinceList);
