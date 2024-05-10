@@ -107,7 +107,7 @@ class IncidentAdmin(LeafletGeoAdmin):
 class ProgramAdmin(admin.ModelAdmin):
     model = incident.models.Program
     list_display = ("__str__", "incident")
-    search_fields = ("name", "incident__name")
+    search_fields = ("name", "incident__name", "incident__municipality__name")
 
     def get_queryset(self, request):
         if request.user.is_superuser:

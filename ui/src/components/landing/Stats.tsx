@@ -10,15 +10,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 const Stats = () => {
     const store = useHookstate(storeState);
 
-    useEffect(() => {
-      let networkRequest = async () => {
-        let query = {}
-        get_incident_list(query).then((incidents) => {
-          store.incidentList.set(incidents);
-        });
-      };
-      networkRequest();
-    }, []);
+  useEffect(() => {
+    let networkRequest = async () => {
+      get_incident_list({}).then((incidents) => {
+        store.incidentList.set(incidents);
+      });
+    };
+    networkRequest();
+  }, []);
 
     return (
       <section className="w-full mx-auto bg-indigo-700 px-8 py-6">
