@@ -1,8 +1,8 @@
 import { get_district_list, get_municipality_list, get_province_list } from '@api/federal';
 import {
-    Province,
-    District,
-    Municipality,
+    ProvinceBrief,
+    DistrictBrief,
+    MunicipalityBrief,
 } from './federal';
 import { Incident, Job, Program, VolunteerProfile } from '@models/incident';
 
@@ -17,7 +17,6 @@ interface MapControls {
     showDistrictBorders: boolean,
     showMunicipalityBorders: boolean,
     expandFilters: boolean,
-    expandSidebar: boolean,
 }
 
 export interface Token {
@@ -29,9 +28,9 @@ export interface Token {
 export interface Store {
     token: Token | null,
     volunteerProfile: VolunteerProfile | null,
-    provinceList: Province[],
-    districtList: District[],
-    municipalityList: Municipality[],
+    provinceList: ProvinceBrief[],
+    districtList: DistrictBrief[],
+    municipalityList: MunicipalityBrief[],
     incidentList: Incident[],
     jobList: Job[],
     programList: Program[],
@@ -65,22 +64,9 @@ export const storeState = hookstate<Store>({
         showDistrictBorders: false,
         showMunicipalityBorders: false,
         expandFilters: false,
-        expandSidebar: false,
     }
 })
 
 get_volunteer_profile().then((volunteer) => {
     storeState.volunteerProfile.set(volunteer);
 });
-
-get_province_list().then((provinceList) => {
-    storeState.provinceList.set(provinceList);
-})
-
-get_district_list().then((districtList) => {
-    storeState.districtList.set(districtList);
-})
-
-get_municipality_list().then((municipalityList) => {
-    storeState.municipalityList.set(municipalityList);
-})

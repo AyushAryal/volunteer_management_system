@@ -190,10 +190,11 @@ class IncidentViewSet(
 ):
     queryset = models.Incident.objects.all()
     serializer_class = serializers.IncidentSerializer
-    pagination_class = None
 
     class IncidentFilter(django_filters.FilterSet):
-        date = django_filters.NumericRangeFilter(field_name="date", lookup_expr="range")
+        date = django_filters.DateFromToRangeFilter(
+            field_name="date", lookup_expr="range"
+        )
         province = django_filters.ModelChoiceFilter(
             label="Province",
             field_name="municipality__district__province",
@@ -341,10 +342,10 @@ class JobViewSet(
             field_name="program",
             queryset=models.Program.objects.all(),
         )
-        start_date = django_filters.NumericRangeFilter(
+        start_date = django_filters.DateFromToRangeFilter(
             field_name="start_date", lookup_expr="range"
         )
-        end_date = django_filters.NumericRangeFilter(
+        end_date = django_filters.DateFromToRangeFilter(
             field_name="end_date", lookup_expr="range"
         )
         province = django_filters.ModelChoiceFilter(

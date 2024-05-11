@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework.authtoken",
     "rest_framework_gis",
+    "vectortiles",
     "django_filters",
     "corsheaders",
     "phonenumber_field",

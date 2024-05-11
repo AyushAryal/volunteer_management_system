@@ -1,8 +1,8 @@
 import { ImmutableObject, State } from "@hookstate/core";
 import { Store } from "./models/store";
-import { FederalBody } from "./models/federal";
+import { FederalBodyBrief } from "./models/federal";
 
-export function get_selected_federal_list(store: State<Store, {}>): ImmutableObject<FederalBody[]> | undefined {
+export function get_selected_federal_list(store: State<Store, {}>): ImmutableObject<FederalBodyBrief[]> | undefined {
     const mapControls = store.mapControls;
     if (mapControls.selectedMunicipality.get() !== null) {
         return store.municipalityList.get();
@@ -13,7 +13,7 @@ export function get_selected_federal_list(store: State<Store, {}>): ImmutableObj
     }
 }
 
-export function get_selected_local_body(store: State<Store, {}>): ImmutableObject<FederalBody> | undefined {
+export function get_selected_local_body(store: State<Store, {}>): ImmutableObject<FederalBodyBrief> | undefined {
     const mapControls = store.mapControls;
     if (mapControls.selectedMunicipality.get() !== null) {
         return store.municipalityList.get().find((body) => body.url == mapControls.selectedMunicipality.get());

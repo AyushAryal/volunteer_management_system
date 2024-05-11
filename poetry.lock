@@ -217,13 +217,13 @@ files = [
 
 [[package]]
 name = "django"
-version = "5.0.4"
+version = "5.0.6"
 description = "A high-level Python web framework that encourages rapid development and clean, pragmatic design."
 optional = false
 python-versions = ">=3.10"
 files = [
-    {file = "Django-5.0.4-py3-none-any.whl", hash = "sha256:916423499d75d62da7aa038d19aef23d23498d8df229775eb0a6309ee1013775"},
-    {file = "Django-5.0.4.tar.gz", hash = "sha256:4bd01a8c830bb77a8a3b0e7d8b25b887e536ad17a81ba2dce5476135c73312bd"},
+    {file = "Django-5.0.6-py3-none-any.whl", hash = "sha256:8363ac062bb4ef7c3f12d078f6fa5d154031d129a15170a1066412af49d30905"},
+    {file = "Django-5.0.6.tar.gz", hash = "sha256:ff1b61005004e476e0aeea47c7f79b85864c70124030e95146315396f1e7951f"},
 ]
 
 [package.dependencies]
@@ -237,13 +237,13 @@ bcrypt = ["bcrypt"]
 
 [[package]]
 name = "django-ckeditor-5"
-version = "0.2.12"
+version = "0.2.13"
 description = "CKEditor 5 for Django."
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "django-ckeditor-5-0.2.12.tar.gz", hash = "sha256:c7165f3736f3d29dddaeda09c175903bdf3cf2b3f376c46aa5be2cc30c2c4e97"},
-    {file = "django_ckeditor_5-0.2.12-py3-none-any.whl", hash = "sha256:f32cf1ce6e498d114baed8eda4b81526d61f55b55ee67ed985c26714365344e5"},
+    {file = "django_ckeditor_5-0.2.13-py3-none-any.whl", hash = "sha256:0850402680fb6b9dc255b1883910173ed37cc28906712558008f1d5a29045e6f"},
+    {file = "django_ckeditor_5-0.2.13.tar.gz", hash = "sha256:76fa26bdd65842262be7deb1b4cdb419cb080c89c62e0af933dfdd035b13b688"},
 ]
 
 [package.dependencies]
@@ -372,6 +372,31 @@ django = "*"
 typing-extensions = "*"
 
 [[package]]
+name = "django-vectortiles"
+version = "1.0.0b3"
+description = "Django vector tile generation"
+optional = false
+python-versions = ">=3.6"
+files = []
+develop = false
+
+[package.dependencies]
+django = "*"
+mercantile = "*"
+
+[package.extras]
+dev = ["black", "coverage", "django-debug-toolbar", "djangorestframework", "factory-boy", "flake8", "isort", "mapbox_vector_tile", "protobuf (<4.21.0)", "psycopg2-binary", "sphinx-rtd-theme"]
+mapbox = ["mapbox_vector_tile", "protobuf (<4.21.0)"]
+python = ["mapbox_vector_tile", "protobuf (<4.21.0)"]
+test = ["black", "coverage", "djangorestframework", "factory-boy", "flake8", "isort", "psycopg2-binary"]
+
+[package.source]
+type = "git"
+url = "git@github.com:submarcos/django-vectortiles.git"
+reference = "1.0.0-beta3"
+resolved_reference = "c377d5ef5596ebaa92f07dd7ebb8c863f38f5fcd"
+
+[[package]]
 name = "djangorestframework"
 version = "3.15.1"
 description = "Web APIs for Django, made easy."
@@ -454,6 +479,24 @@ files = [
 [package.extras]
 docs = ["mdx-gh-links (>=0.2)", "mkdocs (>=1.5)", "mkdocs-gen-files", "mkdocs-literate-nav", "mkdocs-nature (>=0.6)", "mkdocs-section-index", "mkdocstrings[python]"]
 testing = ["coverage", "pyyaml"]
+
+[[package]]
+name = "mercantile"
+version = "1.2.1"
+description = "Web mercator XYZ tile utilities"
+optional = false
+python-versions = "*"
+files = [
+    {file = "mercantile-1.2.1-py3-none-any.whl", hash = "sha256:30f457a73ee88261aab787b7069d85961a5703bb09dc57a170190bc042cd023f"},
+    {file = "mercantile-1.2.1.tar.gz", hash = "sha256:fa3c6db15daffd58454ac198b31887519a19caccee3f9d63d17ae7ff61b3b56b"},
+]
+
+[package.dependencies]
+click = ">=3.0"
+
+[package.extras]
+dev = ["check-manifest"]
+test = ["hypothesis", "pytest"]
 
 [[package]]
 name = "mypy-extensions"
@@ -617,13 +660,13 @@ type = ["mypy (>=1.8)"]
 
 [[package]]
 name = "pre-commit"
-version = "3.7.0"
+version = "3.7.1"
 description = "A framework for managing and maintaining multi-language pre-commit hooks."
 optional = false
 python-versions = ">=3.9"
 files = [
-    {file = "pre_commit-3.7.0-py2.py3-none-any.whl", hash = "sha256:5eae9e10c2b5ac51577c3452ec0a490455c45a0533f7960f993a0d01e59decab"},
-    {file = "pre_commit-3.7.0.tar.gz", hash = "sha256:e209d61b8acdcf742404408531f0c37d49d2c734fd7cff2d6076083d191cb060"},
+    {file = "pre_commit-3.7.1-py2.py3-none-any.whl", hash = "sha256:fae36fd1d7ad7d6a5a1c0b0d5adb2ed1a3bda5a21bf6c3e5372073d7a11cd4c5"},
+    {file = "pre_commit-3.7.1.tar.gz", hash = "sha256:8ca3ad567bc78a4972a3f1a477e94a79d4597e8140a6e0b651c5e33899c3654a"},
 ]
 
 [package.dependencies]
@@ -924,4 +967,4 @@ test = ["covdefaults (>=2.3)", "coverage (>=7.2.7)", "coverage-enable-subprocess
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "f6f86b34ae96896c6d5a834ab084a10b265e4a6c2d00483b8d6241d4e38a062d"
+content-hash = "610b55db3d185a9255984bff7fcae7238f24bd5f98d8e5828c053af0ea04131b"

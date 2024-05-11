@@ -1,4 +1,4 @@
-from rest_framework.serializers import HyperlinkedModelSerializer
+from rest_framework.serializers import HyperlinkedModelSerializer, SerializerMethodField
 from rest_framework_gis.fields import GeometryField
 
 from . import models
@@ -16,6 +16,11 @@ class ProvinceSerializer(HyperlinkedModelSerializer):
 
 
 class ProvinceBriefSerializer(HyperlinkedModelSerializer):
+    bbox = SerializerMethodField()
+
+    def get_bbox(self, body):
+        return body.shape.extent
+
     class Meta:
         model = models.Province
         exclude = ("admin", "shape")
@@ -37,6 +42,11 @@ class DistrictSerializer(HyperlinkedModelSerializer):
 
 
 class DistrictBriefSerializer(HyperlinkedModelSerializer):
+    bbox = SerializerMethodField()
+
+    def get_bbox(self, body):
+        return body.shape.extent
+
     class Meta:
         model = models.District
         exclude = ("admin", "shape")
@@ -59,6 +69,11 @@ class MunicipalitySerializer(HyperlinkedModelSerializer):
 
 
 class MunicipalityBriefSerializer(HyperlinkedModelSerializer):
+    bbox = SerializerMethodField()
+
+    def get_bbox(self, body):
+        return body.shape.extent
+
     class Meta:
         model = models.Municipality
         exclude = ("admin", "shape")

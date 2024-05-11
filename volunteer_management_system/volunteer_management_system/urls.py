@@ -21,6 +21,7 @@ from django.urls import include, path, re_path
 from django.views.generic.base import RedirectView
 from federal.urls import router as federal_router
 from incident.urls import router as incident_router
+from federal.views import FederalTileView
 
 from .router import VolunteerManagementSystemRouter
 
@@ -35,6 +36,11 @@ favicon_view = RedirectView.as_view(url="/static/favicon.ico", permanent=True)
 urlpatterns = [
     path("admin/", include("administrator.urls")),
     path("api/", include((router.urls, "api"))),
+    path(
+        "api/tiles/federal/<int:z>/<int:x>/<int:y>",
+        FederalTileView.as_view(),
+        name="tiles_federal",
+    ),
     path(
         "ckeditor5/", include("django_ckeditor_5.urls"), name="ck_editor_5_upload_file"
     ),

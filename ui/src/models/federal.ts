@@ -1,4 +1,4 @@
-import { Polygon, flip_polygon } from "@models/geojson";
+import { BoundingBox, Polygon, flip_bbox, flip_polygon } from "@models/geojson";
 import { IDeserializer } from "@models/deserializer";
 
 export type Province = {
@@ -21,7 +21,33 @@ export type Municipality = {
     district: string,
 }
 
+export type ProvinceBrief = {
+    url: string,
+    name: string,
+    bbox: BoundingBox,
+};
+
+export type DistrictBrief = {
+    url: string,
+    name: string,
+    bbox: BoundingBox,
+    province: string,
+}
+
+export type MunicipalityBrief = {
+    url: string,
+    name: string,
+    bbox: BoundingBox,
+    district: string,
+}
+
 export type FederalBody = Province | District | Municipality;
+export type FederalBodyBrief = ProvinceBrief | DistrictBrief | MunicipalityBrief;
+
+export const FederalBodyDeserializer: IDeserializer<FederalBody> = (json: any) => {
+    flip_polygon(json.shape);
+    return json as FederalBody;
+}
 
 export const ProvinceDeserializer: IDeserializer<Province> = (json: any) => {
     flip_polygon(json.shape);
@@ -36,4 +62,19 @@ export const DistrictDeserializer: IDeserializer<District> = (json: any) => {
 export const MunicipalityDeserializer: IDeserializer<Municipality> = (json: any) => {
     flip_polygon(json.shape);
     return json as Municipality;
+}
+
+export const ProvinceBriefDeserializer: IDeserializer<ProvinceBrief> = (json: any) => {
+    flip_bbox(json.bbox);
+    return json as ProvinceBrief;
+}
+
+export const DistrictBriefDeserializer: IDeserializer<DistrictBrief> = (json: any) => {
+    flip_bbox(json.bbox);
+    return json as DistrictBrief;
+}
+
+export const MunicipalityBriefDeserializer: IDeserializer<MunicipalityBrief> = (json: any) => {
+    flip_bbox(json.bbox);
+    return json as MunicipalityBrief;
 }

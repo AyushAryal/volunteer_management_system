@@ -1,9 +1,36 @@
 from rest_framework import viewsets
 from rest_framework.decorators import action
-from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
+from vectortiles.views import MVTView
+from vectortiles import VectorLayer
 
 from . import models, serializers
+
+
+class ProvinceVectorLayer(VectorLayer):
+    model = models.Province
+    id = "province"
+    geom_field = "shape"
+
+
+class DistrictVectorLayer(VectorLayer):
+    model = models.District
+    id = "district"
+    geom_field = "shape"
+
+
+class MunicipalityVectorLayer(VectorLayer):
+    model = models.Municipality
+    id = "municipality"
+    geom_field = "shape"
+
+
+class FederalTileView(MVTView):
+    layers = [
+        ProvinceVectorLayer(),
+        DistrictVectorLayer(),
+        MunicipalityVectorLayer(),
+    ]
 
 
 class BriefInfoMixin:
@@ -29,6 +56,12 @@ class ProvinceViewSet(
     queryset = models.Province.objects.all()
     serializer_class = serializers.ProvinceSerializer
 
+    @property
+    def paginator(self):
+        return {
+            "brief": None,
+        }.get(self.action, super().paginator)
+
     def get_serializer_class(self):
         return {
             "brief": serializers.ProvinceBriefSerializer,
@@ -41,13 +74,15 @@ class DistrictViewSet(
     viewsets.mixins.ListModelMixin,
     BriefInfoMixin,
 ):
-    class DistrictPaginator(PageNumberPagination):
-        page_size = 50
-
     queryset = models.District.objects.all()
     serializer_class = serializers.DistrictSerializer
-    pagination_class = DistrictPaginator
     filterset_fields = ("province",)
+
+    @property
+    def paginator(self):
+        return {
+            "brief": None,
+        }.get(self.action, super().paginator)
 
     def get_serializer_class(self):
         return {
@@ -61,13 +96,15 @@ class MunicipalityViewSet(
     viewsets.mixins.ListModelMixin,
     BriefInfoMixin,
 ):
-    class MunicipalityPaginator(PageNumberPagination):
-        page_size = 500
-
     queryset = models.Municipality.objects.all()
     serializer_class = serializers.MunicipalitySerializer
-    pagination_class = MunicipalityPaginator
     filterset_fields = ("district", "district__province")
+
+    @property
+    def paginator(self):
+        return {
+            "brief": None,
+        }.get(self.action, super().paginator)
 
     def get_serializer_class(self):
         return {
@@ -81,17 +118,19 @@ class WardViewSet(
     viewsets.mixins.ListModelMixin,
     BriefInfoMixin,
 ):
-    class WardPaginator(PageNumberPagination):
-        page_size = 1000
-
     queryset = models.Ward.objects.all()
     serializer_class = serializers.WardSerializer
-    pagination_class = WardPaginator
     filterset_fields = (
         "municipality",
         "municipality__district",
         "municipality__district__province",
     )
+
+    @property
+    def paginator(self):
+        return {
+            "brief": None,
+        }.get(self.action, super().paginator)
 
     def get_serializer_class(self):
         return {

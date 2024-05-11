@@ -4,8 +4,9 @@ import ReactDOM from 'react-dom/client';
 import 'primeflex/primeflex.css';
 import 'primereact/resources/themes/viva-light/theme.css';
 
+import "leaflet";
 import 'leaflet/dist/leaflet.css';
-
+import "leaflet.vectorgrid/dist/Leaflet.VectorGrid.bundled.js"
 
 import './index.css';
 
@@ -35,13 +36,13 @@ function Main() {
         }
     };
     return (
-      <React.StrictMode>
-        <PrimeReactProvider value={{ pt }}>
-          <BrowserRouter>
-            <App />
-          </BrowserRouter>
-        </PrimeReactProvider>
-      </React.StrictMode>
+        <React.StrictMode>
+            <PrimeReactProvider value={{ pt }}>
+                <BrowserRouter>
+                    <App />
+                </BrowserRouter>
+            </PrimeReactProvider>
+        </React.StrictMode>
     );
 }
 
