@@ -55,7 +55,7 @@ export function IncidentDetailModal(props: IncidentDetailModalProps) {
             className='flex flex-initial p-2 m-1 align-items-center justify-content-between gap-2'
         >
             <div style={{ flexBasis: "100%" }}>{job.name}</div>
-            <div style={{ flexBasis: "60%" }}> {new Date(job.start_date).toDateString()} <br /> {new Date(job.end_date).toDateString()}</div>
+            <div style={{ flexBasis: "60%" }}> {job.start_date.toDateString()} <br /> {job.end_date.toDateString()}</div>
             <Button className="flex-shrink-0" label="Apply" onClick={() => { }} />
         </div>);
     };
@@ -75,7 +75,7 @@ export function IncidentDetailModal(props: IncidentDetailModalProps) {
         <div className="flex flex-row p-2 m-1 align-items-center justify-content-between ">
             <div>
                 <FontAwesomeIcon icon={faClock} /> &nbsp;
-                {new Date(incident.date).toDateString()}
+                {incident.date.toDateString()}
             </div>
             <Tag style={{ backgroundColor: serverity_color_map.get(incident.severity) }} value={incident.severity} />
         </div>

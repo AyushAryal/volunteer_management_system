@@ -16,11 +16,13 @@ export function get_filtered_list<T, F>(endpoint: string, deserializer?: IDeseri
                 .join("&");
             const url = `${server}${endpoint}?${query_string}`;
             let response = await token_aware_fetch(url);
-            return (await response.json()).map(deserializer);
+            let list: any[] = await response.json();
+            return list.map(deserializer);
         }
         const url = `${server}${endpoint}`;
         let response = await token_aware_fetch(url);
-        return (await response.json()).map(deserializer);
+        let list: any[] = await response.json();
+        return list.map(deserializer);
     }
 }
 

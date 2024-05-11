@@ -36,7 +36,6 @@ function IncidentRibbon({ incident }: IncidentRibbonProps) {
         setVisible={setVisible}
     />;
 
-    const date = new Date(incident.date);
     return (<div
         className="flex flex-column p-2 m-1 flex-wrap w-full"
         style={{
@@ -46,7 +45,7 @@ function IncidentRibbon({ incident }: IncidentRibbonProps) {
         <div className="text-sm text-400 flex flex-row justify-content-between">
             <div>
                 <FontAwesomeIcon icon={faClock} className="mx-2" />
-                {date.toDateString()}
+                {incident.date.toDateString()}
             </div>
             <FontAwesomeIcon icon={faAngleRight} onClick={() => setVisible(true)} />
             {visible ? viewIncidentDetail : null}
@@ -71,13 +70,11 @@ function OverviewJobs() {
     const store = useHookstate(storeState);
 
     const template = (job: Job) => {
-        const start_date = new Date(job.start_date);
-        const end_date = new Date(job.end_date);
         return <div className="flex flex-column flex-wrap p-2 w-full">
             <div className="m-1"> {job.name}</div>
             <div className="text-sm text-400">
                 <FontAwesomeIcon icon={faClock} className="mx-2" />
-                {start_date.toDateString()} - {end_date.toDateString()}
+                {job.start_date.toDateString()} - {job.end_date.toDateString()}
             </div>
         </div>;
     };
@@ -104,9 +101,8 @@ function countIncidentsInLastYearByMonth(incidents: ImmutableArray<Incident>): D
 
     const monthCounts: Dataset[] = [];
     incidents.forEach(incident => {
-        let date = new Date(incident.date);
-        if (date >= oneYearAgo && date <= currentDate) {
-            const label = date.toISOString().slice(0, 7);
+        if (incident.date >= oneYearAgo && incident.date <= currentDate) {
+            const label = incident.date.toISOString().slice(0, 7);
             const index = monthCounts.findIndex(entry => entry.label === label);
             if (index === -1) {
                 monthCounts.push({ label, value: 1 });

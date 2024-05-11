@@ -22,7 +22,7 @@ export interface Incident {
     url: string,
     name: string,
     description: string,
-    date: string,
+    date: Date,
     point: LatLngTuple,
     municipality: string,
     severity: string,
@@ -30,6 +30,7 @@ export interface Incident {
 
 export const IncidentDeserializer: IDeserializer<Incident> = (json: any) => {
     flip_point(json.point);
+    json.date = new Date(json.date);
     return json as Incident;
 }
 
@@ -44,9 +45,15 @@ export interface Job {
     url: string,
     name: string,
     description: string,
-    start_date: string,
-    end_date: string,
+    start_date: Date,
+    end_date: Date,
     program: string,
+}
+
+export const JobDeserializer: IDeserializer<Job> = (json: any) => {
+    json.start_date = new Date(json.start_date);
+    json.end_date = new Date(json.end_date);
+    return json as Job;
 }
 
 export interface VolunteerProfile {
