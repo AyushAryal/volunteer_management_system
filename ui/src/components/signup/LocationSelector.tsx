@@ -11,7 +11,7 @@ import {
 } from '@models/federal';
 import { StateTuple } from '@models/generics';
 import { useEffect } from 'react';
-import { get_district_list, get_municipality_list, get_province_list } from '@api/federal';
+import { get_district_brief_list, get_municipality_brief_list, get_province_brief_list } from '@api/federal';
 
 
 export function ProvinceSelector({ selectedProvinceState }: { selectedProvinceState: StateTuple<string> }) {
@@ -21,7 +21,7 @@ export function ProvinceSelector({ selectedProvinceState }: { selectedProvinceSt
     useEffect(() => {
         if (storeState.provinceList.get().length == 0) {
             let network_request = async () => {
-                let provinceList = await get_province_list()
+                let provinceList = await get_province_brief_list()
                 storeState.provinceList.set(provinceList);
             }
             network_request();
@@ -48,7 +48,7 @@ export function DistrictSelector({ label, selectedDistrictState }: { label: stri
     useEffect(() => {
         if (storeState.districtList.get().length == 0) {
             let network_request = async () => {
-                let districtList = await get_district_list()
+                let districtList = await get_district_brief_list()
                 storeState.districtList.set(districtList);
             }
             network_request();
@@ -76,7 +76,7 @@ export function MunicipalitySelector({ selectedMunicipalityState }: { selectedMu
     useEffect(() => {
         if (storeState.municipalityList.get().length == 0) {
             let network_request = async () => {
-                let municipalityList = await get_municipality_list()
+                let municipalityList = await get_municipality_brief_list()
                 storeState.municipalityList.set(municipalityList);
             }
             network_request();
@@ -108,7 +108,7 @@ export function LocationSelector(props: LocationSelectorProps) {
     useEffect(() => {
         if (storeState.provinceList.get().length == 0) {
             let network_request = async () => {
-                let provinceList = await get_province_list()
+                let provinceList = await get_province_brief_list()
                 storeState.provinceList.set(provinceList);
             }
             network_request();
@@ -118,7 +118,7 @@ export function LocationSelector(props: LocationSelectorProps) {
     useEffect(() => {
         if (storeState.districtList.get().length == 0) {
             let network_request = async () => {
-                let districtList = await get_district_list()
+                let districtList = await get_district_brief_list()
                 storeState.districtList.set(districtList);
             }
             network_request();
@@ -128,7 +128,7 @@ export function LocationSelector(props: LocationSelectorProps) {
     useEffect(() => {
         if (storeState.municipalityList.get().length == 0) {
             let network_request = async () => {
-                let municipalityList = await get_municipality_list()
+                let municipalityList = await get_municipality_brief_list()
                 storeState.municipalityList.set(municipalityList);
             }
             network_request();

@@ -190,6 +190,7 @@ class IncidentViewSet(
 ):
     queryset = models.Incident.objects.all()
     serializer_class = serializers.IncidentSerializer
+    pagination_class = None
 
     class IncidentFilter(django_filters.FilterSet):
         date = django_filters.DateFromToRangeFilter(
@@ -232,6 +233,9 @@ class ProgramViewSet(
             label="Incident",
             field_name="incident",
             queryset=models.Incident.objects.all(),
+        )
+        date = django_filters.DateFromToRangeFilter(
+            field_name="incident__date", lookup_expr="range"
         )
         province = django_filters.ModelChoiceFilter(
             label="Province",

@@ -25,11 +25,18 @@ class MunicipalityVectorLayer(VectorLayer):
     geom_field = "shape"
 
 
+class WardVectorLayer(VectorLayer):
+    model = models.Ward
+    id = "ward"
+    geom_field = "shape"
+
+
 class FederalTileView(MVTView):
     layers = [
         ProvinceVectorLayer(),
         DistrictVectorLayer(),
         MunicipalityVectorLayer(),
+        WardVectorLayer(),
     ]
 
 

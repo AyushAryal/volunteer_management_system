@@ -1,5 +1,4 @@
 import { deepFlatten } from "utils";
-import { server } from "./api";
 import { token_aware_fetch } from "./token";
 import { GenericDeserializer, IDeserializer } from "@models/deserializer";
 
@@ -7,30 +6,28 @@ export function get_id(url: string): number {
     return +url.split("/").reverse()[0];
 }
 
-export function get_filtered_list<T, F>(endpoint: string, deserializer?: IDeserializer<T>): (query?: F) => Promise<T[]> {
+export function get_filtered_list<T, F>(url: string, deserializer?: IDeserializer<T>): (query?: F) => Promise<T[]> {
     deserializer = deserializer || GenericDeserializer<T>();
     return async (query?: F) => {
-        if (typeof (query) !== "undefined") {
+        if (Object.keys(query ?? {}).length != 0) {
             const query_string = Object.entries(query ?? {})
+                .filter(([_, value]) => value !== undefined)
                 .map(([key, value]) => `${key}=${value}`)
                 .join("&");
-            const url = `${server}${endpoint}?${query_string}`;
-            let response = await token_aware_fetch(url);
+            let response = await token_aware_fetch(`${url}?${query_string}`);
             let list: any[] = await response.json();
             return list.map(deserializer);
         }
-        const url = `${server}${endpoint}`;
         let response = await token_aware_fetch(url);
         let list: any[] = await response.json();
-        return list.map(deserializer);
+        return list.map(deserializer || GenericDeserializer<T>());
     }
 }
 
-export function get_detail<T, I>(endpoint: string, deserializer?: IDeserializer<T>): (id: I) => Promise<T> {
+export function get_detail<T, I>(url: string, deserializer?: IDeserializer<T>): (id: I) => Promise<T> {
     deserializer = deserializer || GenericDeserializer<T>();
     return async (id: I) => {
-        const url = `${server}${endpoint}/${id}`;
-        let response = await token_aware_fetch(url);
+        let response = await token_aware_fetch(`${url}/${id}`);
         return deserializer(await response.json());
     }
 }

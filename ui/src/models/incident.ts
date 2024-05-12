@@ -29,7 +29,8 @@ export interface Incident {
 }
 
 export const IncidentDeserializer: IDeserializer<Incident> = (json: any) => {
-    flip_point(json.point);
+    flip_point(json.point.coordinates);
+    json.point = json.point.coordinates;
     json.date = new Date(json.date);
     return json as Incident;
 }

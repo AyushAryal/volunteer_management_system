@@ -61,8 +61,14 @@ export function AllFederalBodyPolygons() {
                 weight: 1,
             },
             municipality: {
-                color: mapControls.showMunicipalityBorders.get() ? "#ff0000ff" : "#00000000",
-                weight: 0.1,
+                color: mapControls.showMunicipalityBorders.get() ? "#095409ff" : "#00000000",
+                weight: 0.2,
+            },
+            ward: function(_: any, zoomLevel: number) {
+                return {
+                    color: mapControls.showWardBorders.get() && zoomLevel > 7 ? "#ff0000ff" : "#00000000",
+                    weight: 0.1,
+                };
             },
         };
         let newFederalTileLayer = L_.vectorGrid.protobuf(`${server}/api/tiles/federal/{z}/{x}/{y}`, {
@@ -83,7 +89,12 @@ export function AllFederalBodyPolygons() {
         }
         newFederalTileLayer.addTo(mapRef);
         newFederalTileLayer.setZIndex(2);
-    }, [mapControls.showProvinceBorders, mapControls.showDistrictBorders, mapControls.showMunicipalityBorders]);
+    }, [
+        mapControls.showProvinceBorders,
+        mapControls.showDistrictBorders,
+        mapControls.showMunicipalityBorders,
+        mapControls.showWardBorders,
+    ]);
 
     return null;
 }

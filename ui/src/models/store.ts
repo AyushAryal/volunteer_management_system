@@ -1,4 +1,3 @@
-import { get_district_list, get_municipality_list, get_province_list } from '@api/federal';
 import {
     ProvinceBrief,
     DistrictBrief,
@@ -16,7 +15,9 @@ interface MapControls {
     showProvinceBorders: boolean,
     showDistrictBorders: boolean,
     showMunicipalityBorders: boolean,
-    expandFilters: boolean,
+    showWardBorders: boolean,
+    startDate: Date | null,
+    endDate: Date | null,
 }
 
 export interface Token {
@@ -34,6 +35,14 @@ export interface Store {
     incidentList: Incident[],
     jobList: Job[],
     programList: Program[],
+    loaded: {
+        provinceList: boolean,
+        districtList: boolean,
+        municipalityList: boolean,
+        incidentList: boolean,
+        jobList: boolean,
+        programList: boolean,
+    },
     mapControls: MapControls
 }
 
@@ -56,14 +65,24 @@ export const storeState = hookstate<Store>({
     incidentList: [],
     jobList: [],
     programList: [],
+    loaded: {
+        provinceList: false,
+        districtList: false,
+        municipalityList: false,
+        incidentList: false,
+        jobList: false,
+        programList: false,
+    },
     mapControls: {
         selectedProvince: null,
         selectedDistrict: null,
         selectedMunicipality: null,
         showProvinceBorders: true,
-        showDistrictBorders: false,
+        showDistrictBorders: true,
         showMunicipalityBorders: false,
-        expandFilters: false,
+        showWardBorders: false,
+        startDate: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+        endDate: new Date(),
     }
 })
 
