@@ -47,6 +47,12 @@ class VolunteerProfileTest(TestCase):
             shape=Polygon([(0, 0), (0, 1), (1, 1), (1, 0), (0, 0)]),
         )
 
+        self.ward = federal.models.Ward.objects.create(
+            name="Ward",
+            municipality=self.municipality,
+            shape=Polygon([(0, 0), (0, 1), (1, 1), (1, 0), (0, 0)]),
+        )
+
     def setUp(self):
         self.email = "shark@example.com"
         self.volunteer_email = "volunteer@example.com"
@@ -69,8 +75,8 @@ class VolunteerProfileTest(TestCase):
             gender=incident.models.Gender.Male,
             nationality=incident.models.Nationality.National,
             blood_group=incident.models.BloodGroup.O_Positive,
-            temporary_municipality=self.municipality,
-            permanent_municipality=self.municipality,
+            temporary_ward=self.ward,
+            permanent_ward=self.ward,
         )
 
     def test_get_token(self):
@@ -143,14 +149,14 @@ class VolunteerProfileTest(TestCase):
                 "nationality": "National",
                 "blood_group": "O Positive",
                 "category": "General",
-                "temporary_municipality": reverse(
-                    "api:municipality-detail",
-                    args=[self.municipality.pk],
+                "temporary_ward": reverse(
+                    "api:ward-detail",
+                    args=[self.ward.pk],
                     request=request,
                 ),
-                "permanent_municipality": reverse(
-                    "api:municipality-detail",
-                    args=[self.municipality.pk],
+                "permanent_ward": reverse(
+                    "api:ward-detail",
+                    args=[self.ward.pk],
                     request=request,
                 ),
             },
@@ -261,14 +267,14 @@ class VolunteerProfileTest(TestCase):
             "nationality": "National",
             "blood_group": "O Positive",
             "category": "General",
-            "temporary_municipality": reverse(
-                "api:municipality-detail",
-                args=[self.municipality.pk],
+            "temporary_ward": reverse(
+                "api:ward-detail",
+                args=[self.ward.pk],
                 request=request,
             ),
-            "permanent_municipality": reverse(
-                "api:municipality-detail",
-                args=[self.municipality.pk],
+            "permanent_ward": reverse(
+                "api:ward-detail",
+                args=[self.ward.pk],
                 request=request,
             ),
             "citizenship": None,

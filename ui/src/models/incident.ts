@@ -24,7 +24,7 @@ export interface Incident {
     description: string,
     date: Date,
     point: LatLngTuple,
-    municipality: string,
+    ward: string,
     severity: string,
 }
 
@@ -69,8 +69,8 @@ export interface VolunteerProfile {
     category: VolunteerCategory,
     blood_group: BloodGroup,
     nationality: Nationality,
-    temporary_municipality: string,
-    permanent_municipality: string,
+    temporary_ward: string,
+    permanent_ward: string,
     citizenship_id: string,
     citizenship_issue_date: string,
     citizenship_isssue_district: string,

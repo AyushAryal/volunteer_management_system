@@ -6,7 +6,7 @@ import { useHookstate } from '@hookstate/core';
 
 import { storeState } from '@models/store.ts';
 import { IncidentFilter, JobFilter, ProgramFilter, get_incident_list, get_job_list, get_program_list, get_volunteer_profile } from '@api/incident.ts';
-import { get_district_brief_list, get_municipality_brief_list, get_province_brief_list } from '@api/federal';
+import { get_district_brief_list, get_municipality_brief_list, get_province_brief_list, get_ward_brief_list } from '@api/federal';
 
 import { FederalBodyPolygons } from '@components/map/FederalPolygons.tsx';
 import { FederalSelector } from '@components/map/FederalSelector';
@@ -16,6 +16,7 @@ import { LoadingDisplay } from '@components/map/LoadingDisplay';
 import { TimeFilter } from '@components/map/TimeFilter';
 import { get_id } from '@api/utils';
 import { IncidentMarkers } from './IncidentMarkers';
+import { BoundingBox } from '@models/geojson';
 
 
 export function VmsMap() {
@@ -38,6 +39,11 @@ export function VmsMap() {
             let municipalityList = await get_municipality_brief_list();
             storeState.municipalityList.set(municipalityList);
             store.loaded.municipalityList.set(true);
+
+            store.loaded.wardList.set(false);
+            let wardList = await get_ward_brief_list();
+            storeState.wardList.set(wardList);
+            store.loaded.wardList.set(true);
         }
         networkRequest();
     }, []);
@@ -58,6 +64,7 @@ export function VmsMap() {
             let selectedProvince = store.mapControls.selectedProvince.get();
             let selectedDistrict = store.mapControls.selectedDistrict.get();
             let selectedMunicipality = store.mapControls.selectedMunicipality.get();
+            let selectedWard = store.mapControls.selectedWard.get();
 
             let startDate = store.mapControls.startDate.get();
             let startDateRepr: string | undefined = undefined;
@@ -75,8 +82,9 @@ export function VmsMap() {
             let province = selectedProvince ? get_id(selectedProvince) : undefined;
             let district = selectedDistrict ? get_id(selectedDistrict) : undefined;
             let municipality = selectedMunicipality ? get_id(selectedMunicipality) : undefined;
+            let ward = selectedWard ? get_id(selectedWard) : undefined;
             let incident_query: IncidentFilter = {
-                province, district, municipality,
+                province, district, municipality, ward,
                 date_before: endDateRepr,
                 date_after: startDateRepr,
             };
@@ -87,7 +95,7 @@ export function VmsMap() {
             });
 
             let program_query: ProgramFilter = {
-                province, district, municipality,
+                province, district, municipality, ward,
                 date_before: endDateRepr,
                 date_after: startDateRepr,
             };
@@ -98,7 +106,7 @@ export function VmsMap() {
             });
 
             let job_query: JobFilter = {
-                province, district, municipality,
+                province, district, municipality, ward,
                 end_date_before: endDateRepr,
                 end_date_after: startDateRepr,
             };
@@ -115,6 +123,31 @@ export function VmsMap() {
         store.mapControls.selectedProvince,
         store.mapControls.startDate,
         store.mapControls.endDate,
+    ]);
+
+
+    useEffect(() => {
+        let bbox: BoundingBox = [26, 80, 31, 89];
+        if (store.mapControls.selectedWard.get() !== null) {
+            let ward = store.wardList.get().find((body) => body.url == store.mapControls.selectedWard.get());
+            bbox = ward?.bbox as BoundingBox ?? bbox;
+        } else if (store.mapControls.selectedMunicipality.get() !== null) {
+            let municipality = store.municipalityList.get().find((body) => body.url == store.mapControls.selectedMunicipality.get());
+            bbox = municipality?.bbox as BoundingBox ?? bbox;
+        } else if (store.mapControls.selectedDistrict.get() !== null) {
+            let district = store.districtList.get().find((body) => body.url == store.mapControls.selectedDistrict.get());
+            bbox = district?.bbox as BoundingBox ?? bbox;
+        } else if (store.mapControls.selectedProvince.get() !== null) {
+            let province = store.provinceList.get().find((body) => body.url == store.mapControls.selectedProvince.get());
+            bbox = province?.bbox as BoundingBox ?? bbox;
+        }
+        let bounds = new LatLngBounds([[bbox[0], bbox[1]], [bbox[2], bbox[3]]]);
+        mapRef.current?.flyToBounds(bounds, { duration: 0.5 });
+    }, [
+        store.mapControls.selectedProvince,
+        store.mapControls.selectedDistrict,
+        store.mapControls.selectedMunicipality,
+        store.mapControls.selectedWard,
     ]);
 
 

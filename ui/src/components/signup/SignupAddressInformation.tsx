@@ -5,9 +5,11 @@ type SignupAddressInformationProps = {
     selectedTemporaryProvinceState: StateTuple<string>,
     selectedTemporaryDistrictState: StateTuple<string>,
     selectedTemporaryMunicipalityState: StateTuple<string>,
+    selectedTemporaryWardState: StateTuple<string>,
     selectedPermanentProvinceState: StateTuple<string>,
     selectedPermanentDistrictState: StateTuple<string>,
     selectedPermanentMunicipalityState: StateTuple<string>,
+    selectedPermanentWardState: StateTuple<string>,
 };
 export function SignupAddressInformation(props: SignupAddressInformationProps) {
 
@@ -15,21 +17,25 @@ export function SignupAddressInformation(props: SignupAddressInformationProps) {
         selectedTemporaryProvinceState,
         selectedTemporaryDistrictState,
         selectedTemporaryMunicipalityState,
+        selectedTemporaryWardState,
         selectedPermanentProvinceState,
         selectedPermanentDistrictState,
         selectedPermanentMunicipalityState,
+        selectedPermanentWardState,
     } = props;
 
     const temporaryLocationSelector = <LocationSelector
         selectedProvinceState={selectedTemporaryProvinceState}
         selectedDistrictState={selectedTemporaryDistrictState}
         selectedMunicipalityState={selectedTemporaryMunicipalityState}
+        selectedWardState={selectedTemporaryWardState}
     />;
 
     const permanentLocationSelector = <LocationSelector
         selectedProvinceState={selectedPermanentProvinceState}
         selectedDistrictState={selectedPermanentDistrictState}
         selectedMunicipalityState={selectedPermanentMunicipalityState}
+        selectedWardState={selectedPermanentWardState}
     />;
 
     return <div className="flex flex-column w-full" style={{ gap: "1rem" }}>

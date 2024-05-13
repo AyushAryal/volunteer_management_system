@@ -138,6 +138,7 @@ class Citizenship(models.Model):
         ordering = ("-pk",)
 
     id = models.CharField(primary_key=True, max_length=100, verbose_name=_("id"))
+
     user = models.OneToOneField(
         get_user_model(),
         on_delete=models.CASCADE,
@@ -147,11 +148,17 @@ class Citizenship(models.Model):
         verbose_name=_("user"),
     )
     registration_date = models.DateField(verbose_name=_("registration date"))
+
     registration_district = models.ForeignKey(
         federal.models.District,
         on_delete=models.CASCADE,
         verbose_name=_("district"),
         related_name="citizens",
+    )
+
+    image = models.ImageField(
+        upload_to="uploads/images/citizenships/",
+        verbose_name=_("image"),
     )
 
     def __str__(self):
@@ -165,6 +172,7 @@ class Passport(models.Model):
         ordering = ("-pk",)
 
     id = models.CharField(primary_key=True, max_length=100, verbose_name=_("id"))
+
     user = models.OneToOneField(
         get_user_model(),
         on_delete=models.CASCADE,
@@ -173,8 +181,15 @@ class Passport(models.Model):
         null=True,
         verbose_name=_("user"),
     )
+
     issue_date = models.DateField(verbose_name=_("issue date"))
+
     expiry_date = models.DateField(verbose_name=_("expiry date"))
+
+    image = models.ImageField(
+        upload_to="uploads/images/passports/",
+        verbose_name=_("image"),
+    )
 
     def __str__(self):
         return str(self.id)
@@ -187,6 +202,7 @@ class NationalId(models.Model):
         ordering = ("-pk",)
 
     id = models.CharField(primary_key=True, max_length=100, verbose_name=_("id"))
+
     user = models.OneToOneField(
         get_user_model(),
         on_delete=models.CASCADE,
@@ -195,31 +211,38 @@ class NationalId(models.Model):
         null=True,
         verbose_name=_("user"),
     )
+
     registration_date = models.DateField(verbose_name=_("registration date"))
+
+    image = models.ImageField(
+        upload_to="uploads/images/national_ids/",
+        verbose_name=_("image"),
+    )
 
     def __str__(self):
         return str(self.id)
 
 
-# class DocumentId(models.Model):
-#     class Meta:
-#         verbose_name = _("Document Id")
-#         verbose_name_plural = _("Document Ids")
+class OtherIdentficationDocument(models.Model):
+    class Meta:
+        verbose_name = _("Other Identification Document")
+        verbose_name_plural = _("Other Identification Documents")
 
-#     user = models.OneToOneField(
-#         get_user_model(),
-#         on_delete=models.CASCADE,
-#         related_name="other_id",
-#         blank=True,
-#         null=True,
-#         verbose_name=_("user"),
-#     )
+    user = models.OneToOneField(
+        get_user_model(),
+        on_delete=models.CASCADE,
+        related_name="other_identification_documents",
+        blank=True,
+        null=True,
+        verbose_name=_("user"),
+    )
 
-#     name = models.CharField(max_length=50)
+    name = models.CharField(max_length=200)
 
-#     file = models.FileField(
-#         verbose_name=_("document id"),
-#     )
+    image = models.ImageField(
+        upload_to="uploads/images/other_identification_documents/",
+        verbose_name=_("image"),
+    )
 
 
 class Certificate(models.Model):
@@ -235,7 +258,10 @@ class Certificate(models.Model):
         verbose_name=_("user"),
     )
 
-    file = models.FileField()
+    image = models.ImageField(
+        upload_to="uploads/images/certificates/",
+        verbose_name=_("image"),
+    )
 
 
 class VolunteerProfile(models.Model):
@@ -254,7 +280,9 @@ class VolunteerProfile(models.Model):
     )
 
     first_name = models.CharField(max_length=100, verbose_name=_("first name"))
+
     last_name = models.CharField(max_length=100, verbose_name=_("last name"))
+
     contact_number = PhoneNumberField(verbose_name=_("contact number"))
 
     profile_image = models.ImageField(
@@ -283,17 +311,17 @@ class VolunteerProfile(models.Model):
         verbose_name=_("nationality"),
     )
 
-    permanent_municipality = models.ForeignKey(
-        federal.models.Municipality,
+    permanent_ward = models.ForeignKey(
+        federal.models.Ward,
         on_delete=models.CASCADE,
-        verbose_name=_("permanent municipality"),
+        verbose_name=_("permanent ward"),
         related_name="residing_volunteers",
     )
 
-    temporary_municipality = models.ForeignKey(
-        federal.models.Municipality,
+    temporary_ward = models.ForeignKey(
+        federal.models.Ward,
         on_delete=models.CASCADE,
-        verbose_name=_("temporary municipality"),
+        verbose_name=_("temporary ward"),
         related_name="transient_volunteers",
     )
 
@@ -360,18 +388,23 @@ class Incident(models.Model):
         ordering = ("-date",)
 
     name = models.CharField(max_length=200, verbose_name=_("name"))
+
     description = CKEditor5Field("Description", config_name="extends")
+
     date = models.DateTimeField(verbose_name=_("date"))
-    municipality = models.ForeignKey(
-        federal.models.Municipality,
+
+    ward = models.ForeignKey(
+        federal.models.Ward,
         on_delete=models.CASCADE,
-        verbose_name=_("municipality"),
+        verbose_name=_("ward"),
         related_name="incidents",
     )
+
     severity = models.SmallIntegerField(
         choices=IncidentSeverity.choices,
         verbose_name=_("severity"),
     )
+
     point = gis_models.PointField(verbose_name=_("point"))
 
     def __str__(self):
@@ -385,7 +418,9 @@ class Program(models.Model):
         ordering = ("-pk",)
 
     name = models.CharField(max_length=200)
+
     description = CKEditor5Field("Description", config_name="extends")
+
     incident = models.ForeignKey(
         Incident,
         on_delete=models.CASCADE,
@@ -403,10 +438,15 @@ class Job(models.Model):
         ordering = ("-start_date",)
 
     name = models.CharField(max_length=200, verbose_name=_("name"))
+
     start_date = models.DateTimeField(verbose_name=_("start date"))
+
     end_date = models.DateTimeField(verbose_name=_("end date"))
+
     vacancy = models.PositiveIntegerField(verbose_name=_("vacancy"))
+
     description = CKEditor5Field("Description", config_name="extends")
+
     status = models.SmallIntegerField(
         choices=JobStatus.choices,
         verbose_name=_("status"),
@@ -459,12 +499,14 @@ class JobApplication(models.Model):
         verbose_name=_("volunteer"),
         related_name="job_applications",
     )
+
     job = models.ForeignKey(
         Job,
         on_delete=models.CASCADE,
         verbose_name=_("Job"),
         related_name="applications",
     )
+
     status = models.SmallIntegerField(
         choices=JobApplicationStatus.choices,
         default=JobApplicationStatus.Pending,

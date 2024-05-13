@@ -21,6 +21,13 @@ export type Municipality = {
     district: string,
 }
 
+export type Ward = {
+    url: string,
+    name: string,
+    shape: Polygon,
+    municipality: string,
+}
+
 export type ProvinceBrief = {
     url: string,
     name: string,
@@ -41,8 +48,15 @@ export type MunicipalityBrief = {
     district: string,
 }
 
-export type FederalBody = Province | District | Municipality;
-export type FederalBodyBrief = ProvinceBrief | DistrictBrief | MunicipalityBrief;
+export type WardBrief = {
+    url: string,
+    name: string,
+    bbox: BoundingBox,
+    municipality: string,
+}
+
+export type FederalBody = Province | District | Municipality | Ward;
+export type FederalBodyBrief = ProvinceBrief | DistrictBrief | MunicipalityBrief | WardBrief;
 
 export const FederalBodyDeserializer: IDeserializer<FederalBody> = (json: any) => {
     flip_polygon(json.shape);
@@ -64,6 +78,11 @@ export const MunicipalityDeserializer: IDeserializer<Municipality> = (json: any)
     return json as Municipality;
 }
 
+export const WardDeserializer: IDeserializer<Ward> = (json: any) => {
+    flip_polygon(json.shape);
+    return json as Ward;
+}
+
 export const ProvinceBriefDeserializer: IDeserializer<ProvinceBrief> = (json: any) => {
     flip_bbox(json.bbox);
     return json as ProvinceBrief;
@@ -77,4 +96,9 @@ export const DistrictBriefDeserializer: IDeserializer<DistrictBrief> = (json: an
 export const MunicipalityBriefDeserializer: IDeserializer<MunicipalityBrief> = (json: any) => {
     flip_bbox(json.bbox);
     return json as MunicipalityBrief;
+}
+
+export const WardBriefDeserializer: IDeserializer<WardBrief> = (json: any) => {
+    flip_bbox(json.bbox);
+    return json as WardBrief;
 }

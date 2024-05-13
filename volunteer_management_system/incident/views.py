@@ -3,7 +3,6 @@ import federal.models
 from authentication import utils
 from authentication.signals import new_verification_link
 from django.contrib.auth import get_user_model
-from django.db.models import Count, F
 from django.utils.translation import gettext_lazy as _
 from rest_framework import permissions, status, viewsets
 from rest_framework.decorators import action
@@ -65,8 +64,8 @@ class VolunteerProfileViewSet(
             "nationality": "National",
             "blood_group": "O Positive",
             "category": "General",
-            "temporary_municipality": "http://endpoint/to/municipality/1",
-            "permanent_municipality": "http://endpoint/to/municipality/1",
+            "temporary_ward": "http://endpoint/to/ward/1",
+            "permanent_ward": "http://endpoint/to/ward/1",
         },
     }
     ```
@@ -95,7 +94,9 @@ class VolunteerProfileViewSet(
             "gender": "Male",
             "nationality": "National",
             "blood_group": "O Positive",
-            "municipality": "???",
+            "category": "General",
+            "temporary_ward": "http://endpoint/to/ward/1",
+            "permanent_ward": "http://endpoint/to/ward/1",
         }
     ```
 
@@ -139,42 +140,6 @@ class VolunteerProfileViewSet(
             status=status.HTTP_400_BAD_REQUEST,
         )
 
-    @action(detail=False, methods=["get"])
-    def count(self, request, *args, **kwargs):
-        # fmt: off
-        municipality = (
-            models.VolunteerProfile.objects
-                .values("municipality")
-                .annotate(volunteer_count=Count("municipality"))
-                .values(id=F("municipality"), volunteer_count=F("volunteer_count"))
-        )
-
-        district = (
-            models.VolunteerProfile.objects
-                .values("municipality__district")
-                .annotate(volunteer_count=Count("municipality"))
-                .values(id=F("municipality__district"), volunteer_count=F("volunteer_count"))
-        )
-
-        province = (
-            models.VolunteerProfile.objects
-                .values("municipality__district__province")
-                .annotate(volunteer_count=Count("municipality"))
-                .values(id=F("municipality__district__province"), volunteer_count=F("volunteer_count"))
-        )
-        # fmt: on
-
-        response = {
-            "province": list(province),
-            "district": list(district),
-            "muncipality": list(municipality),
-        }
-
-        return Response(
-            response,
-            status=status.HTTP_400_BAD_REQUEST,
-        )
-
     def create(self, request, *args, **kwargs):
         response = super().create(request, *args, **kwargs)
         user = self.get_queryset().filter(email=response.data["email"]).first()
@@ -198,18 +163,23 @@ class IncidentViewSet(
         )
         province = django_filters.ModelChoiceFilter(
             label="Province",
-            field_name="municipality__district__province",
+            field_name="ward__municipality__district__province",
             queryset=federal.models.Province.objects.all(),
         )
         district = django_filters.ModelChoiceFilter(
             label="District",
-            field_name="municipality__district",
+            field_name="ward__municipality__district",
             queryset=federal.models.District.objects.all(),
         )
         municipality = django_filters.ModelChoiceFilter(
             label="Municipality",
-            field_name="municipality",
+            field_name="ward__municipality",
             queryset=federal.models.Municipality.objects.all(),
+        )
+        ward = django_filters.ModelChoiceFilter(
+            label="Ward",
+            field_name="ward",
+            queryset=federal.models.Ward.objects.all(),
         )
 
         class Meta:
@@ -239,18 +209,23 @@ class ProgramViewSet(
         )
         province = django_filters.ModelChoiceFilter(
             label="Province",
-            field_name="incident__municipality__district__province",
+            field_name="incident__ward__municipality__district__province",
             queryset=federal.models.Province.objects.all(),
         )
         district = django_filters.ModelChoiceFilter(
             label="District",
-            field_name="incident__municipality__district",
+            field_name="incident__ward__municipality__district",
             queryset=federal.models.District.objects.all(),
         )
         municipality = django_filters.ModelChoiceFilter(
             label="Municipality",
-            field_name="incident__municipality",
+            field_name="incident__ward__municipality",
             queryset=federal.models.Municipality.objects.all(),
+        )
+        ward = django_filters.ModelChoiceFilter(
+            label="Ward",
+            field_name="incident__ward",
+            queryset=federal.models.Ward.objects.all(),
         )
 
         class Meta:
@@ -354,18 +329,23 @@ class JobViewSet(
         )
         province = django_filters.ModelChoiceFilter(
             label="Province",
-            field_name="program__incident__municipality__district__province",
+            field_name="program__incident__ward__municipality__district__province",
             queryset=federal.models.Province.objects.all(),
         )
         district = django_filters.ModelChoiceFilter(
             label="District",
-            field_name="program__incident__municipality__district",
+            field_name="program__incident__ward__municipality__district",
             queryset=federal.models.District.objects.all(),
         )
         municipality = django_filters.ModelChoiceFilter(
             label="Municipality",
-            field_name="program__incident__municipality",
+            field_name="program__incident__ward__municipality",
             queryset=federal.models.Municipality.objects.all(),
+        )
+        ward = django_filters.ModelChoiceFilter(
+            label="Ward",
+            field_name="program__incident__ward",
+            queryset=federal.models.Ward.objects.all(),
         )
 
         class Meta:

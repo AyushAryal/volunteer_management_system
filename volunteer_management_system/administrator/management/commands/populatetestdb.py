@@ -190,7 +190,7 @@ class Command(BaseCommand):
                 wards.append(ward)
         return wards
 
-    def create_volunteers(self, municipalities):
+    def create_volunteers(self, wards, n=1000):
         volunteers = []
         first_names = [
             "ram",
@@ -276,7 +276,7 @@ class Command(BaseCommand):
         ]
 
         details = set()
-        while len(details) != len(municipalities) * 3:
+        while len(details) != 1000:
             first_name = random.randint(0, len(first_names) - 1)
             last_name = random.randint(0, len(last_names) - 1)
             domain = random.randint(0, len(domains) - 1)
@@ -284,51 +284,50 @@ class Command(BaseCommand):
             details.add((first_name, last_name, domain, generator))
         details = list(details)
 
-        for municipality in municipalities:
-            for _ in range(random.randint(1, 3)):
-                first_name_idx, last_name_idx, domain_idx, generator_idx = details.pop()
-                gender = genders[first_name_idx]
-                first_name = first_names[first_name_idx]
-                last_name = last_names[last_name_idx]
-                domain = domains[domain_idx]
-                generator = generators[generator_idx]
-                email = generator(first_name, last_name, domain)
-                nationality = (
-                    incident.models.Nationality.National
-                    if random.random() < 0.95
-                    else incident.models.Nationality.International
-                )
-                date_of_birth = timezone.now() - timedelta(
-                    days=365 * random.randint(19, 45) + random.randint(0, 365)
-                )
+        for detail in details:
+            first_name_idx, last_name_idx, domain_idx, generator_idx = detail
+            gender = genders[first_name_idx]
+            first_name = first_names[first_name_idx]
+            last_name = last_names[last_name_idx]
+            domain = domains[domain_idx]
+            generator = generators[generator_idx]
+            email = generator(first_name, last_name, domain)
+            nationality = (
+                incident.models.Nationality.National
+                if random.random() < 0.95
+                else incident.models.Nationality.International
+            )
+            date_of_birth = timezone.now() - timedelta(
+                days=365 * random.randint(19, 45) + random.randint(0, 365)
+            )
 
-                user = get_user_model().objects.create_user(
-                    password=PASSWORD, email=email
-                )
-                user.email_verified = True
-                user.save()
+            user = get_user_model().objects.create_user(password=PASSWORD, email=email)
+            user.email_verified = True
+            user.save()
 
-                citizenship = incident.models.Citizenship(
-                    id=incident.models.Citizenship.objects.all().count() + 1,
-                    user=user,
-                    registration_date=date_of_birth,
-                    registration_district=federal.models.District.objects.get(pk=1),
-                )
-                citizenship.save()
+            citizenship = incident.models.Citizenship(
+                id=incident.models.Citizenship.objects.all().count() + 1,
+                user=user,
+                registration_date=date_of_birth,
+                registration_district=federal.models.District.objects.get(pk=1),
+            )
+            citizenship.save()
 
-                volunteer = incident.models.VolunteerProfile(
-                    user=user,
-                    first_name=first_name.capitalize(),
-                    last_name=last_name.capitalize(),
-                    gender=gender,
-                    blood_group=random.choice(incident.models.BloodGroup.values),
-                    nationality=nationality,
-                    date_of_birth=date_of_birth,
-                    temporary_municipality=municipality,
-                    permanent_municipality=municipality,
-                )
-                volunteer.save()
-                self.stdout.write(self.style.SUCCESS(f"Created volunteer {email}"))
+            ward = random.choice(wards)
+
+            volunteer = incident.models.VolunteerProfile(
+                user=user,
+                first_name=first_name.capitalize(),
+                last_name=last_name.capitalize(),
+                gender=gender,
+                blood_group=random.choice(incident.models.BloodGroup.values),
+                nationality=nationality,
+                date_of_birth=date_of_birth,
+                temporary_ward=ward,
+                permanent_ward=ward,
+            )
+            volunteer.save()
+            self.stdout.write(self.style.SUCCESS(f"Created volunteer {email}"))
         return volunteers
 
     def load_incidents(self):
@@ -346,7 +345,7 @@ class Command(BaseCommand):
                     name=result["title"],
                     date=date,
                     description=result["description"] or "",
-                    municipality=ward.municipality,
+                    ward=ward,
                     severity=incident.models.IncidentSeverity.Moderate,
                     point=Point(result["point"]["coordinates"]),
                 )
@@ -462,7 +461,8 @@ class Command(BaseCommand):
         )
         incident.models.Program.objects.bulk_create(programs)
 
-        _ = self.create_volunteers(municipalities)
+        self.stdout.write(self.style.SUCCESS("Creating volunteers"))
+        _ = self.create_volunteers(wards)
 
         self.stdout.write(self.style.SUCCESS("Creating jobs"))
         jobs = self.create_jobs(programs)

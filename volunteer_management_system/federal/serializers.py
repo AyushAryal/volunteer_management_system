@@ -96,6 +96,11 @@ class WardSerializer(HyperlinkedModelSerializer):
 
 
 class WardBriefSerializer(HyperlinkedModelSerializer):
+    bbox = SerializerMethodField()
+
+    def get_bbox(self, body):
+        return body.shape.extent
+
     class Meta:
         model = models.Ward
         exclude = ("shape",)

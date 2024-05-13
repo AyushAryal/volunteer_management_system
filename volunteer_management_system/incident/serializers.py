@@ -49,15 +49,15 @@ class VolunteerProfileSerializer(serializers.HyperlinkedModelSerializer):
             "category",
             "nationality",
             "blood_group",
-            "temporary_municipality",
-            "permanent_municipality",
+            "temporary_ward",
+            "permanent_ward",
         )
         read_only_fields = ("user",)
         extra_kwargs = {
             "url": {"view_name": "api:volunteer-detail"},
             "user": {"view_name": "api:user-detail"},
-            "temporary_municipality": {"view_name": "api:municipality-detail"},
-            "permanent_municipality": {"view_name": "api:municipality-detail"},
+            "temporary_ward": {"view_name": "api:ward-detail"},
+            "permanent_ward": {"view_name": "api:ward-detail"},
         }
 
 
@@ -115,8 +115,8 @@ class SignupVolunteerProfileSerializer(serializers.HyperlinkedModelSerializer):
             "nationality",
             "blood_group",
             "category",
-            "temporary_municipality",
-            "permanent_municipality",
+            "temporary_ward",
+            "permanent_ward",
             "organization_name",
             "organization_phone_number",
             "organization_website",
@@ -125,8 +125,8 @@ class SignupVolunteerProfileSerializer(serializers.HyperlinkedModelSerializer):
             "training_type",
         )
         extra_kwargs = {
-            "temporary_municipality": {"view_name": "api:municipality-detail"},
-            "permanent_municipality": {"view_name": "api:municipality-detail"},
+            "temporary_ward": {"view_name": "api:ward-detail"},
+            "permanent_ward": {"view_name": "api:ward-detail"},
         }
 
 
@@ -269,7 +269,7 @@ class IncidentSerializer(serializers.HyperlinkedModelSerializer):
         fields = "__all__"
         extra_kwargs = {
             "url": {"view_name": "api:incident-detail"},
-            "municipality": {"view_name": "api:municipality-detail"},
+            "ward": {"view_name": "api:ward-detail"},
         }
 
 

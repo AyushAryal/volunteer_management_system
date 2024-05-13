@@ -2,7 +2,8 @@ import {
     ProvinceBrief,
     DistrictBrief,
     MunicipalityBrief,
-} from './federal';
+    WardBrief,
+} from '@models/federal';
 import { Incident, Job, Program, VolunteerProfile } from '@models/incident';
 
 import { hookstate } from '@hookstate/core';
@@ -12,6 +13,7 @@ interface MapControls {
     selectedProvince: string | null,
     selectedDistrict: string | null,
     selectedMunicipality: string | null,
+    selectedWard: string | null,
     showProvinceBorders: boolean,
     showDistrictBorders: boolean,
     showMunicipalityBorders: boolean,
@@ -32,6 +34,7 @@ export interface Store {
     provinceList: ProvinceBrief[],
     districtList: DistrictBrief[],
     municipalityList: MunicipalityBrief[],
+    wardList: WardBrief[],
     incidentList: Incident[],
     jobList: Job[],
     programList: Program[],
@@ -39,6 +42,7 @@ export interface Store {
         provinceList: boolean,
         districtList: boolean,
         municipalityList: boolean,
+        wardList: boolean,
         incidentList: boolean,
         jobList: boolean,
         programList: boolean,
@@ -62,6 +66,7 @@ export const storeState = hookstate<Store>({
     provinceList: [],
     districtList: [],
     municipalityList: [],
+    wardList: [],
     incidentList: [],
     jobList: [],
     programList: [],
@@ -69,6 +74,7 @@ export const storeState = hookstate<Store>({
         provinceList: false,
         districtList: false,
         municipalityList: false,
+        wardList: false,
         incidentList: false,
         jobList: false,
         programList: false,
@@ -77,6 +83,7 @@ export const storeState = hookstate<Store>({
         selectedProvince: null,
         selectedDistrict: null,
         selectedMunicipality: null,
+        selectedWard: null,
         showProvinceBorders: true,
         showDistrictBorders: true,
         showMunicipalityBorders: false,

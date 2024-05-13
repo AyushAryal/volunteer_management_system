@@ -8,20 +8,20 @@ from django.utils.translation import gettext_lazy as _
 from leaflet.admin import LeafletGeoAdmin
 
 
-def get_user_controlled_municipalities(user):
-    municipalities = []
+def get_user_controlled_wards(user):
+    wards = []
     if hasattr(user, "province_admin"):
         province = user.province_admin
-        municipalities = federal.models.Municipality.objects.filter(
-            district__province=province
+        wards = federal.models.Ward.objects.filter(
+            municipality__district__province=province
         )
     elif hasattr(user, "district_admin"):
         district = user.district_admin
-        municipalities = federal.models.Municipality.objects.filter(district=district)
+        wards = federal.models.Ward.objects.filter(municipality__district=district)
     elif hasattr(user, "municipality_admin"):
-        district = user.municipality_admin
-        municipalities = [user.municipality_admin]
-    return municipalities
+        municipality = user.municipality_admin
+        wards = federal.models.Ward.objects.filter(municipality=municipality)
+    return wards
 
 
 class CertificateInline(admin.StackedInline):
@@ -65,10 +65,8 @@ class JobAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         if request.user.is_superuser:
             return super().get_queryset(request)
-        municipalities = get_user_controlled_municipalities(request.user)
-        return self.model.objects.filter(
-            program__incident__municipality__in=municipalities
-        )
+        wards = get_user_controlled_wards(request.user)
+        return self.model.objects.filter(program__incident__ward__in=wards)
 
 
 class JobApplicationAdmin(admin.ModelAdmin):
@@ -78,16 +76,14 @@ class JobApplicationAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         if request.user.is_superuser:
             return super().get_queryset(request)
-        municipalities = get_user_controlled_municipalities(request.user)
-        return self.model.objects.filter(
-            job__program__incident__municipality__in=municipalities
-        )
+        wards = get_user_controlled_wards(request.user)
+        return self.model.objects.filter(job__program__incident__ward__in=wards)
 
 
 class IncidentAdmin(LeafletGeoAdmin):
     model = incident.models.Incident
-    list_display = ("__str__", "municipality", "formatted_date")
-    search_fields = ("name", "municipality__name")
+    list_display = ("__str__", "ward", "formatted_date")
+    search_fields = ("name", "ward__municipality__name")
 
     def get_form(self, request, obj, *args, **kwargs):
         return super().get_form(request, obj, *args, **kwargs)
@@ -98,8 +94,8 @@ class IncidentAdmin(LeafletGeoAdmin):
     def get_queryset(self, request):
         if request.user.is_superuser:
             return super().get_queryset(request)
-        municipalities = get_user_controlled_municipalities(request.user)
-        return self.model.objects.filter(municipality__in=municipalities)
+        wards = get_user_controlled_wards(request.user)
+        return self.model.objects.filter(ward__in=wards)
 
     formatted_date.short_description = "Date"
 
@@ -107,13 +103,13 @@ class IncidentAdmin(LeafletGeoAdmin):
 class ProgramAdmin(admin.ModelAdmin):
     model = incident.models.Program
     list_display = ("__str__", "incident")
-    search_fields = ("name", "incident__name", "incident__municipality__name")
+    search_fields = ("name", "incident__name", "incident__ward__municipality__name")
 
     def get_queryset(self, request):
         if request.user.is_superuser:
             return super().get_queryset(request)
-        municipalities = get_user_controlled_municipalities(request.user)
-        return self.model.objects.filter(incident__municipality__in=municipalities)
+        wards = get_user_controlled_wards(request.user)
+        return self.model.objects.filter(incident__ward__in=wards)
 
 
 class UserAdmin(BaseUserAdmin):

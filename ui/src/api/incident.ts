@@ -11,6 +11,7 @@ export interface FederalFilter {
     province?: number,
     district?: number,
     municipality?: number,
+    ward?: number,
 }
 
 export interface IncidentFilter extends FederalFilter {

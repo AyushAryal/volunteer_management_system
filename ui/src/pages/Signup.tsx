@@ -28,8 +28,8 @@ type VolunteerSignupForm = {
     volunteerType: VolunteerCategory,
     bloodGroup: BloodGroup,
     gender: Gender,
-    selectedTemporaryMunicipality: string,
-    selectedPermanentMunicipality: string,
+    selectedTemporaryWard: string,
+    selectedPermanentWard: string,
     citizenshipId: string,
     citizenshipRegistrationDate: string,
     citizenshipDistrict: string,
@@ -53,8 +53,8 @@ async function perform_signup(form: VolunteerSignupForm): Promise<FormState> {
         volunteerType,
         bloodGroup,
         gender,
-        selectedTemporaryMunicipality,
-        selectedPermanentMunicipality,
+        selectedTemporaryWard,
+        selectedPermanentWard,
         citizenshipId,
         citizenshipRegistrationDate,
         citizenshipDistrict,
@@ -82,8 +82,8 @@ async function perform_signup(form: VolunteerSignupForm): Promise<FormState> {
                 "gender": gender,
                 "nationality": nationality,
                 "category": volunteerType,
-                "temporary_municipality": selectedTemporaryMunicipality,
-                "permanent_municipality": selectedPermanentMunicipality,
+                "temporary_ward": selectedTemporaryWard,
+                "permanent_ward": selectedPermanentWard,
             },
             "citizenship": {
                 "id": citizenshipId,
@@ -140,9 +140,11 @@ export function Signup() {
     const selectedTemporaryProvinceState = useState("");
     const selectedTemporaryDistrictState = useState("");
     const selectedTemporaryMunicipalityState = useState("");
+    const selectedTemporaryWardState = useState("");
     const selectedPermanentProvinceState = useState("");
     const selectedPermanentDistrictState = useState("");
     const selectedPermanentMunicipalityState = useState("");
+    const selectedPermanentWardState = useState("");
 
     const idTypeState = useState("")
     const citizenshipIdState = useState("")
@@ -170,8 +172,8 @@ export function Signup() {
         const [volunteerType,] = volunteerTypeState;
         const [bloodGroup,] = bloodGroupState;
         const [gender,] = genderState;
-        const [selectedTemporaryMunicipality,] = selectedTemporaryMunicipalityState;
-        const [selectedPermanentMunicipality,] = selectedPermanentMunicipalityState;
+        const [selectedTemporaryWard,] = selectedTemporaryWardState;
+        const [selectedPermanentWard,] = selectedPermanentWardState;
         const [citizenshipId,] = citizenshipIdState
         const [citizenshipRegistrationDate,] = citizenshipRegistrationDateState
         const [citizenshipDistrict,] = citizenshipDistrictState
@@ -193,8 +195,8 @@ export function Signup() {
             volunteerType,
             bloodGroup,
             gender,
-            selectedTemporaryMunicipality,
-            selectedPermanentMunicipality,
+            selectedTemporaryWard,
+            selectedPermanentWard,
             citizenshipId,
             citizenshipRegistrationDate,
             citizenshipDistrict,
@@ -286,9 +288,11 @@ export function Signup() {
             selectedTemporaryProvinceState={selectedTemporaryProvinceState}
             selectedTemporaryDistrictState={selectedTemporaryDistrictState}
             selectedTemporaryMunicipalityState={selectedTemporaryMunicipalityState}
+            selectedTemporaryWardState={selectedTemporaryWardState}
             selectedPermanentProvinceState={selectedPermanentProvinceState}
             selectedPermanentDistrictState={selectedPermanentDistrictState}
             selectedPermanentMunicipalityState={selectedPermanentMunicipalityState}
+            selectedPermanentWardState={selectedPermanentWardState}
         />,
         <SignupIdentification
             idTypeState={idTypeState}

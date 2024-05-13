@@ -18,8 +18,8 @@ type VolunteerProfileForm = {
     volunteerType: VolunteerCategory,
     bloodGroup: BloodGroup,
     gender: Gender,
-    temporaryMunicipality: string,
-    permanentMunicipality: string,
+    temporaryWard: string,
+    permanentWard: string,
 }
 
 async function perform_volunteer_profile_update(url: string, form: VolunteerProfileForm): Promise<string | VolunteerProfile> {
@@ -33,8 +33,8 @@ async function perform_volunteer_profile_update(url: string, form: VolunteerProf
             "volunteer_type": form.volunteerType,
             "blood_group": form.bloodGroup,
             "gender": form.gender,
-            "temporary_municipality": form.temporaryMunicipality,
-            "permanent_municipality": form.permanentMunicipality,
+            "temporary_ward": form.temporaryWard,
+            "permanent_ward": form.permanentWard,
         }
     }));
     if (response.status == 200 || response.status == 204) {
@@ -66,10 +66,12 @@ export function VolunteerProfileUpdate(props: VolunteerProfileUpdateFormProps) {
 
     const selectedTemporaryProvinceState = useState("");
     const selectedTemporaryDistrictState = useState("");
-    const selectedTemporaryMunicipalityState = useState(props.volunteer.temporary_municipality);
+    const selectedTemporaryMunicipalityState = useState("");
+    const selectedTemporaryWardState = useState(props.volunteer.temporary_ward);
     const selectedPermanentProvinceState = useState("");
     const selectedPermanentDistrictState = useState("");
-    const selectedPermanentMunicipalityState = useState(props.volunteer.permanent_municipality);
+    const selectedPermanentMunicipalityState = useState("");
+    const selectedPermanentWardState = useState(props.volunteer.permanent_ward);
     const [formErrors, setFormErrors] = useState<string | boolean>(false);
 
     const [firstName,] = firstNameState;
@@ -80,8 +82,8 @@ export function VolunteerProfileUpdate(props: VolunteerProfileUpdateFormProps) {
     const [volunteerType,] = volunteerTypeState;
     const [bloodGroup,] = bloodGroupState;
     const [gender,] = genderState;
-    const [selectedTemporaryMunicipality,] = selectedTemporaryMunicipalityState;
-    const [selectedPermanentMunicipality,] = selectedPermanentMunicipalityState;
+    const [selectedTemporaryWard,] = selectedTemporaryWardState;
+    const [selectedPermanentWard,] = selectedPermanentWardState;
 
 
     const onSubmit = async () => {
@@ -94,8 +96,8 @@ export function VolunteerProfileUpdate(props: VolunteerProfileUpdateFormProps) {
             gender,
             nationality,
             volunteerType,
-            temporaryMunicipality: selectedTemporaryMunicipality,
-            permanentMunicipality: selectedPermanentMunicipality,
+            temporaryWard: selectedTemporaryWard,
+            permanentWard: selectedPermanentWard,
         });
         if (typeof newProfile === "object") {
             volunteerProfile.set(newProfile);
@@ -159,9 +161,11 @@ export function VolunteerProfileUpdate(props: VolunteerProfileUpdateFormProps) {
                 selectedTemporaryProvinceState={selectedTemporaryProvinceState}
                 selectedTemporaryDistrictState={selectedTemporaryDistrictState}
                 selectedTemporaryMunicipalityState={selectedTemporaryMunicipalityState}
+                selectedTemporaryWardState={selectedTemporaryWardState}
                 selectedPermanentProvinceState={selectedPermanentProvinceState}
                 selectedPermanentDistrictState={selectedPermanentDistrictState}
                 selectedPermanentMunicipalityState={selectedPermanentMunicipalityState}
+                selectedPermanentWardState={selectedPermanentWardState}
             />
             <div className="flex gap-4 align-self-end align-items-center mt-5">
                 {response}

@@ -15,6 +15,7 @@ export function LoadingDisplay() {
         ["incidentList", "Loading Incidents..."],
         ["jobList", "Loading Jobs..."],
         ["programList", "Loading Programs..."],
+        ["wardList", "Loading Wards..."],
     ]);
 
     let messages = Object.entries(loaded)

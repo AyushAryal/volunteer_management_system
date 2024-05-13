@@ -30,6 +30,7 @@ export function SelectedFederalBodyPolygons() {
         store.mapControls.selectedProvince,
         store.mapControls.selectedDistrict,
         store.mapControls.selectedMunicipality,
+        store.mapControls.selectedWard,
     ]);
 
     if (federalBody) {
