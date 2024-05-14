@@ -161,7 +161,7 @@ export function VolunteerLoginButton() {
             return <VolunteerLoginModal visible={modalVisible} setVisible={setModalVisible} />;
         } else {
             return <Button className="mx-1" label='Login' raised onClick={() => setModalVisible(true)} >
-                <FontAwesomeIcon className="p-1 text-red-500" icon={faUser} />
+                <FontAwesomeIcon className="ml-2" icon={faUser} />
             </Button>;
         }
     } else {

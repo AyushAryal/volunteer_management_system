@@ -18,7 +18,7 @@ const Navbar = () => {
       outlined
       onClick={() => navigate("/signup")}
     >
-      <FontAwesomeIcon className="p-1 text-red-500  " icon="user-plus" />
+      <FontAwesomeIcon className="ml-2" icon="user-plus" />
     </Button>
   );
 

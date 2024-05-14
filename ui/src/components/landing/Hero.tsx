@@ -34,8 +34,10 @@ const Hero = () => {
                         <span className="">Volunteer Management System</span>
                     </h1>
                     {heroContent}
+                    <div className="flex flex-wrap align-items-center">
+                    </div>
                     <Button
-                        className="my-3"
+                        className="my-3 fadeinleft animation-duration-1000 animation-iteration-1 animation-ease-in shadow-4"
                         label="Dashboard"
                         raised
                         onClick={() => navigate("/dashboard")}

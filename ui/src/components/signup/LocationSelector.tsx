@@ -8,28 +8,51 @@ import {
     ProvinceBrief,
     DistrictBrief,
     MunicipalityBrief,
-    WardBrief
+    WardBrief,
+    FederalBodyBrief
 } from '@models/federal';
 import { StateTuple } from '@models/generics';
-import { useEffect } from 'react';
-import { get_district_brief_list, get_municipality_brief_list, get_province_brief_list, get_ward_brief_list } from '@api/federal';
 
+type Tree = Map<string, Tree | null>;
+
+function constructTree(
+    provinces: ProvinceBrief[],
+    districts: DistrictBrief[],
+    municipalities: MunicipalityBrief[],
+    wards: WardBrief[]
+): Tree {
+    const tree: Tree = new Map();
+    function addNode(parent: string, child: string) {
+        const parentNode = tree.get(parent);
+        if (parentNode === undefined) {
+            tree.set(parent, new Map([[child, null]]));
+        } else if (parentNode !== null) {
+            parentNode.set(child, null);
+        }
+    }
+    provinces.forEach(province => { tree.set(province.url, new Map()); });
+    districts.forEach(district => { addNode(district.province, district.url); });
+    municipalities.forEach(municipality => { addNode(municipality.district, municipality.url); });
+    wards.forEach(ward => { addNode(ward.municipality, ward.url); });
+    return tree;
+}
+
+function getDescendents(tree: Tree, url: string): string[] {
+    const descendants: string[] = [];
+    const node = tree.get(url);
+    if (node !== undefined && node !== null) {
+        for (const [childUrl, _] of node) {
+            descendants.push(childUrl);
+            const childDescendants = getDescendents(tree, childUrl);
+            descendants.push(...childDescendants);
+        }
+    }
+    return descendants;
+}
 
 export function ProvinceSelector({ selectedProvinceState }: { selectedProvinceState: StateTuple<string> }) {
     const store = useHookstate(storeState);
     const [selectedProvince, setProvince] = selectedProvinceState;
-
-    useEffect(() => {
-        if (storeState.provinceList.get().length == 0) {
-            let network_request = async () => {
-                storeState.loaded.provinceList.set(false);
-                let provinceList = await get_province_brief_list()
-                storeState.provinceList.set(provinceList);
-                storeState.loaded.provinceList.set(true);
-            }
-            network_request();
-        }
-    }, [store.provinceList]);
 
     const progressSpinner = <ProgressSpinner style={{ width: '50px', height: '50px' }} />;
     return <Dropdown
@@ -47,18 +70,6 @@ export function DistrictSelector({ label, selectedDistrictState }: { label: stri
     const store = useHookstate(storeState);
     const [selectedDistrict, setDistrict] = selectedDistrictState;
     const progressSpinner = <ProgressSpinner style={{ width: '50px', height: '50px' }} />;
-
-    useEffect(() => {
-        if (storeState.districtList.get().length == 0) {
-            let network_request = async () => {
-                storeState.loaded.districtList.set(false);
-                let districtList = await get_district_brief_list()
-                storeState.districtList.set(districtList);
-                storeState.loaded.districtList.set(true);
-            }
-            network_request();
-        }
-    }, [store.districtList]);
 
     return <div className="flex flex-column justify-content-center align-content-center">
         <Dropdown
@@ -78,18 +89,6 @@ export function MunicipalitySelector({ selectedMunicipalityState }: { selectedMu
     const [selectedMunicipality, setMunicipality] = selectedMunicipalityState;
     const progressSpinner = <ProgressSpinner style={{ width: '50px', height: '50px' }} />;
 
-    useEffect(() => {
-        if (storeState.municipalityList.get().length == 0) {
-            let network_request = async () => {
-                storeState.loaded.municipalityList.set(false);
-                let municipalityList = await get_municipality_brief_list()
-                storeState.municipalityList.set(municipalityList);
-                storeState.loaded.municipalityList.set(true);
-            }
-            network_request();
-        }
-    }, [store.municipalityList]);
-
     return <div className="flex flex-column justify-content-center align-content-center">
         <Dropdown
             value={store.municipalityList.get().find((municipality) => selectedMunicipality == municipality.url)}
@@ -108,18 +107,6 @@ export function WardSelector({ selectedWardState }: { selectedWardState: StateTu
     const store = useHookstate(storeState);
     const [selectedWard, setWard] = selectedWardState;
     const progressSpinner = <ProgressSpinner style={{ width: '50px', height: '50px' }} />;
-
-    useEffect(() => {
-        if (storeState.wardList.get().length == 0) {
-            let network_request = async () => {
-                storeState.loaded.wardList.set(false);
-                let wardList = await get_ward_brief_list()
-                storeState.wardList.set(wardList);
-                storeState.loaded.wardList.set(true);
-            }
-            network_request();
-        }
-    }, [store.wardList]);
 
     return <div className="flex flex-column justify-content-center align-content-center">
         <Dropdown
@@ -144,53 +131,11 @@ type LocationSelectorProps = {
 export function LocationSelector(props: LocationSelectorProps) {
     const store = useHookstate(storeState);
 
-    useEffect(() => {
-        if (storeState.provinceList.get().length == 0) {
-            let network_request = async () => {
-                storeState.loaded.provinceList.set(false);
-                let provinceList = await get_province_brief_list()
-                storeState.provinceList.set(provinceList);
-                storeState.loaded.provinceList.set(true);
-            }
-            network_request();
-        }
-    }, [store.provinceList]);
 
-    useEffect(() => {
-        if (storeState.districtList.get().length == 0) {
-            let network_request = async () => {
-                storeState.loaded.districtList.set(false);
-                let districtList = await get_district_brief_list()
-                storeState.districtList.set(districtList);
-                storeState.loaded.districtList.set(true);
-            }
-            network_request();
-        }
-    }, [store.districtList]);
-
-    useEffect(() => {
-        if (storeState.municipalityList.get().length == 0) {
-            let network_request = async () => {
-                storeState.loaded.municipalityList.set(false);
-                let municipalityList = await get_municipality_brief_list()
-                storeState.municipalityList.set(municipalityList);
-                storeState.loaded.municipalityList.set(true);
-            }
-            network_request();
-        }
-    }, [store.municipalityList]);
-
-    useEffect(() => {
-        if (storeState.wardList.get().length == 0) {
-            let network_request = async () => {
-                storeState.loaded.wardList.set(false);
-                let wardList = await get_ward_brief_list()
-                storeState.wardList.set(wardList);
-                storeState.loaded.wardList.set(true);
-            }
-            network_request();
-        }
-    }, [store.wardList]);
+    let provinceList = storeState.provinceList.get() as ProvinceBrief[];
+    let districtList = storeState.districtList.get() as DistrictBrief[];
+    let municipalityList = storeState.municipalityList.get() as MunicipalityBrief[];
+    let wardList = storeState.wardList.get() as WardBrief[];
 
     const {
         selectedProvinceState,
@@ -215,7 +160,7 @@ export function LocationSelector(props: LocationSelectorProps) {
         setWard(null);
         setMunicipality(null);
         setDistrict(district?.url ?? null);
-        let province = store.provinceList.get().find((province) => province.url === district?.province);
+        let province = provinceList.find((province) => province.url === district?.province);
         if (province !== undefined) {
             setProvince(province?.url ?? null);
         }
@@ -224,28 +169,48 @@ export function LocationSelector(props: LocationSelectorProps) {
     const updateMunicipality = (municipality: MunicipalityBrief | undefined) => {
         setWard(null);
         setMunicipality(municipality?.url ?? null);
-        let district = store.districtList.get().find((district) => district.url === municipality?.district);
+        let district = districtList.find((district) => district.url === municipality?.district);
         if (district !== undefined) {
             setDistrict(district?.url ?? null);
-            let province = store.provinceList.get().find((province) => province.url === district?.province);
+            let province = provinceList.find((province) => province.url === district?.province);
             setProvince(province?.url ?? null);
         }
     };
 
     const updateWard = (ward: WardBrief | undefined) => {
         setWard(ward?.url ?? null);
-        let municipality = store.municipalityList.get().find((municipality) => municipality.url === ward?.municipality);
+        let municipality = municipalityList.find((municipality) => municipality.url === ward?.municipality);
         if (municipality !== undefined) {
             setMunicipality(municipality?.url ?? null);
-            let district = store.districtList.get().find((district) => district.url === municipality?.district);
+            let district = districtList.find((district) => district.url === municipality?.district);
             setDistrict(district?.url ?? null);
-            let province = store.provinceList.get().find((province) => province.url === district?.province);
+            let province = provinceList.find((province) => province.url === district?.province);
             setProvince(province?.url ?? null);
         }
     };
 
     const progressSpinner = <ProgressSpinner style={{ width: '50px', height: '50px' }} />;
 
+    let tree = constructTree(
+        provinceList,
+        districtList,
+        municipalityList,
+        wardList,
+    );
+
+    let calculateOptions = (nearestSelectedParent: string | null, federalBodyOptions: FederalBodyBrief[]) => {
+        if (nearestSelectedParent) {
+            let descendents = getDescendents(tree, nearestSelectedParent);
+            let newFederalBodyOptions = federalBodyOptions.filter(item => descendents.includes(item.url)).slice();
+            if (newFederalBodyOptions.length !== 0) return newFederalBodyOptions;
+        }
+        return federalBodyOptions;
+    }
+
+    let provinceOptions = calculateOptions(null, provinceList);
+    let districtOptions = calculateOptions(selectedProvince, districtList);
+    let municipalityOptions = calculateOptions(selectedDistrict || selectedProvince, municipalityList);
+    let wardOptions = calculateOptions(selectedMunicipality || selectedDistrict || selectedProvince, wardList);
     return (
         <div className="flex flex-column justify-content-center align-content-center">
             <Dropdown
@@ -255,7 +220,7 @@ export function LocationSelector(props: LocationSelectorProps) {
                 onChange={(ev) => {
                     updateProvince(ev.value);
                 }}
-                options={store.provinceList.get() as ProvinceBrief[]}
+                options={provinceOptions}
                 emptyMessage={
                     store.provinceList.get().length == 0 ? progressSpinner : null
                 }
@@ -270,7 +235,7 @@ export function LocationSelector(props: LocationSelectorProps) {
                 onChange={(ev) => {
                     updateDistrict(ev.value);
                 }}
-                options={store.districtList.get() as DistrictBrief[]}
+                options={districtOptions}
                 emptyMessage={
                     store.districtList.get().length == 0 ? progressSpinner : null
                 }
@@ -287,7 +252,7 @@ export function LocationSelector(props: LocationSelectorProps) {
                 onChange={(ev) => {
                     updateMunicipality(ev.value);
                 }}
-                options={store.municipalityList.get() as MunicipalityBrief[]}
+                options={municipalityOptions}
                 emptyMessage={
                     store.municipalityList.get().length == 0 ? progressSpinner : null
                 }
@@ -304,7 +269,7 @@ export function LocationSelector(props: LocationSelectorProps) {
                 onChange={(ev) => {
                     updateWard(ev.value);
                 }}
-                options={store.wardList.get() as WardBrief[]}
+                options={wardOptions}
                 emptyMessage={
                     store.wardList.get().length == 0 ? progressSpinner : null
                 }

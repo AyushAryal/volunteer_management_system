@@ -336,7 +336,7 @@ class Command(BaseCommand):
             response = json.load(j)
             results = response["results"]
             incidents = []
-            for result in random.sample(results, int(len(results) * 0.25)):
+            for result in results:
                 # At point of writing only one ward in ward list
                 ward_id = result["wards"][0]
                 ward = federal.models.Ward.objects.get(pk=ward_id)
@@ -457,7 +457,7 @@ class Command(BaseCommand):
 
         self.stdout.write(self.style.SUCCESS("Creating programs"))
         programs = self.create_programs(
-            random.sample(incidents, int(len(incidents) * 0.05))
+            random.sample(incidents, int(len(incidents) * 0.25))
         )
         incident.models.Program.objects.bulk_create(programs)
 

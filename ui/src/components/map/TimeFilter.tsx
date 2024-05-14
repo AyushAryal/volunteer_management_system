@@ -40,62 +40,62 @@ export function TimeFilter() {
             className="gap-3"
             style={{
                 display: "grid",
-                gridTemplateColumns: "auto auto",
+                gridTemplateColumns: "auto max-content",
             }}
         >
-            <div className="flex align-items-center">
+            <div className="flex align-items-center gap-1">
                 <RadioButton
                     inputId="year"
                     name="year"
                     value="year"
                     checked={period === 'year'}
                     onChange={onRadioChange} />
-                <label htmlFor="year" className="ml-2">Year</label>
+                <label htmlFor="year">Year</label>
             </div>
-            <div className="flex align-items-center">
+            <div className="flex align-items-center gap-1">
                 <RadioButton
                     inputId="six_months"
                     name="six_months"
                     value="six_months"
                     checked={period === 'six_months'}
                     onChange={onRadioChange} />
-                <label htmlFor="six_months" className="ml-2">6 months</label>
+                <label htmlFor="six_months" className="flex-shrink-0">6 months</label>
             </div>
-            <div className="flex align-items-center">
+            <div className="flex align-items-center gap-1">
                 <RadioButton
                     inputId="month"
                     name="month"
                     value="month"
                     checked={period === 'month'}
                     onChange={onRadioChange} />
-                <label htmlFor="month" className="ml-2">Month</label>
+                <label htmlFor="month">Month</label>
             </div>
-            <div className="flex align-items-center">
+            <div className="flex align-items-center gap-1">
                 <RadioButton
                     inputId="three_months"
                     name="three_months"
                     value="three_months"
                     checked={period === 'three_months'}
                     onChange={onRadioChange} />
-                <label htmlFor="three_months" className="ml-2">3 months</label>
+                <label htmlFor="three_months">3 months</label>
             </div>
-            <div className="flex align-items-center">
+            <div className="flex align-items-center gap-1">
                 <RadioButton
                     inputId="week"
                     name="week"
                     value="week"
                     checked={period === 'week'}
                     onChange={onRadioChange} />
-                <label htmlFor="week" className="ml-2">Week</label>
+                <label htmlFor="week">Week</label>
             </div>
-            <div className="flex align-items-center">
+            <div className="flex align-items-center gap-1">
                 <RadioButton
                     inputId="custom"
                     name="custom"
                     value="custom"
                     checked={period === 'custom'}
                     onChange={onRadioChange} />
-                <label htmlFor="custom" className="ml-2">Custom</label>
+                <label htmlFor="custom">Custom</label>
             </div>
         </div>
     </div>;

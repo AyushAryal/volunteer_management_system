@@ -19,6 +19,7 @@ library.add(fas, far, fab);
 import { PrimeReactProvider } from 'primereact/api';
 import App from './App.tsx';
 import { BrowserRouter } from 'react-router-dom';
+import { GlobalEffects } from '@components/GlobalEffects.tsx';
 
 
 function Main() {
@@ -38,6 +39,7 @@ function Main() {
     return (
         <React.StrictMode>
             <PrimeReactProvider value={{ pt }}>
+                <GlobalEffects />
                 <BrowserRouter>
                     <App />
                 </BrowserRouter>
