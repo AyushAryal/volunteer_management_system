@@ -183,6 +183,7 @@ class WardAdmin(admin.ModelAdmin):
     model = federal.models.Ward
     list_display = ("__str__", "municipality")
     search_fields = ("name", "municipality__name")
+    ordering = ("municipality", "name")
 
 
 admin_site.register(federal.models.Province, ProvinceAdmin)

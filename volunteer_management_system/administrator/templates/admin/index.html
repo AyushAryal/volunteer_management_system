@@ -47,7 +47,7 @@
             return url;
         }
 
-        async function fetch_incidents() {
+        {% comment %} async function fetch_incidents() {
             let startDate= new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
             let startDateRepr = undefined;
 
@@ -71,7 +71,7 @@
 
             let data = await fetch(add_query("/api/incident", query));
             return await data.json();
-        }
+        } {% endcomment %}
 
         window.addEventListener("map:init", async function (e) {
             let map = e.detail.map;

@@ -85,18 +85,24 @@ class MunicipalityBriefSerializer(HyperlinkedModelSerializer):
 
 class WardSerializer(HyperlinkedModelSerializer):
     shape = GeometryField(auto_bbox=True)
-
+    name = SerializerMethodField()
+    
     class Meta:
         model = models.Ward
+
         fields = "__all__"
         extra_kwargs = {
             "url": {"view_name": "api:ward-detail"},
             "municipality": {"view_name": "api:municipality-detail"},
         }
 
+    def get_name(self, obj):
+        return f"{obj.municipality.name} - {obj.name}"
+
 
 class WardBriefSerializer(HyperlinkedModelSerializer):
     bbox = SerializerMethodField()
+    name = SerializerMethodField()
 
     def get_bbox(self, body):
         return body.shape.extent
@@ -108,3 +114,6 @@ class WardBriefSerializer(HyperlinkedModelSerializer):
             "url": {"view_name": "api:ward-detail"},
             "municipality": {"view_name": "api:municipality-detail"},
         }
+
+    def get_name(self, obj):
+        return f"{obj.municipality.name} - {obj.name}"

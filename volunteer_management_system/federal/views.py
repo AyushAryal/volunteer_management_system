@@ -125,7 +125,7 @@ class WardViewSet(
     viewsets.mixins.ListModelMixin,
     BriefInfoMixin,
 ):
-    queryset = models.Ward.objects.all()
+    queryset = models.Ward.objects.all().order_by("municipality", "name")
     serializer_class = serializers.WardSerializer
     filterset_fields = (
         "municipality",

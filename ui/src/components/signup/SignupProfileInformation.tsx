@@ -38,31 +38,31 @@ export function SignupProfileInformation(props: SingupProfileInformationProps) {
   const [gender, setGender] = genderState;
 
   const bloodGroups = [
-    { value: "O Negative", label: "O Negative" },
-    { value: "O Positive", label: "O Positive" },
-    { value: "A Negative", label: "A Negative" },
-    { value: "A Positive", label: "A Positive" },
-    { value: "B Negative", label: "B Negative" },
-    { value: "B Positive", label: "B Positive" },
-    { value: "Ab Negative", label: "AB Negative" },
-    { value: "Ab Positive", label: "AB Positive" },
+    { value: "O Negative" },
+    { value: "O Positive" },
+    { value: "A Negative" },
+    { value: "A Positive" },
+    { value: "B Negative" },
+    { value: "B Positive" },
+    { value: "AB Negative" },
+    { value: "AB Positive" },
   ];
 
   const nationalities = [
-    { value: "National", label: "National" },
-    { value: "International", label: "International" },
+    { value: "National" },
+    { value: "International" },
   ];
 
 
   const volunteerCategories = [
-    { value: "Student", label: "Student" },
-    { value: "Rss", label: "RSS" },
-    { value: "Retiredapf", label: "Retired APF" },
-    { value: "Retiredarmy", label: "Retired Army" },
-    { value: "Retiredgovernmentservice", label: "Retired Government Service" },
-    { value: "Seniorcitizen", label: "Senior Citizen" },
-    { value: "Community", label: "Community" },
-    { value: "General", label: "General" },
+    { value: "Student" },
+    { value: "RSS" },
+    { value: "Retired APF" },
+    { value: "Retired Army" },
+    { value: "Retired Government Service" },
+    { value: "Senior Citizen" },
+    { value: "Community" },
+    { value: "General" },
   ];
 
   return (
@@ -89,15 +89,17 @@ export function SignupProfileInformation(props: SingupProfileInformationProps) {
         <label htmlFor="last-name">Last Name</label>
       </span>
       <span className="p-float-label">
-        <InputText
+        <InputMask
           value={contactNumber}
           id="contact-number"
+          mask="+999 9999999999"
+          placeholder="+999 9999999999"
           className="p-inputtext-sm w-full"
-          onChange={(ev) => setContactNumber(ev.target.value)}
+          onChange={(ev) =>
+            ev.target.value && setContactNumber(ev.target.value)
+          }
         />
-        <label htmlFor="contact-number">
-          Contact Number (+977xxxxxxxxxx)
-        </label>
+        <label htmlFor="contact-number">Contact Number (+977 xxxxxxxxxx)</label>
       </span>
       <span className="p-float-label">
         <InputMask
@@ -106,9 +108,7 @@ export function SignupProfileInformation(props: SingupProfileInformationProps) {
           mask="9999-99-99"
           placeholder="yyyy-mm-dd"
           className="p-inputtext-sm w-full"
-          onChange={(ev) =>
-            ev.target.value && setDateOfBirth(ev.target.value)
-          }
+          onChange={(ev) => ev.target.value && setDateOfBirth(ev.target.value)}
         />
         {/* <Calendar
             value={dateOfBirth}
@@ -172,8 +172,7 @@ export function SignupProfileInformation(props: SingupProfileInformationProps) {
         }}
         options={bloodGroups}
         placeholder="Select a blood group"
-        optionLabel="label"
-        optionValue="label"
+        optionLabel="value"
       />
       <Dropdown
         value={nationality}
@@ -182,8 +181,7 @@ export function SignupProfileInformation(props: SingupProfileInformationProps) {
         }}
         options={nationalities}
         placeholder="Select a Nationality"
-        optionLabel="label"
-        optionValue="value"
+        optionLabel="value"
       />
       <Dropdown
         value={volunteerType}
@@ -192,8 +190,7 @@ export function SignupProfileInformation(props: SingupProfileInformationProps) {
         }}
         options={volunteerCategories}
         placeholder="Select a category"
-        optionValue="value"
-        optionLabel="label"
+        optionLabel="value"
       />
     </div>
   );

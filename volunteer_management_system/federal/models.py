@@ -73,7 +73,7 @@ class Ward(models.Model):
         verbose_name_plural = _("Wards")
         ordering = ("pk",)
 
-    name = models.CharField(max_length=100)
+    name = models.PositiveIntegerField(verbose_name=_("name"))
     shape = gis_models.PolygonField(verbose_name=_("shape"))
     municipality = models.ForeignKey(Municipality, on_delete=models.CASCADE)
 
