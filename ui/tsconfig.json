@@ -11,6 +11,7 @@
       "@components/*": ["components/*"],
       "@api/*": ["api/*"],
       "@styles/*": ["styles/*"],
+      "@assets/*": ["assets/*"],
     },
     /* Bundler mode */
     "moduleResolution": "bundler",

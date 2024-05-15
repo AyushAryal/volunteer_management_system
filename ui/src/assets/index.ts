@@ -1,7 +1,9 @@
 import logo from "./logo.png";
-import map_preview from "./map_preview.jpg";
+import map1 from "./map1.png";
+import map2 from "./map2.png";
 
 export {
-    map_preview,
+    map1,
+    map2,
     logo,
 }

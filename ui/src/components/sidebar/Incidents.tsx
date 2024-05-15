@@ -38,7 +38,7 @@ function IncidentRibbon({ incident }: IncidentRibbonProps) {
                 <FontAwesomeIcon icon={faClock} className="mx-2" />
                 {incident.date.toDateString()}
             </div>
-            <FontAwesomeIcon icon={faAngleRight} onClick={() => setVisible(true)} />
+            <FontAwesomeIcon className="mr-2 hover:bg-bluegray-100 p-2 border-circle" icon={faAngleRight} onClick={() => setVisible(true)} />
             {visible ? viewIncidentDetail : null}
         </div>
     </div>
