@@ -142,6 +142,7 @@ class SignupCitizenshipSerializer(serializers.HyperlinkedModelSerializer):
     def validate_image(self, image):
         if not image:
             raise serializers.ValidationError("Image is required")
+        return image
 
     class Meta:
         model = models.Citizenship
@@ -172,6 +173,7 @@ class SignupPassportSerializer(serializers.ModelSerializer):
     def validate_image(self, image):
         if not image:
             raise serializers.ValidationError("Image is required")
+        return image
 
     def validate(self, data):
         if data.get("expiry_date") < data.get("issue_date"):
@@ -201,12 +203,29 @@ class SignupNationalIdSerializer(serializers.ModelSerializer):
     def validate_image(self, image):
         if not image:
             raise serializers.ValidationError("Image is required")
+        return image
 
     class Meta:
         model = models.NationalId
         fields = (
             "id",
             "registration_date",
+            "image",
+        )
+
+
+class SignupOtherIdentificationDocumentSerializer(serializers.ModelSerializer):
+    image = Base64ImageField()
+
+    def validate_image(self, image):
+        if not image:
+            raise serializers.ValidationError("Image is required")
+        return image
+
+    class Meta:
+        model = models.OtherIdentificationDocument
+        fields = (
+            "name",
             "image",
         )
 
@@ -222,6 +241,9 @@ class VolunteerSignupSerializer(serializers.ModelSerializer):
     citizenship = SignupCitizenshipSerializer(required=False)
     passport = SignupPassportSerializer(required=False)
     national_id = SignupNationalIdSerializer(required=False)
+    other_identification_document = SignupOtherIdentificationDocumentSerializer(
+        required=False
+    )
     certificates = SignupCertificateSerializer(many=True, required=False)
 
     class Meta:
@@ -233,6 +255,7 @@ class VolunteerSignupSerializer(serializers.ModelSerializer):
             "citizenship",
             "passport",
             "national_id",
+            "other_identification_document",
             "certificates",
         )
         extra_kwargs = {"password": {"write_only": True}}
@@ -249,9 +272,9 @@ class VolunteerSignupSerializer(serializers.ModelSerializer):
                 f"At least one ID ({', '.join(id_fields)}) must be present."
             )
 
-        if data.get("volunteer")["nationality"] == "International" and not data.get(
-            "passport"
-        ):
+        if data.get("volunteer")[
+            "nationality"
+        ] == models.Nationality.International and not data.get("passport"):
             raise serializers.ValidationError(
                 "Passport required for international volunteers."
             )
@@ -262,6 +285,9 @@ class VolunteerSignupSerializer(serializers.ModelSerializer):
         citizenship = validated_data.pop("citizenship", None)
         passport = validated_data.pop("passport", None)
         national_id = validated_data.pop("national_id", None)
+        other_identification_document = validated_data.pop(
+            "other_identification_document", None
+        )
 
         with transaction.atomic():
             user = get_user_model().objects.create(**validated_data)
@@ -276,6 +302,11 @@ class VolunteerSignupSerializer(serializers.ModelSerializer):
 
             if national_id:
                 models.NationalId.objects.create(user=user, **national_id)
+
+            if other_identification_document:
+                models.OtherIdentificationDocument.objects.create(
+                    user=user, **other_identification_document
+                )
 
             if volunteer:
                 models.VolunteerProfile.objects.create(user=user, **volunteer)

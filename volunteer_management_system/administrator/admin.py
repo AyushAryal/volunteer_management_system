@@ -48,6 +48,12 @@ class NationalIdInline(admin.StackedInline):
     extra = 0
 
 
+class OtherIdentificationDocumentInline(admin.StackedInline):
+    model = incident.models.OtherIdentificationDocument
+    can_delete = True
+    extra = 0
+
+
 class VolunteerProfileInline(admin.StackedInline):
     model = incident.models.VolunteerProfile
     readonly_fields = ("profile_image_preview",)
@@ -118,6 +124,7 @@ class UserAdmin(BaseUserAdmin):
         CitizenshipInline,
         PassportInline,
         NationalIdInline,
+        OtherIdentificationDocumentInline,
         CertificateInline,
     )
     list_display = ("email", "email_verified")

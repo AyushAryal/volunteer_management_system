@@ -223,7 +223,7 @@ class NationalId(models.Model):
         return str(self.id)
 
 
-class OtherIdentficationDocument(models.Model):
+class OtherIdentificationDocument(models.Model):
     class Meta:
         verbose_name = _("Other Identification Document")
         verbose_name_plural = _("Other Identification Documents")
@@ -243,6 +243,9 @@ class OtherIdentficationDocument(models.Model):
         upload_to="uploads/images/other_identification_documents/",
         verbose_name=_("image"),
     )
+
+    def __str__(self):
+        return self.name
 
 
 class Certificate(models.Model):
