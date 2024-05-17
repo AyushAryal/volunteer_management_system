@@ -3,7 +3,7 @@ import { useHookstate } from '@hookstate/core';
 
 import { storeState } from '@models/store';
 
-import { LocationSelector } from '@components/signup/LocationSelector';
+import { LocationSelector } from '@components/LocationSelector';
 
 export function GlobalLocationSelector() {
     const mapControlsSelectedProvince = useHookstate(storeState.mapControls.selectedProvince);

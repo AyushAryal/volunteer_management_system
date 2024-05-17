@@ -1,4 +1,4 @@
-import { IncidentDetailModal } from '@components/sidebar/IncidentDetailModal';
+import { IncidentDetailModal } from '@components/map/sidebar/IncidentDetailModal';
 import { useHookstate } from '@hookstate/core'
 import { Incident } from '@models/incident';
 import { storeState } from '@models/store';

@@ -4,7 +4,7 @@ import { Job } from "@models/incident";
 import { storeState } from "@models/store";
 import { faClock } from '@fortawesome/free-regular-svg-icons/faClock';
 import { VirtualScroller } from "primereact/virtualscroller";
-import { ListSkeleton } from "@components/sidebar/ListSkeleton";
+import { ListSkeleton } from "@components/map/sidebar/ListSkeleton";
 
 export function Jobs() {
     const jobList = useHookstate(storeState.jobList);

@@ -5,10 +5,10 @@ import { Map as LeafletMap } from 'leaflet';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Button } from 'primereact/button';
 
-import { get_selected_local_body } from '../../utils.ts';
+import { get_selected_local_body } from '../../../utils.ts';
 import { storeState } from "@models/store.ts";
 import { VolunteerLoginButton } from '@components/VolunteerLoginButton.tsx';
-import { Tabpage } from '@components/sidebar/Tabpage.tsx';
+import { Tabpage } from '@components/map/sidebar/Tabpage.tsx';
 
 
 type SidebarProps = { mapRef: RefObject<LeafletMap> }

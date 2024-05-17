@@ -6,8 +6,8 @@ import { faClock } from '@fortawesome/free-regular-svg-icons/faClock';
 import { VirtualScroller } from "primereact/virtualscroller";
 import { useHookstate } from "@hookstate/core";
 import { storeState } from "@models/store";
-import { IncidentDetailModal } from "@components/sidebar/IncidentDetailModal";
-import { ListSkeleton } from "@components/sidebar/ListSkeleton";
+import { IncidentDetailModal } from "@components/map/sidebar/IncidentDetailModal";
+import { ListSkeleton } from "@components/map/sidebar/ListSkeleton";
 
 type IncidentRibbonProps = { incident: Incident }
 

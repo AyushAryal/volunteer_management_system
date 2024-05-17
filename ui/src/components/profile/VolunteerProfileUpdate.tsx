@@ -8,6 +8,7 @@ import { update_volunteer_profile } from '@api/incident';
 import { describe_api_errors } from '@api/utils';
 import { useHookstate } from '@hookstate/core';
 import { storeState } from '@models/store';
+import { SignupIdentification } from '../signup/SignupIdentification';
 
 type VolunteerProfileForm = {
     firstName: string,
@@ -20,6 +21,17 @@ type VolunteerProfileForm = {
     gender: Gender,
     temporaryWard: string,
     permanentWard: string,
+    citizenshipId: string,
+    citizenshipIssueDate: string,
+    citizenshipRegistrationDistrict: string,
+    citizenship_image: File,
+    nationalId: string,
+    nationalIdRegistrationDistrict: string,
+    nationalIdImage: string,
+    passportNumber: string,
+    passportIssueDate: string,
+    passportExpiryDate: string,
+    passportImage: File,
 }
 
 async function perform_volunteer_profile_update(url: string, form: VolunteerProfileForm): Promise<string | VolunteerProfile> {
@@ -166,6 +178,22 @@ export function VolunteerProfileUpdate(props: VolunteerProfileUpdateFormProps) {
                 selectedPermanentDistrictState={selectedPermanentDistrictState}
                 selectedPermanentMunicipalityState={selectedPermanentMunicipalityState}
                 selectedPermanentWardState={selectedPermanentWardState}
+            />
+            <h2> Identifications </h2>
+            <SignupIdentification
+                citizenshipIdState={citizenshipIdState}
+                citizenshipRegistrationDateState
+                citizenshipDistrictState
+                citizenshipUploadState
+                nationalIdState
+                nationalIdRegistrationDateState
+                nationalIdUploadState
+                passportNumberState
+                passportIssueDateState
+                passportExpiryDateState
+                passportUploadState
+                otherIdentificationDocumentNameState
+                otherIdentificationDocumentUploadState
             />
             <div className="flex gap-4 align-self-end align-items-center mt-5">
                 {response}

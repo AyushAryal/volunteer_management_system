@@ -13,7 +13,7 @@ import { Token, storeState } from '@models/store';
 import { login, logout } from '@api/token';
 import { Menu } from 'primereact/menu';
 import { MenuItem, MenuItemOptions } from 'primereact/menuitem';
-import { VolunteerProfileUpdate } from './VolunteerProfileUpdate';
+import { VolunteerProfileUpdate } from './profile/VolunteerProfileUpdate';
 import { get_volunteer_profile } from '@api/incident.ts';
 import { describe_api_errors } from '@api/utils';
 import { FormState } from '@api/form.tsx';

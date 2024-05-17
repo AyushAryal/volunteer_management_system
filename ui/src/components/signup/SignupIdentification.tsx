@@ -1,7 +1,7 @@
 import { StateTuple } from '@models/generics';
 import { InputText } from 'primereact/inputtext';
 import { InputMask } from 'primereact/inputmask';
-import { DistrictSelector } from './LocationSelector';
+import { DistrictSelector } from '@components/LocationSelector';
 import { FileInput } from '@components/FileInput';
 
 type SingupIdentificationProps = {

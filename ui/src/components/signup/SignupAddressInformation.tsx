@@ -1,16 +1,17 @@
-import { LocationSelector } from '@components/signup/LocationSelector';
+import { LocationSelector } from '@components/LocationSelector';
 import { StateTuple } from '@models/generics';
 
 type SignupAddressInformationProps = {
-    selectedTemporaryProvinceState: StateTuple<string>,
-    selectedTemporaryDistrictState: StateTuple<string>,
-    selectedTemporaryMunicipalityState: StateTuple<string>,
-    selectedTemporaryWardState: StateTuple<string>,
-    selectedPermanentProvinceState: StateTuple<string>,
-    selectedPermanentDistrictState: StateTuple<string>,
-    selectedPermanentMunicipalityState: StateTuple<string>,
-    selectedPermanentWardState: StateTuple<string>,
+    selectedTemporaryProvinceState: StateTuple<string | null>,
+    selectedTemporaryDistrictState: StateTuple<string | null>,
+    selectedTemporaryMunicipalityState: StateTuple<string | null>,
+    selectedTemporaryWardState: StateTuple<string | null>,
+    selectedPermanentProvinceState: StateTuple<string | null>,
+    selectedPermanentDistrictState: StateTuple<string | null>,
+    selectedPermanentMunicipalityState: StateTuple<string | null>,
+    selectedPermanentWardState: StateTuple<string | null>,
 };
+
 export function SignupAddressInformation(props: SignupAddressInformationProps) {
 
     const {

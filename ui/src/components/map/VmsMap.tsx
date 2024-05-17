@@ -8,7 +8,7 @@ import { storeState } from '@models/store.ts';
 import { IncidentFilter, JobFilter, ProgramFilter, get_incident_list, get_job_list, get_program_list } from '@api/incident.ts';
 
 import { FederalBodyPolygons } from '@components/map/FederalPolygons.tsx';
-import { Sidebar } from '@components/sidebar/Sidebar';
+import { Sidebar } from '@components/map/sidebar/Sidebar';
 import { LoadingDisplay } from '@components/map/LoadingDisplay';
 import { get_id } from '@api/utils';
 import { IncidentMarkers } from './IncidentMarkers';
