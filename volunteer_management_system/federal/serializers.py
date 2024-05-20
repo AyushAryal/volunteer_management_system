@@ -107,6 +107,9 @@ class WardBriefSerializer(HyperlinkedModelSerializer):
     def get_bbox(self, body):
         return body.shape.extent
 
+    def get_name(self, body):
+        return f"{body.municipality} - {body.name}"
+
     class Meta:
         model = models.Ward
         exclude = ("shape",)

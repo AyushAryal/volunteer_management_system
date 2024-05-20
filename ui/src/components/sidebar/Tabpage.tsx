@@ -11,6 +11,7 @@ import { useHookstate } from "@hookstate/core";
 import { storeState } from "@models/store";
 
 export function Tabpage() {
+<<<<<<< HEAD
     const incidentCount = useHookstate(storeState.incidentList).length;
     const jobCount = useHookstate(storeState.jobList).length;
 
@@ -71,10 +72,28 @@ export function Tabpage() {
         </TabPanel>
         <TabPanel header="Incidents" headerTemplate={tabIncidentTemplate}>
           <Incidents />
+=======
+    return <TabView
+        className="flex flex-column overflow-y-hidden"
+        pt={{
+            panelContainer: { className: "overflow-y-scroll h-full" },
+            navContainer: { style: { position: "initial" } }
+        }}
+    >
+        <TabPanel header="Incidents">
+            <Incidents />
+>>>>>>> 4e728ca (sign in complete)
         </TabPanel>
         <TabPanel header="Jobs" headerTemplate={tabJobTemplate}>
           <Jobs />
         </TabPanel>
+<<<<<<< HEAD
       </TabView>
     );
+=======
+        <TabPanel header="Visualizations">
+            <Visualizations />
+        </TabPanel>
+    </TabView>;
+>>>>>>> 4e728ca (sign in complete)
 }

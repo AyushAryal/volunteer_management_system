@@ -3,6 +3,7 @@ from django.utils import timezone
 from django.contrib.auth.password_validation import validate_password
 from django.db import transaction
 from rest_framework import serializers
+from drf_extra_fields.fields import Base64ImageField
 
 from . import models
 
@@ -131,10 +132,16 @@ class SignupVolunteerProfileSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class SignupCitizenshipSerializer(serializers.HyperlinkedModelSerializer):
+    image = Base64ImageField()
+
     def validate_registration_date(self, date):
         if date > timezone.now().date():
             raise serializers.ValidationError("Registration date is in the future.")
         return date
+
+    def validate_image(self, image):
+        if not image:
+            raise serializers.ValidationError("Image is required")
 
     class Meta:
         model = models.Citizenship
@@ -142,6 +149,7 @@ class SignupCitizenshipSerializer(serializers.HyperlinkedModelSerializer):
             "id",
             "registration_date",
             "registration_district",
+            "image",
         )
         extra_kwargs = {
             "registration_district": {"view_name": "api:district-detail"},
@@ -149,6 +157,8 @@ class SignupCitizenshipSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class SignupPassportSerializer(serializers.ModelSerializer):
+    image = Base64ImageField()
+
     def validate_issue_date(self, date):
         if date > timezone.now().date():
             raise serializers.ValidationError("Issue date is in the future.")
@@ -158,6 +168,10 @@ class SignupPassportSerializer(serializers.ModelSerializer):
         if date < timezone.now().date():
             raise serializers.ValidationError("Passport is expired.")
         return date
+
+    def validate_image(self, image):
+        if not image:
+            raise serializers.ValidationError("Image is required")
 
     def validate(self, data):
         if data.get("expiry_date") < data.get("issue_date"):
@@ -172,20 +186,28 @@ class SignupPassportSerializer(serializers.ModelSerializer):
             "id",
             "issue_date",
             "expiry_date",
+            "image",
         )
 
 
 class SignupNationalIdSerializer(serializers.ModelSerializer):
+    image = Base64ImageField()
+
     def validate_registration_date(self, date):
         if date > timezone.now().date():
             raise serializers.ValidationError("Registration date is in the future.")
         return date
+
+    def validate_image(self, image):
+        if not image:
+            raise serializers.ValidationError("Image is required")
 
     class Meta:
         model = models.NationalId
         fields = (
             "id",
             "registration_date",
+            "image",
         )
 
 

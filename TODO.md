@@ -1,0 +1,6 @@
+finish PATCH with tests (easy)
+job apply (easy)
+notification (medium)
+visualizations (easy)
+admin panel ease of use (medium)
+fix nested hookstates (low priority)

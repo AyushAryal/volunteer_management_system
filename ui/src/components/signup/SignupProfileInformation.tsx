@@ -55,14 +55,14 @@ export function SignupProfileInformation(props: SingupProfileInformationProps) {
 
 
   const volunteerCategories = [
-    { value: "Student" },
-    { value: "RSS" },
-    { value: "Retired APF" },
-    { value: "Retired Army" },
-    { value: "Retired Government Service" },
-    { value: "Senior Citizen" },
-    { value: "Community" },
-    { value: "General" },
+    { value: "Student", label: "Student" },
+    { value: "Rss", label: "RSS" },
+    { value: "Retired APF", label: "Retired APF" },
+    { value: "Retired Army", label: "Retired Army" },
+    { value: "Retired Government Service", label: "Retired Government Service" },
+    { value: "Senior Citizen", label: "Senior Citizen" },
+    { value: "Community", label: "Community" },
+    { value: "General", label: "General" },
   ];
 
   return (
@@ -108,7 +108,9 @@ export function SignupProfileInformation(props: SingupProfileInformationProps) {
           mask="9999-99-99"
           placeholder="yyyy-mm-dd"
           className="p-inputtext-sm w-full"
-          onChange={(ev) => ev.target.value && setDateOfBirth(ev.target.value)}
+          onChange={(ev) =>
+            setDateOfBirth(ev.target.value ?? "")
+          }
         />
         {/* <Calendar
             value={dateOfBirth}
@@ -190,7 +192,8 @@ export function SignupProfileInformation(props: SingupProfileInformationProps) {
         }}
         options={volunteerCategories}
         placeholder="Select a category"
-        optionLabel="value"
+        optionLabel="label"
+        optionValue="value"
       />
     </div>
   );

@@ -28,7 +28,7 @@ function IncidentRibbon({ incident }: IncidentRibbonProps) {
     />;
 
     return (<div
-        className="flex flex-column p-2 m-1 flex-wrap w-full"
+        className="flex flex-column p-2 flex-wrap w-full"
         style={{
             borderLeft: `5px solid ${serverity_color_map.get(incident.severity)}`,
         }}>

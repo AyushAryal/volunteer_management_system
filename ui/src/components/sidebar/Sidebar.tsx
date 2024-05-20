@@ -16,7 +16,7 @@ export function Sidebar({ mapRef }: SidebarProps) {
     let store = useHookstate(storeState);
     let federal_body = get_selected_local_body(store);
 
-    let [visible, setVisible] = useState(false);
+    let [visible, setVisible] = useState(true);
 
     useEffect(() => {
         mapRef.current?.invalidateSize(true);

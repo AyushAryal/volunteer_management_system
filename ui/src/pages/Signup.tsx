@@ -16,6 +16,24 @@ import { describe_api_errors } from '@api/utils';
 import { BloodGroup, Gender, Nationality, VolunteerCategory } from '@models/incident';
 import { FormState } from '@api/form.tsx';
 
+const toBase64 = (file: File): Promise<ArrayBuffer | null> =>
+    new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsArrayBuffer(file);
+        reader.onload = () => resolve(reader.result as ArrayBuffer | null);
+        reader.onerror = (error) => reject(error);
+    });
+
+function arrayBufferToBase64(buffer: ArrayBuffer): string {
+    var binary = '';
+    var bytes = new Uint8Array(buffer);
+    var len = bytes.byteLength;
+    for (var i = 0; i < len; i++) {
+        binary += String.fromCharCode(bytes[i]);
+    }
+    return window.btoa(binary);
+}
+
 type VolunteerSignupForm = {
     email: string,
     password: string,
@@ -33,11 +51,14 @@ type VolunteerSignupForm = {
     citizenshipId: string,
     citizenshipRegistrationDate: string,
     citizenshipDistrict: string,
+    citizenshipUpload: string,
     nationalId: string,
     nationalIdRegistrationDate: string,
+    nationalIdUpload: string,
     passportNumber: string,
     passportIssueDate: string,
     passportExpiryDate: string,
+    passportUpload: string,
 };
 
 async function perform_signup(form: VolunteerSignupForm): Promise<FormState> {
@@ -58,11 +79,14 @@ async function perform_signup(form: VolunteerSignupForm): Promise<FormState> {
         citizenshipId,
         citizenshipRegistrationDate,
         citizenshipDistrict,
+        citizenshipUpload,
         nationalId,
         nationalIdRegistrationDate,
+        nationalIdUpload,
         passportNumber,
         passportIssueDate,
         passportExpiryDate,
+        passportUpload,
     } = form;
 
     if (!password || !confirmPassword) {
@@ -89,15 +113,18 @@ async function perform_signup(form: VolunteerSignupForm): Promise<FormState> {
                 "id": citizenshipId,
                 "registration_district": citizenshipDistrict,
                 "registration_date": citizenshipRegistrationDate,
+                "image": citizenshipUpload,
             },
             "national_id": {
                 "id": nationalId,
                 "registration_date": nationalIdRegistrationDate,
+                "image": nationalIdUpload,
             },
             "passport": {
                 "id": passportNumber,
                 "issue_date": passportIssueDate,
-                "expiry_date": passportExpiryDate
+                "expiry_date": passportExpiryDate,
+                "image": passportUpload,
             }
         };
 
@@ -146,15 +173,17 @@ export function Signup() {
     const selectedPermanentMunicipalityState = useState("");
     const selectedPermanentWardState = useState("");
 
-    const idTypeState = useState("")
-    const citizenshipIdState = useState("")
+    const citizenshipIdState = useState("");
     const citizenshipRegistrationDateState = useState("")
-    const citizenshipDistrictState = useState("")
+    const citizenshipUploadState = useState<File>(new File([""], ""));
+    const citizenshipDistrictState = useState("");
     const nationalIdState = useState("");
     const nationalIdRegistrationdateState = useState("");
-    const passportNumberState = useState("")
-    const passportIssueDateState = useState("")
-    const passportExpiryDateState = useState("")
+    const nationalIdUploadState = useState<File>(new File([""], ""));
+    const passportNumberState = useState("");
+    const passportIssueDateState = useState("");
+    const passportExpiryDateState = useState("");
+    const passportUploadState = useState<File>(new File([""], ""));
 
     const [termsAccepted, setTermsAccepted] = useState(false);
     const [formState, setFormState] = useState(FormState.init());
@@ -177,11 +206,16 @@ export function Signup() {
         const [citizenshipId,] = citizenshipIdState
         const [citizenshipRegistrationDate,] = citizenshipRegistrationDateState
         const [citizenshipDistrict,] = citizenshipDistrictState
+        const [citizenshipUpload,] = citizenshipUploadState;
         const [nationalId,] = nationalIdState
         const [nationalIdRegistrationDate,] = nationalIdRegistrationdateState
+        const [nationalIdUpload,] = nationalIdUploadState;
         const [passportNumber,] = passportNumberState
         const [passportIssueDate,] = passportIssueDateState
         const [passportExpiryDate,] = passportExpiryDateState
+        const [passportUpload,] = passportUploadState;
+
+
 
         setFormState(await perform_signup({
             email,
@@ -200,11 +234,14 @@ export function Signup() {
             citizenshipId,
             citizenshipRegistrationDate,
             citizenshipDistrict,
+            citizenshipUpload: arrayBufferToBase64(await toBase64(citizenshipUpload) ?? new ArrayBuffer(0)),
             nationalId,
             nationalIdRegistrationDate,
+            nationalIdUpload: arrayBufferToBase64(await toBase64(nationalIdUpload) ?? new ArrayBuffer(0)),
             passportNumber,
             passportIssueDate,
             passportExpiryDate,
+            passportUpload: arrayBufferToBase64(await toBase64(passportUpload) ?? new ArrayBuffer(0)),
         }));
     };
 
@@ -235,7 +272,7 @@ export function Signup() {
             </div>
             <Button
                 label="Submit"
-                disabled={!termsAccepted === true || formState.isSubmitted()}
+                disabled={(!termsAccepted || formState.isSubmitted() && !formState.hasErrors())}
                 onClick={onSubmit}
             />
         </div>
@@ -295,15 +332,17 @@ export function Signup() {
             selectedPermanentWardState={selectedPermanentWardState}
         />,
         <SignupIdentification
-            idTypeState={idTypeState}
             citizenshipIdState={citizenshipIdState}
             citizenshipRegistrationDateState={citizenshipRegistrationDateState}
             citizenshipDistrictState={citizenshipDistrictState}
+            citizenshipUploadState={citizenshipUploadState}
             nationalIdState={nationalIdState}
             nationalIdRegistrationDateState={nationalIdRegistrationdateState}
+            nationalIdUploadState={nationalIdUploadState}
             passportNumberState={passportNumberState}
             passportIssueDateState={passportIssueDateState}
             passportExpiryDateState={passportExpiryDateState}
+            passportUploadState={passportUploadState}
         />,
         <>
             <SignupBasicInformation
