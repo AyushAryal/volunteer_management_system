@@ -1,24 +1,17 @@
-import { Card } from "primereact/card";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Chart } from "primereact/chart";
 
-const  GenderStats = () => {
+export const  GenderStats = () => {
+  const genders = ["Male", "Female", "Other"]
   const data = {
-    labels: ["Male", "Female", "Other"],
+    labels: genders,
     datasets: [
       {
         label: "Volunteers",
-        data: [5400, 3250, 73],
-        backgroundColor: [
-          "rgba(255, 99, 132, 0.2)",
-          "rgba(75, 192, 192, 0.2)",
-          "rgba(153, 102, 255, 0.2)",
-        ],
-        borderColor: [
-          "rgba(255, 99, 132)",
-          "rgba(75, 192, 192)",
-          "rgba(153, 102, 255)",
-        ],
+        data: [5400, 3250, 170],
+        backgroundColor: ["#2f4b7c", "#f95d6a", "#ffa600"],
+        borderColor: ["#2f4b7c", "#f95d6a", "#ffa600"],
         borderWidth: 1,
       },
     ],
@@ -34,25 +27,89 @@ const  GenderStats = () => {
     },
   };
   
-  return <Chart type="pie" data={data} options={options}></Chart>;
+  return <Chart className="w-full h-full" type="pie" data={data} options={options}></Chart>;
 }
 
-const VolunteerCategoryStats = () => {
+export const VolunteerCategoryStats = () => {
+  const volunteerCategories = [
+    "Student",
+    "RSS",
+    "Retired APF",
+    "Retired Army",
+    "Retired Government Service",
+    "Senior Citizen",
+    "Community",
+    "General",
+  ];
   const data = {
-    labels: ["Male", "Female", "Other"],
+    labels: volunteerCategories,
     datasets: [
       {
-        label: "Volunteers",
-        data: [5400, 3250, 73],
+        label: "Volunteer Categories",  
+        data: [1370, 1150, 1840, 1290, 950, 1310, 1350, 1270],
         backgroundColor: [
-          "rgba(255, 99, 132, 0.2)",
-          "rgba(75, 192, 192, 0.2)",
-          "rgba(153, 102, 255, 0.2)",
+          "#003f5c",
+          "#665191",
+          "#a05195",
+          "#d45087",
+          "#f95d6a",
+          "#ff7c43",
+          "#ffa600",
+          "#2f4b7c",
         ],
         borderColor: [
-          "rgba(255, 99, 132)",
-          "rgba(75, 192, 192)",
-          "rgba(153, 102, 255)",
+          "#003f5c",
+          "#665191",
+          "#a05195",
+          "#d45087",
+          "#f95d6a",
+          "#ff7c43",
+          "#ffa600",
+          "#2f4b7c",
+        ],
+        borderWidth: 1,
+      },
+    ],
+  };
+  const options = {
+    indexAxis: "y",
+    maintainAspectRatio: false,
+  };
+  return <Chart className="h-full w-full" type="bar" data={data} options={options}></Chart>;
+}
+export const VolunteersOnProvinceStats = () => {
+  const provinces = [
+    "Koshi",
+    "Madhesh",
+    "Bagmati",
+    "Gandaki",
+    "Lumbini",
+    "Karnali",
+    "Sudurpashchim",
+  ];
+  const data = {
+    labels: provinces,
+    datasets: [
+      {
+        label: "Volunteers on  Province",
+        data: [1370, 1150, 1840, 1290, 950, 1310, 1350],
+        backgroundColor: [
+          "#665191",
+          "#a05195",
+          "#d45087",
+          "#f95d6a",
+          "#ff7c43",
+          "#ffa600",
+          "#2f4b7c",
+        ],
+        borderColor: [
+          "#665191",
+          "#a05195",
+          "#d45087",
+          "#f95d6a",
+          "#ff7c43",
+          "#ffa600",
+          "#2f4b7c",
         ],
         borderWidth: 1,
       },
@@ -60,33 +117,67 @@ const VolunteerCategoryStats = () => {
   };
   const options = {
     maintainAspectRatio: false,
-    
+  };
+  return <Chart className="h-full w-full" type="bar" data={data} options={options}></Chart>;
+}
+export const TrainingStats = () => {
+  const trainings = ["Rescue", "Relief Distribution", "Evacuation", "Other"];
+  const data = {
+    labels: trainings,
+    datasets: [
+      {
+        label: "Volunteers with Trainings",
+        data: [1370, 1150, 1840, 1290],
+        backgroundColor: [
+          "#665191",
+          "#a05195",
+          "#d45087",
+          "#f95d6a",
+          "#ff7c43",
+          "#ffa600",
+          "#2f4b7c",
+        ],
+        borderColor: [
+          "#665191",
+          "#a05195",
+          "#d45087",
+          "#f95d6a",
+          "#ff7c43",
+          "#ffa600",
+          "#2f4b7c",
+        ],
+        borderWidth: 1,
+      },
+    ],
+  };
+  const options = {
+    maintainAspectRatio: false,
   };
   return <Chart className="h-full w-full" type="bar" data={data} options={options}></Chart>;
 }
 
 const Stats = () => {
   return (
-    <section className="w-full mx-auto bg-indigo-700 px-8 py-6">
+    <section className="w-full mx-auto bg-indigo-700 md:px-8 py-6">
       <div className="flex justify-content-center">
         <h1 className="text-white text-4xl mb-7">
           Visualizations <FontAwesomeIcon icon="chart-simple" />
         </h1>
       </div>
-      <div className="flex flex-row flex-wrap justify-content-around mb-7 gap-5">
-        <div className="bg-white border-round p-3 shadow-4 w-4">
+      <div className="flex flex-row flex-wrap justify-content-around mb-8 gap-7">
+        <div className="bg-indigo-100 border-round p-3 shadow-4 w-5 min-w-max h-24rem">
           <GenderStats />
         </div>
-        <div className="bg-white border-round p-3 shadow-4 w-4">
-          <VolunteerCategoryStats />
+        <div className="bg-indigo-100 border-round p-3 shadow-4 w-5 min-w-max h-24rem">
+          <VolunteersOnProvinceStats />
         </div>
       </div>
-      <div className="flex flex-row flex-wrap justify-content-around gap-5 mb-7">
-        <div className="bg-white border-round p-3 shadow-4 w-4">
+      <div className="flex flex-row flex-wrap justify-content-around gap-7 mb-7">
+        <div className="bg-indigo-100 border-round p-3 shadow-4 w-5 min-w-max h-24rem">
           <VolunteerCategoryStats />
         </div>
-        <div className="bg-white border-round p-3 shadow-4 w-4">
-          <GenderStats />
+        <div className="bg-indigo-100 border-round p-3 shadow-4 w-5 min-w-max h-24rem">
+          <TrainingStats />
         </div>
       </div>
     </section>

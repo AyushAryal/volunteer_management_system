@@ -1,7 +1,4 @@
 import "@styles/overview.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Button } from "primereact/button";
-import { useNavigate } from "react-router-dom";
 
 
 
@@ -26,7 +23,7 @@ const CountsComponent = () => {
         <div key={label}
           className="flex flex-column justify-content-center align-items-center text-center border-round-sm bg-primary p-5"
         >
-          <div className="font-bold">{count}</div>
+          <div className="font-bold text-2xl">{count}</div>
           <div className="font-semibold">{label}</div>
         </div>
       ))}

@@ -23,10 +23,10 @@ const Navbar = () => {
   );
 
   return (
-    <div className="bg-indigo-900 h-4rem flex flex-row align-items-center justify-content-between px-3">
+    <div className="w-full bg-indigo-900 flex flex-row flex-wrap align-items-center justify-content-between px-3 py-2 overflow-hidden">
       <img src="/src/assets/logo.png" alt="logo" className="h-3rem" />
       <div className="flex flex-row justify-content-end">
-        {signupButton}
+        <div className="flex flex-wrap">{signupButton}</div>
         <VolunteerLoginButton />
       </div>
     </div>

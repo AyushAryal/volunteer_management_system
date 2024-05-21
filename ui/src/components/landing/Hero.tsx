@@ -5,7 +5,7 @@ import { Button } from "primereact/button";
 
 import { get_site_content_list } from "@api/incident";
 import { SiteContent } from "@models/incident";
-import {map1, map2} from "@assets/index";
+import { map2} from "@assets/index";
 
 const Hero = () => {
     const navigate = useNavigate();
@@ -27,7 +27,7 @@ const Hero = () => {
 
     return (
       <section className="relative w-full h-auto min-h-screen mx-auto bg-indigo-700">
-        <div className="mx-auto flex flex-row flex-wrap justify-content-center p-8 py-7">
+        <div className="mx-auto flex flex-row flex-wrap justify-content-center md:p-8 py-7 px-3">
           <div className="flex-1 min-w-5">
             <h1 className="text-4xl text-white">
               Welcome To
@@ -43,12 +43,12 @@ const Hero = () => {
               onClick={() => navigate("/dashboard")}
             />
           </div>
-          <div className="align-self-center pl-6 border-round">
+          <div className="flex align-self-center pl-6 border-round" style={{ width: "50%", minWidth:"300px"}}>
             <img
               className="border-round"
+              style={{ width: "100%" }}
               src={map2}
               alt="dashboard"
-              width="550"
             />
           </div>
         </div>
