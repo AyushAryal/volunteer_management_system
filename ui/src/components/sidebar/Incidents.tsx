@@ -54,14 +54,16 @@ export function Incidents() {
         return <ListSkeleton />;
     }
 
-    return <div>
+    return (
+      <div>
         <VirtualScroller
-            style={{ width: '100%', height: '75vh' }}
-            delay={50}
-            items={incidentList.get() as Incident[]}
-            itemSize={25}
-            itemTemplate={(incident: Incident) => <IncidentRibbon key={incident.url} incident={incident} />}
-        >
-        </VirtualScroller>
-    </div>
+          style={{ width: "100%", height: "75vh" , overflowX: "hidden"}}
+          items={incidentList.get() as Incident[]}
+          itemSize={75}
+          itemTemplate={(incident: Incident) => (
+            <IncidentRibbon key={incident.url} incident={incident} />
+          )}
+        ></VirtualScroller>
+      </div>
+    );
 }

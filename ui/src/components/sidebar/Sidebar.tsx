@@ -22,30 +22,52 @@ export function Sidebar({ mapRef }: SidebarProps) {
         mapRef.current?.invalidateSize(true);
     }, [visible]);
 
-    return <div className={"relative h-screen shadow-3"} style={{ width: visible ? "80%" : "0", zIndex: 450 }}>
+    return (
+      <div
+        className={"relative h-screen shadow-3"}
+        style={{ width: visible ? "80%" : "0", zIndex: 450 }}
+      >
         <div className={`h-full overflow-x-hidden ${visible ? "" : "hidden"}`}>
-            <div className="h-full flex flex-column px-3">
-                <div className="flex flex-row justify-content-between py-2">
-                    <h1 className="font-light my-1 mx-1 align-items-center"> {federal_body?.name ?? "National"} </h1>
-                    <VolunteerLoginButton />
-                </div>
-                <Tabpage />
+          <div className="h-full flex flex-column px-3">
+            <div className="flex flex-row py-1 mb-1 justify-content-center">
+              <div
+                className="absolute font-semibold my-1 mx-3 left-0 text-xl"
+                style={{ color: "#BB0A21" }}
+                >
+                VMS
+              </div>
+              <div
+                className="font-semibold my-1 mx-1 text-xl"
+                style={{ color: "#4B88A2" }}
+              >
+                {federal_body?.name ?? "National"}{" "}
+              </div>
+
+              <div className="absolute right-0 mr-2">
+                <VolunteerLoginButton />
+              </div>
             </div>
+            <Tabpage />
+          </div>
         </div>
         <Button
-            rounded
-            className="absolute shadow-4"
-            style={{
-                top: "50%",
-                right: "-20px",
-                width: "40px",
-                height: "40px",
-                overflow: "visible",
-                zIndex: 500,
-            }}
-            onClick={() => setVisible(!visible)}
+          rounded
+          className="absolute shadow-4"
+          style={{
+            top: "50%",
+            right: "-20px",
+            width: "40px",
+            height: "40px",
+            overflow: "visible",
+            zIndex: 500,
+          }}
+          onClick={() => setVisible(!visible)}
         >
-            <FontAwesomeIcon style={{ margin: "-50%" }} icon={`arrow-${visible ? "left" : "right"}`}></FontAwesomeIcon>
+          <FontAwesomeIcon
+            style={{ margin: "-50%" }}
+            icon={`arrow-${visible ? "left" : "right"}`}
+          ></FontAwesomeIcon>
         </Button>
-    </div>;
+      </div>
+    );
 }

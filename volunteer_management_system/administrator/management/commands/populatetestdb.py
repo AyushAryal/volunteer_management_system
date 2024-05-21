@@ -265,7 +265,6 @@ class Command(BaseCommand):
             "inbox.com",
             "amazon.com",
         ]
-
         generators = [
             lambda f, s, d: f"{f}{s}@{d}",
             lambda f, s, d: f"{s}{f}@{d}",
@@ -325,6 +324,9 @@ class Command(BaseCommand):
                 date_of_birth=date_of_birth,
                 temporary_ward=ward,
                 permanent_ward=ward,
+                category=random.choice(
+                    incident.models.VolunteerCategory.values
+                ),
             )
             volunteer.save()
             self.stdout.write(self.style.SUCCESS(f"Created volunteer {email}"))

@@ -24,13 +24,15 @@ export function Jobs() {
         </div>;
     };
 
-    return <VirtualScroller
+    return (
+    <VirtualScroller
         items={jobList.get() as Job[]}
         itemTemplate={template}
-        itemSize={25}
+        itemSize={75}
         style={{ width: '100%', height: '75vh' }}
     >
     </VirtualScroller>
+    );
 }
 
 
