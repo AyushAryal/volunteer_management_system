@@ -1,7 +1,8 @@
 import {
     Incident, IncidentDeserializer,
     Job, JobDeserializer,
-    Program, SiteContent, VolunteerProfile
+    Program, SiteContent,
+    Volunteer, VolunteerDeserializer,
 } from "@models/incident";
 import { get_detail, get_filtered_list, get_id } from "@api/utils";
 import { endpoints } from "@api/api";
@@ -43,8 +44,10 @@ export let get_job_detail = get_detail<Job, number>(endpoints.job, JobDeserializ
 
 // -----------------------------------------------------------------------------
 
-export async function get_volunteer_profile(): Promise<VolunteerProfile> {
-    return token_aware_fetch(endpoints.volunteer).then((response) => response.json());
+export async function get_volunteer(): Promise<Volunteer> {
+    let response = await token_aware_fetch(endpoints.volunteer);
+    let json = await response.json();
+    return VolunteerDeserializer(json);
 }
 
 export async function signup(body: BodyInit): Promise<Response> {

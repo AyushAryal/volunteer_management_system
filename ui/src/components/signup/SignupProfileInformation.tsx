@@ -112,15 +112,6 @@ export function SignupProfileInformation(props: SingupProfileInformationProps) {
             setDateOfBirth(ev.target.value ?? "")
           }
         />
-        {/* <Calendar
-            value={dateOfBirth}
-            onChange={(ev) => setDateOfBirth(ev.value!)}
-            showIcon
-            dateFormat="yy-mm-dd"
-            mask="9999-99-99"
-            className="w-full"
-            formatDateTime
-          /> */}
         <label htmlFor="date-of-birth">Date of birth (yyyy-mm-dd)</label>
       </span>
       <div className="flex flex-wrap gap-3">

@@ -8,7 +8,7 @@ import {
     get_province_brief_list,
     get_ward_brief_list
 } from "@api/federal";
-import { get_volunteer_profile } from "@api/incident";
+import { get_volunteer } from "@api/incident";
 
 export function GlobalEffects() {
     const store = useHookstate(storeState);
@@ -55,9 +55,9 @@ export function GlobalEffects() {
 
     useEffect(() => {
         let networkRequest = async () => {
-            if (store.volunteerProfile.get() === null) {
-                await get_volunteer_profile().then((volunteer) => {
-                    store.volunteerProfile.set(volunteer);
+            if (store.volunteer.get() === null) {
+                await get_volunteer().then((volunteer) => {
+                    store.volunteer.set(volunteer);
                 });
             }
         }

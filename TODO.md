@@ -1,4 +1,5 @@
-finish PATCH with tests (easy)
+- fix date fill
+complete signup & edit profile
 job apply (easy)
 notification (medium)
 visualizations (easy)

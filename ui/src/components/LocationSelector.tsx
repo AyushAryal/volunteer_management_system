@@ -50,14 +50,14 @@ function getDescendents(tree: Tree, url: string): string[] {
     return descendants;
 }
 
-export function ProvinceSelector({ selectedProvinceState }: { selectedProvinceState: StateTuple<string> }) {
+export function ProvinceSelector({ selectedProvinceState }: { selectedProvinceState: StateTuple<string | undefined> }) {
     const store = useHookstate(storeState);
     const [selectedProvince, setProvince] = selectedProvinceState;
 
     const progressSpinner = <ProgressSpinner style={{ width: '50px', height: '50px' }} />;
     return <Dropdown
         value={store.provinceList.get().find((province) => selectedProvince == province.url)}
-        onChange={(ev) => { setProvince(ev.value?.url ?? ""); }}
+        onChange={(ev) => setProvince(ev.value?.url ?? undefined)}
         options={store.provinceList.get() as ProvinceBrief[]}
         emptyMessage={store.provinceList.get().length == 0 ? progressSpinner : null}
         optionLabel="name"
@@ -66,15 +66,15 @@ export function ProvinceSelector({ selectedProvinceState }: { selectedProvinceSt
         placeholder="Select a province" />;
 }
 
-export function DistrictSelector({ label, selectedDistrictState }: { label: string, selectedDistrictState: StateTuple<string> }) {
+export function DistrictSelector({ label, districtState }: { label: string, districtState: StateTuple<string | undefined> }) {
     const store = useHookstate(storeState);
-    const [selectedDistrict, setDistrict] = selectedDistrictState;
+    const [district, setDistrict] = districtState;
     const progressSpinner = <ProgressSpinner style={{ width: '50px', height: '50px' }} />;
 
     return <div className="flex flex-column justify-content-center align-content-center">
         <Dropdown
-            value={store.districtList.get().find((district) => selectedDistrict == district.url)}
-            onChange={(ev) => { setDistrict(ev.value?.url ?? ""); }}
+            value={store.districtList.get().find((d) => district == d.url)}
+            onChange={(ev) => { setDistrict(ev.value?.url ?? undefined); }}
             options={store.districtList.get() as DistrictBrief[]}
             emptyMessage={store.districtList.get().length == 0 ? progressSpinner : null}
             optionLabel="name"
@@ -84,15 +84,15 @@ export function DistrictSelector({ label, selectedDistrictState }: { label: stri
     </div>;
 }
 
-export function MunicipalitySelector({ selectedMunicipalityState }: { selectedMunicipalityState: StateTuple<string> }) {
+export function MunicipalitySelector({ municipalityState }: { municipalityState: StateTuple<string | undefined> }) {
     const store = useHookstate(storeState);
-    const [selectedMunicipality, setMunicipality] = selectedMunicipalityState;
+    const [municipality, setMunicipality] = municipalityState;
     const progressSpinner = <ProgressSpinner style={{ width: '50px', height: '50px' }} />;
 
     return <div className="flex flex-column justify-content-center align-content-center">
         <Dropdown
-            value={store.municipalityList.get().find((municipality) => selectedMunicipality == municipality.url)}
-            onChange={(ev) => { setMunicipality(ev.value?.url ?? ""); }}
+            value={store.municipalityList.get().find((m) => municipality == m.url)}
+            onChange={(ev) => { setMunicipality(ev.value?.url ?? undefined); }}
             options={store.municipalityList.get() as MunicipalityBrief[]}
             emptyMessage={store.municipalityList.get().length == 0 ? progressSpinner : null}
             optionLabel="name"
@@ -103,15 +103,15 @@ export function MunicipalitySelector({ selectedMunicipalityState }: { selectedMu
 }
 
 
-export function WardSelector({ selectedWardState }: { selectedWardState: StateTuple<string> }) {
+export function WardSelector({ wardState }: { wardState: StateTuple<string | null> }) {
     const store = useHookstate(storeState);
-    const [selectedWard, setWard] = selectedWardState;
+    const [ward, setWard] = wardState;
     const progressSpinner = <ProgressSpinner style={{ width: '50px', height: '50px' }} />;
 
     return <div className="flex flex-column justify-content-center align-content-center">
         <Dropdown
-            value={store.wardList.get().find((ward) => selectedWard == ward.url)}
-            onChange={(ev) => { setWard(ev.value?.url ?? ""); }}
+            value={store.wardList.get().find((w) => ward == w.url)}
+            onChange={(ev) => { setWard(ev.value?.url ?? null); }}
             options={store.wardList.get() as WardBrief[]}
             emptyMessage={store.wardList.get().length == 0 ? progressSpinner : null}
             optionLabel="name"

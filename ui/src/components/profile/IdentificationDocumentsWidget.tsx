@@ -1,51 +1,55 @@
 import { StateTuple } from '@models/generics';
 import { InputText } from 'primereact/inputtext';
-import { InputMask } from 'primereact/inputmask';
 import { DistrictSelector } from '@components/LocationSelector';
 import { FileInput } from '@components/FileInput';
+import { Calendar } from 'primereact/calendar';
 
-type SingupIdentificationProps = {
-    citizenshipIdState: StateTuple<string>,
-    citizenshipRegistrationDateState: StateTuple<string>,
-    citizenshipDistrictState: StateTuple<string>,
-    citizenshipUploadState: StateTuple<File>,
-    nationalIdState: StateTuple<string>,
-    nationalIdRegistrationDateState: StateTuple<string>,
-    nationalIdUploadState: StateTuple<string>,
-    passportNumberState: StateTuple<string>,
-    passportIssueDateState: StateTuple<string>,
-    passportExpiryDateState: StateTuple<string>,
-    passportUploadState: StateTuple<string>,
-    otherIdentificationDocumentNameState: StateTuple<string>,
-    otherIdentificationDocumentUploadState: StateTuple<string>,
+type IdentificationDocumentsWidgetProps = {
+    citizenshipIdState: StateTuple<string | undefined>,
+    citizenshipRegistrationDateState: StateTuple<Date | undefined>,
+    citizenshipDistrictState: StateTuple<string | undefined>,
+    citizenshipImageState: StateTuple<string | undefined>,
+    nationalIdState: StateTuple<string | undefined>,
+    nationalIdRegistrationDateState: StateTuple<Date | undefined>,
+    nationalIdImageState: StateTuple<string | undefined>,
+    passportNumberState: StateTuple<string | undefined>,
+    passportIssueDateState: StateTuple<Date | undefined>,
+    passportExpiryDateState: StateTuple<Date | undefined>,
+    passportImageState: StateTuple<string | undefined>,
+    otherIdentificationDocumentNameState: StateTuple<string | undefined>,
+    otherIdentificationDocumentImageState: StateTuple<string | undefined>,
 };
 
-export function SignupIdentification(props: SingupIdentificationProps) {
+export function IdentificationDocumentsWidget(props: IdentificationDocumentsWidgetProps) {
     const {
         citizenshipIdState,
         citizenshipRegistrationDateState,
         citizenshipDistrictState,
-        citizenshipUploadState,
+        citizenshipImageState,
         nationalIdState,
         nationalIdRegistrationDateState,
-        nationalIdUploadState,
+        nationalIdImageState: nationalIdImageState,
         passportNumberState,
         passportIssueDateState,
         passportExpiryDateState,
-        passportUploadState,
+        passportImageState: passportImageState,
+        otherIdentificationDocumentNameState,
+        otherIdentificationDocumentImageState: otherIdentificationDocumentImageState,
     } = props;
 
 
     const [citizenshipId, setCitizenshipId] = citizenshipIdState;
     const [citizenshipRegistrationDate, setCitizenshipRegistrationDate] = citizenshipRegistrationDateState;
-    const [citizenshipUpload, setCitizenshipUpload] = citizenshipUploadState;
+    const [citizenshipImage, setCitizenshipImage] = citizenshipImageState;
     const [nationalId, setNationalId] = nationalIdState;
     const [nationalIdRegistrationDate, setNationalIdRegistrationDate] = nationalIdRegistrationDateState;
-    const [nationalIdUpload, setnationalIdUpload] = nationalIdUploadState;
+    const [nationalIdImage, setnationalIdImage] = nationalIdImageState;
     const [passportNumber, setPassportNumber] = passportNumberState;
     const [passportIssueDate, setPassportIssueDate] = passportIssueDateState;
     const [passportExpiryDate, setPassportExpiryDate] = passportExpiryDateState;
-    const [passportUpload, setpassportUpload] = passportUploadState;
+    const [passportImage, setpassportImage] = passportImageState;
+    const [otherIdentificationDocumentName, setOtherIdentificationDocumentName] = otherIdentificationDocumentNameState;
+    const [otherIdentificationDocumentImage, setOtherIdentificationDocumentImage] = otherIdentificationDocumentImageState;
 
     return (<>
         <i>(At least ONE form of identification is mandatory)</i>
@@ -65,18 +69,16 @@ export function SignupIdentification(props: SingupIdentificationProps) {
             </span>
 
             <span className="p-float-label">
-                <InputMask
-                    value={citizenshipRegistrationDate}
+                <Calendar
                     id="citizenship-registration-date"
-                    mask="9999-99-99"
-                    placeholder="yyyy-mm-dd"
-                    className="p-inputtext-sm w-full"
+                    value={citizenshipRegistrationDate}
                     onChange={(ev) =>
-                        setCitizenshipRegistrationDate(ev.target.value ?? "")
+                        setCitizenshipRegistrationDate(ev.target.value ?? undefined)
                     }
+                    dateFormat="yy-mm-dd"
                 />
                 <label htmlFor="citizenship-registration-date">
-                    Citizenship Reg. Date (yyyy-mm-dd)
+                    Citizenship Registration Date
                 </label>
             </span>
 
@@ -85,7 +87,7 @@ export function SignupIdentification(props: SingupIdentificationProps) {
                 districtState={citizenshipDistrictState}
             />
 
-            <FileInput file={citizenshipUpload} onChange={(file) => setCitizenshipUpload(file)} />
+            <FileInput file={citizenshipImage} onChange={(file) => setCitizenshipImage(file)} />
 
             <h3> National ID </h3>
 
@@ -100,22 +102,20 @@ export function SignupIdentification(props: SingupIdentificationProps) {
             </span>
 
             <span className="p-float-label">
-                <InputMask
-                    value={nationalIdRegistrationDate}
+                <Calendar
                     id="national-id-registration-date"
-                    mask="9999-99-99"
-                    placeholder="yyyy-mm-dd"
-                    className="p-inputtext-sm w-full"
+                    value={nationalIdRegistrationDate}
                     onChange={(ev) =>
-                        setNationalIdRegistrationDate(ev.target.value ?? "")
+                        setNationalIdRegistrationDate(ev.target.value ?? undefined)
                     }
+                    dateFormat="yy-mm-dd"
                 />
                 <label htmlFor="national-id-registration-date">
-                    National Id Reg. Date (yyyy-mm-dd)
+                    National Id Registration Date
                 </label>
             </span>
 
-            <FileInput file={nationalIdUpload} onChange={(file) => setnationalIdUpload(file)} />
+            <FileInput file={nationalIdImage} onChange={(file) => setnationalIdImage(file)} />
 
             <h3> Passport </h3>
 
@@ -130,38 +130,48 @@ export function SignupIdentification(props: SingupIdentificationProps) {
             </span>
 
             <span className="p-float-label">
-                <InputMask
-                    value={passportIssueDate}
+                <Calendar
                     id="passport-issue-date"
-                    mask="9999-99-99"
-                    placeholder="yyyy-mm-dd"
-                    className="p-inputtext-sm w-full"
+                    value={passportIssueDate}
                     onChange={(ev) =>
-                        setPassportIssueDate(ev.target.value ?? "")
+                        setPassportIssueDate(ev.target.value ?? undefined)
                     }
+                    dateFormat="yy-mm-dd"
                 />
                 <label htmlFor="passport-issue-date">
-                    Passport Issue Date (yyyy-mm-dd)
+                    Passport Issue Date
                 </label>
             </span>
             <span className="p-float-label">
-                <InputMask
-                    value={passportExpiryDate}
+                <Calendar
                     id="passport-expiry-date"
-                    mask="9999-99-99"
-                    placeholder="yyyy-mm-dd"
-                    className="p-inputtext-sm w-full"
+                    value={passportExpiryDate}
                     onChange={(ev) =>
-                        setPassportExpiryDate(ev.target.value ?? "")
+                        setPassportExpiryDate(ev.target.value ?? undefined)
                     }
+                    dateFormat="yy-mm-dd"
                 />
                 <label htmlFor="passport-expiry-date">
-                    {" "}
-                    Passport Expiry Date (yyyy-mm-dd)
+                    Passport Expiry Date
                 </label>
             </span>
 
-            <FileInput file={passportUpload} onChange={(file) => setpassportUpload(file)} />
+            <FileInput file={passportImage} onChange={(file) => setpassportImage(file)} />
+
+            <h3> Other Document ID </h3>
+
+            <span className="p-float-label">
+                <InputText
+                    value={otherIdentificationDocumentName}
+                    id="other-id-name"
+                    className="p-inputtext-sm w-full"
+                    onChange={(ev) => setOtherIdentificationDocumentName(ev.target.value)}
+                />
+                <label htmlFor="other-id-name">Other ID Name</label>
+            </span>
+
+            <FileInput file={otherIdentificationDocumentImage} onChange={(file) => setOtherIdentificationDocumentImage(file)} />
+
         </div >
     </>
     );

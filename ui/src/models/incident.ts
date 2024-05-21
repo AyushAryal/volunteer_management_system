@@ -18,6 +18,8 @@ export type VolunteerCategory = "Student" |
     "Community" |
     "General";
 
+export type TrainingType = "Rescue" | "Reliefdistribution" | "Evacuation" | "Other";
+
 export interface Incident {
     url: string,
     name: string,
@@ -64,21 +66,87 @@ export interface VolunteerProfile {
     last_name: string,
     contact_number: string,
     profile_image: string,
-    date_of_birth: string,
+    date_of_birth: Date,
     gender: Gender,
     category: VolunteerCategory,
     blood_group: BloodGroup,
     nationality: Nationality,
     temporary_ward: string,
     permanent_ward: string,
-    citizenship_id: string,
-    citizenship_issue_date: string,
-    citizenship_isssue_district: string,
-    national_id_reg_date: string,
-    national_id_number: string,
-    passport_number: string,
-    passport_issue_date: string,
-    passpoert_expiry_date: string,
+    organization_name?: string,
+    organization_phone_number?: string,
+    organization_website?: string,
+    training_name?: string,
+    training_subject?: string,
+    training_type?: TrainingType,
+}
+
+export const VolunteerProfileDeserializer: IDeserializer<VolunteerProfile> = (json: any) => {
+    json.date_of_birth = new Date(json.date_of_birth);
+    return json as VolunteerProfile;
+}
+
+export interface Citizenship {
+    id: string,
+    registration_date: Date,
+    registration_district: string,
+    image: string,
+}
+
+export const CitizenshipDeserializer: IDeserializer<Citizenship> = (json: any) => {
+    json.registration_date = new Date(json.registration_date);
+    return json as Citizenship;
+}
+
+export interface Passport {
+    id: string,
+    issue_date: Date,
+    expiry_date: Date,
+    image: string,
+}
+
+export const PassportDeserializer: IDeserializer<Passport> = (json: any) => {
+    json.issue_date = new Date(json.issue_date);
+    json.expiry_date = new Date(json.expiry_date);
+    return json as Passport;
+}
+
+export interface NationalId {
+    id: string,
+    registration_date: Date,
+    image: string,
+}
+
+export const NationalIdDeserializer: IDeserializer<NationalId> = (json: any) => {
+    json.registration_date = new Date(json.registration_date);
+    return json as NationalId;
+}
+
+
+export interface OtherIdentificationDocument {
+    name: string,
+    image: string,
+}
+
+export interface Certificate {
+    image: string,
+}
+
+export interface Volunteer {
+    volunteer: VolunteerProfile,
+    citizenship?: Citizenship,
+    passport?: Passport,
+    national_id?: NationalId,
+    other_identification_document?: OtherIdentificationDocument,
+    certificates: Certificate[],
+}
+
+export const VolunteerDeserializer: IDeserializer<Volunteer> = (json: any) => {
+    json.volunteer = VolunteerProfileDeserializer(json.volunteer);
+    json.citizenship = json.citizenship === null ? null : CitizenshipDeserializer(json.citizenship);
+    json.passport = json.passport === null ? null : PassportDeserializer(json.passport);
+    json.national_id = json.national_id === null ? null : NationalIdDeserializer(json.national_id);
+    return json as Volunteer;
 }
 
 export interface SiteContent {

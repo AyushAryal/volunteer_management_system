@@ -193,6 +193,7 @@ class Command(BaseCommand):
     def create_volunteers(self, wards, n=1000):
         volunteers = []
         first_names = [
+            "test",
             "ram",
             "shyam",
             "hari",
@@ -223,6 +224,7 @@ class Command(BaseCommand):
             incident.models.Gender.Male,
             incident.models.Gender.Male,
             incident.models.Gender.Male,
+            incident.models.Gender.Male,
             incident.models.Gender.Female,
             incident.models.Gender.Female,
             incident.models.Gender.Female,
@@ -233,6 +235,7 @@ class Command(BaseCommand):
             incident.models.Gender.Female,
         ]
         last_names = [
+            "test",
             "sitaula",
             "sharma",
             "adhikari",
@@ -249,6 +252,7 @@ class Command(BaseCommand):
             "dahal",
         ]
         domains = [
+            "example.com",
             "gmail.com",
             "hotmail.com",
             "yahoo.com",
@@ -275,6 +279,7 @@ class Command(BaseCommand):
         ]
 
         details = set()
+        details.add((0, 0, 0, 2))
         while len(details) != 1000:
             first_name = random.randint(0, len(first_names) - 1)
             last_name = random.randint(0, len(last_names) - 1)

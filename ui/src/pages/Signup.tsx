@@ -16,24 +16,6 @@ import { describe_api_errors } from '@api/utils';
 import { BloodGroup, Gender, Nationality, VolunteerCategory } from '@models/incident';
 import { FormState } from '@api/form.tsx';
 
-const toBase64 = (file: File): Promise<ArrayBuffer | null> =>
-    new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsArrayBuffer(file);
-        reader.onload = () => resolve(reader.result as ArrayBuffer | null);
-        reader.onerror = (error) => reject(error);
-    });
-
-function arrayBufferToBase64(buffer: ArrayBuffer): string {
-    var binary = '';
-    var bytes = new Uint8Array(buffer);
-    var len = bytes.byteLength;
-    for (var i = 0; i < len; i++) {
-        binary += String.fromCharCode(bytes[i]);
-    }
-    return window.btoa(binary);
-}
-
 type VolunteerSignupForm = {
     email: string,
     password: string,
@@ -175,15 +157,17 @@ export function Signup() {
 
     const citizenshipIdState = useState("");
     const citizenshipRegistrationDateState = useState("")
-    const citizenshipUploadState = useState<File>(new File([""], ""));
+    const citizenshipUploadState = useState("");
     const citizenshipDistrictState = useState("");
     const nationalIdState = useState("");
     const nationalIdRegistrationdateState = useState("");
-    const nationalIdUploadState = useState<File>(new File([""], ""));
+    const nationalIdUploadState = useState("");
     const passportNumberState = useState("");
     const passportIssueDateState = useState("");
     const passportExpiryDateState = useState("");
-    const passportUploadState = useState<File>(new File([""], ""));
+    const passportUploadState = useState("");
+    const otherIdentificationDocumentNameState = useState("");
+    const otherIdentificationDocumentUploadState = useState("");
 
     const [termsAccepted, setTermsAccepted] = useState(false);
     const [formState, setFormState] = useState(FormState.init());
@@ -234,14 +218,16 @@ export function Signup() {
             citizenshipId,
             citizenshipRegistrationDate,
             citizenshipDistrict,
-            citizenshipUpload: arrayBufferToBase64(await toBase64(citizenshipUpload) ?? new ArrayBuffer(0)),
+            citizenshipUpload: citizenshipUpload,
             nationalId,
             nationalIdRegistrationDate,
-            nationalIdUpload: arrayBufferToBase64(await toBase64(nationalIdUpload) ?? new ArrayBuffer(0)),
+            nationalIdUpload: nationalIdUpload,
             passportNumber,
             passportIssueDate,
             passportExpiryDate,
-            passportUpload: arrayBufferToBase64(await toBase64(passportUpload) ?? new ArrayBuffer(0)),
+            passportUpload: passportUpload,
+            otherIdentificationDocumentName,
+            otherIdentificationDocumentUpload: otherIdentificationDocumentUpload,
         }));
     };
 
@@ -322,14 +308,14 @@ export function Signup() {
             genderState={genderState}
         />,
         <SignupAddressInformation
-            selectedTemporaryProvinceState={selectedTemporaryProvinceState}
-            selectedTemporaryDistrictState={selectedTemporaryDistrictState}
-            selectedTemporaryMunicipalityState={selectedTemporaryMunicipalityState}
-            selectedTemporaryWardState={selectedTemporaryWardState}
-            selectedPermanentProvinceState={selectedPermanentProvinceState}
-            selectedPermanentDistrictState={selectedPermanentDistrictState}
-            selectedPermanentMunicipalityState={selectedPermanentMunicipalityState}
-            selectedPermanentWardState={selectedPermanentWardState}
+            temporaryProvinceState={selectedTemporaryProvinceState}
+            temporaryDistrictState={selectedTemporaryDistrictState}
+            temporaryMunicipalityState={selectedTemporaryMunicipalityState}
+            temporaryWardState={selectedTemporaryWardState}
+            permanentProvinceState={selectedPermanentProvinceState}
+            permanentDistrictState={selectedPermanentDistrictState}
+            permanentMunicipalityState={selectedPermanentMunicipalityState}
+            permanentWardState={selectedPermanentWardState}
         />,
         <SignupIdentification
             citizenshipIdState={citizenshipIdState}

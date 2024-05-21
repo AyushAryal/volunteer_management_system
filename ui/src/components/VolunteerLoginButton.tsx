@@ -13,14 +13,15 @@ import { Token, storeState } from '@models/store';
 import { login, logout } from '@api/token';
 import { Menu } from 'primereact/menu';
 import { MenuItem, MenuItemOptions } from 'primereact/menuitem';
-import { VolunteerProfileUpdate } from './profile/VolunteerProfileUpdate';
-import { get_volunteer_profile } from '@api/incident.ts';
+import { VolunteerUpdateForm } from '@components/profile/VolunteerUpdateForm';
+import { get_volunteer } from '@api/incident.ts';
 import { describe_api_errors } from '@api/utils';
 import { FormState } from '@api/form.tsx';
+import { Volunteer } from '@models/incident';
 
 export function VolunteerProfileMenu() {
     const store = useHookstate(storeState);
-    let profile = store.volunteerProfile.get();
+    let volunteer = store.volunteer.get();
 
 
     const menu = useRef<Menu>(null);
@@ -50,7 +51,7 @@ export function VolunteerProfileMenu() {
         command: (_) => logout(store),
     }];
 
-    if (profile === null) {
+    if (volunteer === null) {
         return <Button onClick={() => logout(store)} >
             <FontAwesomeIcon icon={faRightFromBracket} /> &nbsp; Logout
         </Button>;
@@ -60,7 +61,7 @@ export function VolunteerProfileMenu() {
         <img
             onClick={(event) => menu?.current?.toggle(event)}
             className="shadow-4 mb-2"
-            src={profile.profile_image}
+            src={volunteer.volunteer.profile_image}
             style={{
                 width: "3rem",
                 height: "3rem",
@@ -71,8 +72,8 @@ export function VolunteerProfileMenu() {
         <Menu ref={menu} model={menuItems} popup />
         {
             volunteerProfileEditVisible &&
-            <VolunteerProfileUpdate
-                volunteer={profile}
+            <VolunteerUpdateForm
+                volunteer={volunteer as Volunteer}
                 visible={volunteerProfileEditVisible}
                 setVisible={setVolunteerProfileEditVisible}
             />
@@ -103,7 +104,7 @@ function VolunteerLoginModal({ visible, setVisible }: VolunteerLoginModalProps) 
                     let token: Token = await response.json();
                     store.token.set(token);
                     localStorage.setItem("token", JSON.stringify(token));
-                    store.volunteerProfile.set(await get_volunteer_profile());
+                    store.volunteer.set(await get_volunteer());
                     setVisible(false);
                     setFormState(new FormState({ errors: "", submitted: true }));
                 } else if (response.status == 400 || response.status == 401) {

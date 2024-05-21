@@ -4,7 +4,7 @@ import {
     MunicipalityBrief,
     WardBrief,
 } from '@models/federal';
-import { Incident, Job, Program, VolunteerProfile } from '@models/incident';
+import { Incident, Job, Program, Volunteer } from '@models/incident';
 
 import { hookstate } from '@hookstate/core';
 
@@ -29,7 +29,7 @@ export interface Token {
 
 export interface Store {
     token: Token | null,
-    volunteerProfile: VolunteerProfile | null,
+    volunteer: Volunteer | null,
     provinceList: ProvinceBrief[],
     districtList: DistrictBrief[],
     municipalityList: MunicipalityBrief[],
@@ -61,7 +61,7 @@ function getTokenFromLocalStorage(): Token | null {
 
 export const storeState = hookstate<Store>({
     token: getTokenFromLocalStorage(),
-    volunteerProfile: null,
+    volunteer: null,
     provinceList: [],
     districtList: [],
     municipalityList: [],

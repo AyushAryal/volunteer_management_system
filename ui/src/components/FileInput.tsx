@@ -1,42 +1,55 @@
 import { FileUpload, FileUploadHandlerEvent } from 'primereact/fileupload';
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 import { Button } from 'primereact/button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClose } from '@fortawesome/free-solid-svg-icons';
 
+const toBase64 = (file: File): Promise<string | null> =>
+    new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => {
+            return resolve(reader.result as string | null);
+        }
+        reader.onerror = (error) => reject(error);
+    });
+
 type FileInputProps = {
-    file: File,
-    onChange: (file: File) => void;
+    file: string | undefined,
+    onChange: (file: string | undefined) => void;
 }
 
 export function FileInput(props: FileInputProps) {
     let uploadRef = useRef<FileUpload>(null);
-    let [label, setLabel] = useState(props.file.name ?? "Choose");
 
     return <div className="flex align-items-center gap-1">
-        <FileUpload
-            mode="basic"
-            ref={uploadRef}
-            chooseOptions={{ label }}
-            accept="image/*"
-            customUpload
-            auto
-            uploadHandler={(event: FileUploadHandlerEvent) => {
-                let file = event.files[0];
-                setLabel(`${file.name}`);
-                props.onChange(file);
-            }}
-        />
+        <div
+            style={{ display: !props.file ? "initial" : "none" }}
+        >
+            <FileUpload
+                mode="basic"
+                ref={uploadRef}
+                accept="image/*"
+                customUpload
+                auto
+                uploadHandler={(event: FileUploadHandlerEvent) => {
+                    let file = event.files[0];
+                    toBase64(file).then((base64) => {
+                        props.onChange(base64 ?? "");
+                    })
+                }}
+            />
+        </div>
+        <img style={{ height: "100px", width: "auto", objectFit: "cover" }} src={props.file} />
         {
-            props.file.size === 0 ? null :
+            !props.file ? null :
                 <Button
                     className="flex justify-content-center"
                     severity={"danger"}
                     outlined
                     onClick={() => {
                         uploadRef.current?.clear();
-                        props.onChange(new File([""], ""));
-                        setLabel("Choose");
+                        props.onChange(undefined);
                     }}
                     style={{
                         height: "2.5rem",

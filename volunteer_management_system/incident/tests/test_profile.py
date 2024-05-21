@@ -48,7 +48,7 @@ class VolunteerProfileTest(TestCase):
         )
 
         self.ward = federal.models.Ward.objects.create(
-            name="Ward",
+            name=1,
             municipality=self.municipality,
             shape=Polygon([(0, 0), (0, 1), (1, 1), (1, 0), (0, 0)]),
         )
@@ -56,6 +56,7 @@ class VolunteerProfileTest(TestCase):
     def setUp(self):
         self.email = "shark@example.com"
         self.volunteer_email = "volunteer@example.com"
+        self.image = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=="
 
         self.user = get_user_model().objects.create(email=self.email)
         self.user.set_password(VolunteerProfileTest.PASSWORD)
@@ -168,11 +169,13 @@ class VolunteerProfileTest(TestCase):
                     args=[self.district.pk],
                     request=request,
                 ),
+                "image": self.image,
             },
             "passport": {
                 "id": "123",
                 "issue_date": "2001-01-01",
                 "expiry_date": "2032-01-10",
+                "image": self.image,
             },
             "national_id": {
                 "id": "123",
@@ -182,7 +185,16 @@ class VolunteerProfileTest(TestCase):
                     args=[self.district.pk],
                     request=request,
                 ),
+                "image": self.image,
             },
+            "other_identification_document": {
+                "name": "123",
+                "image": self.image,
+            },
+            "certificates": [
+                {"name": "1", "image": self.image},
+                {"name": "2", "image": self.image},
+            ],
         }
 
         # Too young
@@ -242,6 +254,27 @@ class VolunteerProfileTest(TestCase):
         response = view(request)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
+        # Image not present
+        invalid_data = deepcopy(data)
+        invalid_data["citizenship"]["image"] = None
+        request = factory.post("/volunteer/", data=invalid_data, format="json")
+        response = view(request)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        # Image invalid
+        invalid_data = deepcopy(data)
+        invalid_data["other_identification_document"]["image"] = "??"
+        request = factory.post("/volunteer/", data=invalid_data, format="json")
+        response = view(request)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        # Certificate image not present
+        invalid_data = deepcopy(data)
+        invalid_data["certificates"][0]["image"] = None
+        request = factory.post("/volunteer/", data=invalid_data, format="json")
+        response = view(request)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
         # Valid data
         request = factory.post("/volunteer/", data=data, format="json")
         response = view(request)
@@ -259,28 +292,123 @@ class VolunteerProfileTest(TestCase):
         self.assertNotEqual(response.status_code, status.HTTP_200_OK)
 
         data = {
-            "first_name": "Name",
-            "last_name": "Name",
-            "date_of_birth": "2005-01-01",
-            "contact_number": "+9779840424012",
-            "gender": "Male",
-            "nationality": "National",
-            "blood_group": "O Positive",
-            "category": "General",
-            "temporary_ward": reverse(
-                "api:ward-detail",
-                args=[self.ward.pk],
-                request=request,
-            ),
-            "permanent_ward": reverse(
-                "api:ward-detail",
-                args=[self.ward.pk],
-                request=request,
-            ),
-            "citizenship": None,
-            "passport": None,
-            "national_id": None,
-            "certificates": [],
+            "volunteer": {
+                "first_name": "first_name",
+                "last_name": "last_name",
+                "date_of_birth": "1980-01-01",
+                "contact_number": "+9779840424000",
+                "gender": "Male",
+                "nationality": "National",
+                "blood_group": "A Positive",
+                "category": "General",
+                "temporary_ward": reverse(
+                    "api:ward-detail",
+                    args=[self.ward.pk],
+                    request=request,
+                ),
+                "permanent_ward": reverse(
+                    "api:ward-detail",
+                    args=[self.ward.pk],
+                    request=request,
+                ),
+                "organization_name": "organization_name",
+                "organization_phone_number": "+9779840424000",
+                "organization_website": "organization_website",
+                "training_name": "training_name",
+                "training_subject": "training_subject",
+                "training_type": "Other",
+            },
+            "citizenship": {
+                "id": "000",
+                "registration_date": "2000-01-01",
+                "registration_district": reverse(
+                    "api:district-detail",
+                    args=[self.district.pk],
+                    request=request,
+                ),
+                "image": self.image,
+            },
+            "passport": {
+                "id": "000",
+                "issue_date": "2000-01-01",
+                "expiry_date": "3000-01-01",
+                "image": self.image,
+            },
+            "national_id": {
+                "id": "000",
+                "registration_date": "2000-01-01",
+                "registration_district": reverse(
+                    "api:district-detail",
+                    args=[self.district.pk],
+                    request=request,
+                ),
+                "image": self.image,
+            },
+            "other_identification_document": {"name": "000", "image": self.image},
+            "certificates": [
+                {"name": "0", "image": self.image},
+                {"name": "1", "image": self.image},
+            ],
+        }
+
+        modified_data = {
+            "volunteer": {
+                "first_name": "_first_name",
+                "last_name": "_last_name",
+                "date_of_birth": "1980-01-02",
+                "contact_number": "+9779840424001",
+                "gender": "Female",
+                "nationality": "International",
+                "blood_group": "A Negative",
+                "category": "Student",
+                "temporary_ward": reverse(
+                    "api:ward-detail",
+                    args=[self.ward.pk],
+                    request=request,
+                ),
+                "permanent_ward": reverse(
+                    "api:ward-detail",
+                    args=[self.ward.pk],
+                    request=request,
+                ),
+                "organization_name": "_organization_name",
+                "organization_phone_number": "+9779840424001",
+                "organization_website": "_organization_website",
+                "training_name": "_training_name",
+                "training_subject": "_training_subject",
+                "training_type": "Rescue",
+            },
+            "citizenship": {
+                "id": "001",
+                "registration_date": "2000-01-02",
+                "registration_district": reverse(
+                    "api:district-detail",
+                    args=[self.district.pk],
+                    request=request,
+                ),
+                "image": self.image,
+            },
+            "passport": {
+                "id": "001",
+                "issue_date": "2000-01-02",
+                "expiry_date": "3000-01-02",
+                "image": self.image,
+            },
+            "national_id": {
+                "id": "001",
+                "registration_date": "2000-01-02",
+                "registration_district": reverse(
+                    "api:district-detail",
+                    args=[self.district.pk],
+                    request=request,
+                ),
+                "image": self.image,
+            },
+            "other_identification_document": {"name": "001", "image": self.image},
+            "certificates": [
+                {"name": "1", "image": self.image},
+                {"name": "2", "image": self.image},
+            ],
         }
 
         # Unauthenticated, and valid data
@@ -290,17 +418,39 @@ class VolunteerProfileTest(TestCase):
         response = view(request, pk=self.volunteer.pk)
         self.assertNotEqual(response.status_code, status.HTTP_200_OK)
 
-        # Authenticated, but invalid data
-        request = factory.put(
-            f"/volunteer/{self.volunteer.pk}/", data={}, format="json"
-        )
+        # missing document
+        invalid_data = deepcopy(data)
+        invalid_data["citizenship"] = None
+        request = factory.put("/volunteer/", data=invalid_data, format="json")
         force_authenticate(request, self.volunteer)
         response = view(request, pk=self.volunteer.pk)
-        self.assertNotEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
         # Authenticated and valid data
         request = factory.put(
             f"/volunteer/{self.volunteer.pk}/", data=data, format="json"
+        )
+        force_authenticate(request, self.volunteer)
+        response = view(request, pk=self.volunteer.pk)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # Authenticated and deleted citizenship
+        modified_data_ = deepcopy(modified_data)
+        modified_data_.pop("citizenship")
+        request = factory.put(
+            f"/volunteer/{self.volunteer.pk}/", data=modified_data_, format="json"
+        )
+        force_authenticate(request, self.volunteer)
+        response = view(request, pk=self.volunteer.pk)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        modified_volunteer = incident.models.VolunteerProfile.objects.get(
+            pk=self.volunteer.pk
+        )
+        self.assertEqual(hasattr(modified_volunteer.user, "citizenship"), False)
+
+        # Authenticated and valid modified data
+        request = factory.put(
+            f"/volunteer/{self.volunteer.pk}/", data=modified_data, format="json"
         )
         force_authenticate(request, self.volunteer)
         response = view(request, pk=self.volunteer.pk)

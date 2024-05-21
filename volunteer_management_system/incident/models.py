@@ -231,7 +231,7 @@ class OtherIdentificationDocument(models.Model):
     user = models.OneToOneField(
         get_user_model(),
         on_delete=models.CASCADE,
-        related_name="other_identification_documents",
+        related_name="other_identification_document",
         blank=True,
         null=True,
         verbose_name=_("user"),

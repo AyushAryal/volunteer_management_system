@@ -7,9 +7,12 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework import permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from django.db.models import Count
+from datetime import timedelta
+from django.utils import timezone
 
 from . import models
-from . import permissions as incident_permissions
+from authentication import permissions as authentication_permissions
 from . import serializers
 
 
@@ -103,13 +106,8 @@ class VolunteerProfileViewSet(
     ---
     """
 
-    queryset = models.VolunteerProfile.objects.all()
-    serializer_class = serializers.VolunteerProfileSerializer
-
-    def get_serializer_class(self):
-        return {
-            "create": serializers.VolunteerSignupSerializer,
-        }.get(self.action, super().get_serializer_class())
+    queryset = get_user_model().objects.filter(volunteer__isnull=False)
+    serializer_class = serializers.VolunteerSerializer
 
     def get_queryset(self):
         return {"create": get_user_model().objects.all()}.get(
@@ -119,10 +117,10 @@ class VolunteerProfileViewSet(
     def get_permissions(self):
         permissions_classes = {
             "list": [permissions.IsAuthenticated],
-            "retrieve": [incident_permissions.IsOwner],
+            "retrieve": [authentication_permissions.IsOwner],
             "create": [permissions.AllowAny],
-            "update": [incident_permissions.IsOwner],
-            "partial_update": [incident_permissions.IsOwner],
+            "update": [authentication_permissions.IsOwner],
+            "partial_update": [authentication_permissions.IsOwner],
             "count": [permissions.AllowAny],
         }.get(self.action, [permissions.AllowAny])
         return (permission() for permission in permissions_classes)
@@ -131,9 +129,7 @@ class VolunteerProfileViewSet(
         serializer_class = self.get_serializer_class()
         if hasattr(request.user, "volunteer"):
             return Response(
-                serializer_class(
-                    request.user.volunteer, context={"request": request}
-                ).data
+                serializer_class(request.user, context={"request": request}).data
             )
         return Response(
             {"detail": _("No profile present for this user")},
@@ -148,6 +144,34 @@ class VolunteerProfileViewSet(
         return response
 
 
+class IncidentFilter(django_filters.FilterSet):
+    date = django_filters.DateFromToRangeFilter(field_name="date", lookup_expr="range")
+    province = django_filters.ModelChoiceFilter(
+        label="Province",
+        field_name="ward__municipality__district__province",
+        queryset=federal.models.Province.objects.all(),
+    )
+    district = django_filters.ModelChoiceFilter(
+        label="District",
+        field_name="ward__municipality__district",
+        queryset=federal.models.District.objects.all(),
+    )
+    municipality = django_filters.ModelChoiceFilter(
+        label="Municipality",
+        field_name="ward__municipality",
+        queryset=federal.models.Municipality.objects.all(),
+    )
+    ward = django_filters.ModelChoiceFilter(
+        label="Ward",
+        field_name="ward",
+        queryset=federal.models.Ward.objects.all(),
+    )
+
+    class Meta:
+        model = models.Incident
+        fields = []
+
+
 class IncidentViewSet(
     viewsets.GenericViewSet,
     viewsets.mixins.RetrieveModelMixin,
@@ -156,37 +180,42 @@ class IncidentViewSet(
     queryset = models.Incident.objects.all()
     serializer_class = serializers.IncidentSerializer
     pagination_class = None
-
-    class IncidentFilter(django_filters.FilterSet):
-        date = django_filters.DateFromToRangeFilter(
-            field_name="date", lookup_expr="range"
-        )
-        province = django_filters.ModelChoiceFilter(
-            label="Province",
-            field_name="ward__municipality__district__province",
-            queryset=federal.models.Province.objects.all(),
-        )
-        district = django_filters.ModelChoiceFilter(
-            label="District",
-            field_name="ward__municipality__district",
-            queryset=federal.models.District.objects.all(),
-        )
-        municipality = django_filters.ModelChoiceFilter(
-            label="Municipality",
-            field_name="ward__municipality",
-            queryset=federal.models.Municipality.objects.all(),
-        )
-        ward = django_filters.ModelChoiceFilter(
-            label="Ward",
-            field_name="ward",
-            queryset=federal.models.Ward.objects.all(),
-        )
-
-        class Meta:
-            model = models.Incident
-            fields = []
-
     filterset_class = IncidentFilter
+
+
+class ProgramFilter(django_filters.FilterSet):
+    incident = django_filters.ModelChoiceFilter(
+        label="Incident",
+        field_name="incident",
+        queryset=models.Incident.objects.all(),
+    )
+    date = django_filters.DateFromToRangeFilter(
+        field_name="incident__date", lookup_expr="range"
+    )
+    province = django_filters.ModelChoiceFilter(
+        label="Province",
+        field_name="incident__ward__municipality__district__province",
+        queryset=federal.models.Province.objects.all(),
+    )
+    district = django_filters.ModelChoiceFilter(
+        label="District",
+        field_name="incident__ward__municipality__district",
+        queryset=federal.models.District.objects.all(),
+    )
+    municipality = django_filters.ModelChoiceFilter(
+        label="Municipality",
+        field_name="incident__ward__municipality",
+        queryset=federal.models.Municipality.objects.all(),
+    )
+    ward = django_filters.ModelChoiceFilter(
+        label="Ward",
+        field_name="incident__ward",
+        queryset=federal.models.Ward.objects.all(),
+    )
+
+    class Meta:
+        model = models.Program
+        fields = []
 
 
 class ProgramViewSet(
@@ -197,42 +226,50 @@ class ProgramViewSet(
     queryset = models.Program.objects.all()
     serializer_class = serializers.ProgramSerializer
     pagination_class = None
-
-    class ProgramFilter(django_filters.FilterSet):
-        incident = django_filters.ModelChoiceFilter(
-            label="Incident",
-            field_name="incident",
-            queryset=models.Incident.objects.all(),
-        )
-        date = django_filters.DateFromToRangeFilter(
-            field_name="incident__date", lookup_expr="range"
-        )
-        province = django_filters.ModelChoiceFilter(
-            label="Province",
-            field_name="incident__ward__municipality__district__province",
-            queryset=federal.models.Province.objects.all(),
-        )
-        district = django_filters.ModelChoiceFilter(
-            label="District",
-            field_name="incident__ward__municipality__district",
-            queryset=federal.models.District.objects.all(),
-        )
-        municipality = django_filters.ModelChoiceFilter(
-            label="Municipality",
-            field_name="incident__ward__municipality",
-            queryset=federal.models.Municipality.objects.all(),
-        )
-        ward = django_filters.ModelChoiceFilter(
-            label="Ward",
-            field_name="incident__ward",
-            queryset=federal.models.Ward.objects.all(),
-        )
-
-        class Meta:
-            model = models.Program
-            fields = []
-
     filterset_class = ProgramFilter
+
+
+class JobFilter(django_filters.FilterSet):
+    incident = django_filters.ModelChoiceFilter(
+        label="Incident",
+        field_name="program__incident",
+        queryset=models.Incident.objects.all(),
+    )
+    program = django_filters.ModelChoiceFilter(
+        label="Program",
+        field_name="program",
+        queryset=models.Program.objects.all(),
+    )
+    start_date = django_filters.DateFromToRangeFilter(
+        field_name="start_date", lookup_expr="range"
+    )
+    end_date = django_filters.DateFromToRangeFilter(
+        field_name="end_date", lookup_expr="range"
+    )
+    province = django_filters.ModelChoiceFilter(
+        label="Province",
+        field_name="program__incident__ward__municipality__district__province",
+        queryset=federal.models.Province.objects.all(),
+    )
+    district = django_filters.ModelChoiceFilter(
+        label="District",
+        field_name="program__incident__ward__municipality__district",
+        queryset=federal.models.District.objects.all(),
+    )
+    municipality = django_filters.ModelChoiceFilter(
+        label="Municipality",
+        field_name="program__incident__ward__municipality",
+        queryset=federal.models.Municipality.objects.all(),
+    )
+    ward = django_filters.ModelChoiceFilter(
+        label="Ward",
+        field_name="program__incident__ward",
+        queryset=federal.models.Ward.objects.all(),
+    )
+
+    class Meta:
+        model = models.Job
+        fields = []
 
 
 class JobViewSet(
@@ -243,6 +280,7 @@ class JobViewSet(
     queryset = models.Job.objects.all()
     serializer_class = serializers.JobSerializer
     pagination_class = None
+    filterset_class = JobFilter
 
     @action(detail=True, methods=["post"])
     def withdraw(self, request, *args, **kwargs):
@@ -310,46 +348,59 @@ class JobViewSet(
             status=status.HTTP_400_BAD_REQUEST,
         )
 
-    class JobFilter(django_filters.FilterSet):
-        incident = django_filters.ModelChoiceFilter(
-            label="Incident",
-            field_name="program__incident",
-            queryset=models.Incident.objects.all(),
-        )
-        program = django_filters.ModelChoiceFilter(
-            label="Program",
-            field_name="program",
-            queryset=models.Program.objects.all(),
-        )
-        start_date = django_filters.DateFromToRangeFilter(
-            field_name="start_date", lookup_expr="range"
-        )
-        end_date = django_filters.DateFromToRangeFilter(
-            field_name="end_date", lookup_expr="range"
-        )
-        province = django_filters.ModelChoiceFilter(
-            label="Province",
-            field_name="program__incident__ward__municipality__district__province",
-            queryset=federal.models.Province.objects.all(),
-        )
-        district = django_filters.ModelChoiceFilter(
-            label="District",
-            field_name="program__incident__ward__municipality__district",
-            queryset=federal.models.District.objects.all(),
-        )
-        municipality = django_filters.ModelChoiceFilter(
-            label="Municipality",
-            field_name="program__incident__ward__municipality",
-            queryset=federal.models.Municipality.objects.all(),
-        )
-        ward = django_filters.ModelChoiceFilter(
-            label="Ward",
-            field_name="program__incident__ward",
-            queryset=federal.models.Ward.objects.all(),
+
+class StatisticsViewSet(
+    viewsets.GenericViewSet,
+    viewsets.mixins.ListModelMixin,
+):
+    class IncidentFilterWithoutDate(IncidentFilter):
+        date = None
+
+    def volunteer_count(self, request):
+        models.VolunteerProfile.objects.count()
+
+    def volunteer_gender_count(self, request):
+        return models.VolunteerProfile.objects.values("gender").annotate(
+            count=Count("gender")
         )
 
-        class Meta:
-            model = models.Job
-            fields = []
+    def volunteer_nationality_count(self, request):
+        return models.VolunteerProfile.objects.values("nationality").annotate(
+            count=Count("nationality")
+        )
 
-    filterset_class = JobFilter
+    def incident_monthly_counts(self, request):
+        today = timezone.now()
+
+        for i in range(30):
+            yield StatisticsViewSet.IncidentFilterWithoutDate(
+                request.GET,
+                queryset=models.Incident.objects.filter(
+                    date__gte=today - timedelta(days=i),
+                    date__lte=today - timedelta(days=i - 1),
+                ),
+            ).qs.count()
+
+    def provice_count(self, request):
+        return federal.models.Province.objects.count()
+
+    def municipality_count(self, request):
+        return federal.models.Municipality.objects.count()
+
+    def incident_count(self, request):
+        return IncidentFilter(request.GET).qs.count()
+
+    def list(self, request, *args, **kwargs):
+        return Response(
+            {
+                "volunteer": self.volunteer_count(request),
+                "gender": self.volunteer_gender_count(request),
+                "nationality": self.volunteer_nationality_count(request),
+                "total_incidents": self.incident_count(request),
+                "incident_30_days": list(self.incident_monthly_counts(request)),
+                "total_programs": models.Program.objects.count(),
+                "total_jobs": models.Job.objects.count(),
+                "provinces": self.provice_count(request),
+                "municipality": self.municipality_count(request),
+            }
+        )
