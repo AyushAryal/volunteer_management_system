@@ -51,7 +51,22 @@ class JobStatus(models.IntegerChoices):
 
 
 class TrainingType(models.IntegerChoices):
-    Rescue, ReliefDistribution, Evacuation, Other = range(4)
+    (
+        Rescue,
+        ReliefDistribution,
+        Evacuation,
+        Other,
+        HealthAndSafety,
+        Logistics,
+        SoftSkills,
+        Leadership,
+        TeamTraining,
+        Management,
+        QualityTraining,
+        Humanitarian,
+        FamilyReunification,
+        MotorVehicleOperator,
+    ) = range(14)
 
     @DynamicClassAttribute
     def label(self):
@@ -61,22 +76,17 @@ class TrainingType(models.IntegerChoices):
             "Reliefdistribution": _("Relief Distribution"),
             "Evacuation": _("Evacuation"),
             "Other": _("Other"),
+            "Healthandsafety": _("Health and safety"),
+            "Logistics": _("Logistics"),
+            "Softskills": _("Soft skills"),
+            "Leadership": _("Leadership"),
+            "Teamtraining": _("Team Training"),
+            "Management": _("Management"),
+            "Qualitytraining": _("Quality Training"),
+            "Humanitarian": _("Humanitarium"),
+            "Familyreunification": _("Family Reunification"),
+            "Motorvehicleoperator": _("Motor Vehicle Operator"),
         }.get(label, _("None"))
-
-
-# TODO: add
-"""
-health and safety
-logistics
-soft-skills
-leadership
-team-training
-management
-quality-training
-humanitarian
-family-reunification
-driver
-"""
 
 
 class VolunteerCategory(models.IntegerChoices):

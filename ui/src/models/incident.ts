@@ -18,7 +18,10 @@ export type VolunteerCategory = "Student" |
     "Community" |
     "General";
 
-export type TrainingType = "Rescue" | "Reliefdistribution" | "Evacuation" | "Other";
+export type TrainingType = "Rescue" | "Reliefdistribution" | "Evacuation" | "Other" |
+    "Healthandsafety" | "Logistics" | "Softskills" | "Leadership" |
+    "Teamtraining" | "Management" | "Qualitytraining" | "Humanitarian" |
+    "Familyreunification" | "Motorvehicleoperator";
 
 export interface Incident {
     url: string,
