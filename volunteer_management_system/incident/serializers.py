@@ -10,11 +10,9 @@ from . import models
 
 
 class Base64ImageFieldWithUrl(Base64ImageField):
-    def to_internal_value(self, base64_data):
-        if isinstance(base64_data, str):
-            if base64_data.startswith("http"):
-                raise SkipField()
-        return super(Base64ImageField).to_internal_value(base64_data)
+    def to_representation(self, file):
+        print(file)
+        return "data:image/*;base64," + super().to_representation(file)
 
 
 class SiteContentSerializer(serializers.ModelSerializer):
@@ -40,7 +38,7 @@ class ChoiceField(serializers.ChoiceField):
 
 
 class VolunteerProfileSerializer(serializers.HyperlinkedModelSerializer):
-    profile_image = Base64ImageFieldWithUrl(required=False)
+    profile_image = Base64ImageFieldWithUrl(represent_in_base64=True, required=False)
     gender = ChoiceField(models.Gender.choices)
     blood_group = ChoiceField(models.BloodGroup.choices)
     nationality = ChoiceField(models.Nationality.choices)
@@ -102,7 +100,8 @@ class VolunteerProfileSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class CitizenshipSerializer(serializers.HyperlinkedModelSerializer):
-    image = Base64ImageFieldWithUrl()
+    id = serializers.CharField(validators=[])
+    image = Base64ImageFieldWithUrl(represent_in_base64=True)
 
     def validate_registration_date(self, date):
         if date > timezone.now().date():
@@ -128,7 +127,8 @@ class CitizenshipSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class PassportSerializer(serializers.ModelSerializer):
-    image = Base64ImageFieldWithUrl()
+    id = serializers.CharField(validators=[])
+    image = Base64ImageFieldWithUrl(represent_in_base64=True)
 
     def validate_issue_date(self, date):
         if date > timezone.now().date():
@@ -163,7 +163,8 @@ class PassportSerializer(serializers.ModelSerializer):
 
 
 class NationalIdSerializer(serializers.ModelSerializer):
-    image = Base64ImageFieldWithUrl()
+    id = serializers.CharField(validators=[])
+    image = Base64ImageFieldWithUrl(represent_in_base64=True)
 
     def validate_registration_date(self, date):
         if date > timezone.now().date():
@@ -185,7 +186,7 @@ class NationalIdSerializer(serializers.ModelSerializer):
 
 
 class OtherIdentificationDocumentSerializer(serializers.ModelSerializer):
-    image = Base64ImageFieldWithUrl()
+    image = Base64ImageFieldWithUrl(represent_in_base64=True)
 
     def validate_image(self, image):
         if not image:
@@ -201,7 +202,7 @@ class OtherIdentificationDocumentSerializer(serializers.ModelSerializer):
 
 
 class CertificateSerializer(serializers.ModelSerializer):
-    image = Base64ImageFieldWithUrl()
+    image = Base64ImageFieldWithUrl(represent_in_base64=True)
 
     def validate_image(self, image):
         if not image:
@@ -235,7 +236,7 @@ class VolunteerSerializer(serializers.ModelSerializer):
             "other_identification_document",
             "certificates",
         )
-        extra_kwargs = {"password": {"write_only": True}}
+        extra_kwargs = {"password": {"write_only": True, "required": False}}
 
     def validate_password(self, password):
         validate_password(password)
@@ -263,6 +264,9 @@ class VolunteerSerializer(serializers.ModelSerializer):
         return data
 
     def create(self, validated_data):
+        if "password" not in validated_data:
+            raise serializers.ValidationError("Password is required")
+
         volunteer = validated_data.pop("volunteer", None)
         citizenship = validated_data.pop("citizenship", None)
         passport = validated_data.pop("passport", None)
@@ -310,84 +314,127 @@ class VolunteerSerializer(serializers.ModelSerializer):
         other_identification_document_data = validated_data.pop("other_identification_document", None)
         certificates_data                  = validated_data.pop("certificates", [])
 
-        volunteer                          = instance
-        citizenship                        = getattr(instance.user, "citizenship", None)
-        passport                           = getattr(instance.user, "passport", None)
-        national_id                        = getattr(instance.user, "national_id", None)
-        other_identification_document      = getattr(instance.user, "other_identification_document", None)
-        certificates                       = getattr(instance.user, "certificates", None)
+        volunteer                          = instance.volunteer
 
-        volunteer.first_name                = volunteer_data.get("first_name", volunteer.first_name) 
-        volunteer.last_name                 = volunteer_data.get("last_name", volunteer.last_name) 
-        volunteer.contact_number            = volunteer_data.get("contact_number", volunteer.contact_number) 
-        volunteer.profile_image             = volunteer_data.get("profile_image", volunteer.profile_image) 
-        volunteer.date_of_birth             = volunteer_data.get("date_of_birth", volunteer.date_of_birth) 
-        volunteer.gender                    = volunteer_data.get("gender", volunteer.gender) 
-        volunteer.blood_group               = volunteer_data.get("blood_group", volunteer.blood_group) 
-        volunteer.nationality               = volunteer_data.get("nationality", volunteer.nationality) 
-        volunteer.permanent_ward            = volunteer_data.get("permanent_ward", volunteer.permanent_ward) 
-        volunteer.temporary_ward            = volunteer_data.get("temporary_ward", volunteer.temporary_ward) 
-        volunteer.category                  = volunteer_data.get("category", volunteer.category) 
-        volunteer.organization_name         = volunteer_data.get("organization_name", volunteer.organization_name) 
-        volunteer.organization_phone_number = volunteer_data.get("organization_phone_number", volunteer.organization_phone_number) 
-        volunteer.organization_website      = volunteer_data.get("organization_website", volunteer.organization_website) 
-        volunteer.training_name             = volunteer_data.get("training_name", volunteer.training_name) 
-        volunteer.training_subject          = volunteer_data.get("training_subject", volunteer.training_subject) 
-        volunteer.training_type             = volunteer_data.get("training_type", volunteer.training_type) 
-
-        if citizenship:
-            citizenship.id                      = citizenship_data.get("id", citizenship.id)
-            citizenship.registration_date       = citizenship_data.get("registration_date", citizenship.registration_date)
-            citizenship.registration_district   = citizenship_data.get("registration_district", citizenship.registration_district)
-            citizenship.image                   = citizenship_data.get("image", citizenship.image)
-
-        if passport:
-            passport.id                         = passport_data.get("id", passport.id)
-            passport.issue_date                 = passport_data.get("issue_date", passport.issue_date)
-            passport.expiry_date                = passport_data.get("expiry_date", passport.expiry_date)
-            passport.image                      = passport_data.get("image", passport.image)
-
-        if national_id:
-            national_id.id                      = national_id_data.get("id", national_id.id)
-            national_id.registration_date       = national_id_data.get("registration_date", national_id.registration_date)
-            national_id.image                   = national_id_data.get("image", national_id.image)
-
-        if other_identification_document:
-            other_identification_document.name  = other_identification_document_data.get("name", other_identification_document.name)
-            other_identification_document.image = other_identification_document_data.get("image", other_identification_document.image)
+        certificates                       = getattr(instance, "certificates", None)
         # fmt: on
 
-        with transaction.atomic():
-            volunteer.save()
+        # fmt: off
+        volunteer.first_name                = volunteer_data.get("first_name", volunteer.first_name)
+        volunteer.last_name                 = volunteer_data.get("last_name", volunteer.last_name)
+        volunteer.contact_number            = volunteer_data.get("contact_number", volunteer.contact_number)
+        volunteer.profile_image             = volunteer_data.get("profile_image", volunteer.profile_image)
+        volunteer.date_of_birth             = volunteer_data.get("date_of_birth", volunteer.date_of_birth)
+        volunteer.gender                    = volunteer_data.get("gender", volunteer.gender)
+        volunteer.blood_group               = volunteer_data.get("blood_group", volunteer.blood_group)
+        volunteer.nationality               = volunteer_data.get("nationality", volunteer.nationality)
+        volunteer.permanent_ward            = volunteer_data.get("permanent_ward", volunteer.permanent_ward)
+        volunteer.temporary_ward            = volunteer_data.get("temporary_ward", volunteer.temporary_ward)
+        volunteer.category                  = volunteer_data.get("category", volunteer.category)
+        volunteer.organization_name         = volunteer_data.get("organization_name", volunteer.organization_name)
+        volunteer.organization_phone_number = volunteer_data.get("organization_phone_number", volunteer.organization_phone_number)
+        volunteer.organization_website      = volunteer_data.get("organization_website", volunteer.organization_website)
+        volunteer.training_name             = volunteer_data.get("training_name", volunteer.training_name)
+        volunteer.training_subject          = volunteer_data.get("training_subject", volunteer.training_subject)
+        volunteer.training_type             = volunteer_data.get("training_type", volunteer.training_type)
+
+        # fmt: on
+
+        volunteer.save()
+        if citizenship_data:
+            if hasattr(volunteer.user, "citizenship"):
+                instance.citizenship.delete()
+                instance.citizenship = None
+                instance.save()
+
+            citizenship = (
+                models.Citizenship(user=instance, **citizenship_data)
+                if citizenship_data
+                else None
+            )
 
             if citizenship:
                 citizenship.save()
-            elif hasattr(volunteer.user, "citizenship"):
-                volunteer.user.citizenship.delete()
+                instance.citizenship = citizenship
+                instance.save()
+        elif hasattr(volunteer.user, "citizenship"):
+            instance.citizenship.delete()
+            instance.citizenship = None
+            instance.save()
+
+        if passport_data:
+            if hasattr(instance, "passport"):
+                instance.passport.delete()
+                instance.passport = None
+                instance.save()
+
+            passport = (
+                models.Passport(user=instance, **passport_data)
+                if passport_data
+                else None
+            )
 
             if passport:
                 passport.save()
-            elif hasattr(volunteer.user, "passport"):
-                volunteer.user.passport.delete()
+                instance.passport = passport
+                instance.save()
+        elif hasattr(instance, "passport"):
+            instance.passport.delete()
+            instance.passport = None
+            instance.save()
+
+        if national_id_data:
+            if hasattr(instance, "national_id"):
+                instance.national_id.delete()
+                instance.national_id = None
+                instance.save()
+
+            national_id = (
+                models.NationalId(user=instance, **national_id_data)
+                if national_id_data
+                else None
+            )
 
             if national_id:
                 national_id.save()
-            elif hasattr(volunteer.user, "national_id"):
-                volunteer.user.national_id.delete()
+                instance.national_id = national_id
+                instance.save()
+        elif hasattr(instance, "national_id"):
+            instance.national_id.delete()
+            instance.national_id = None
+            instance.save()
+
+        if other_identification_document_data:
+            if hasattr(instance, "other_identification_document"):
+                instance.other_identification_document.delete()
+                instance.other_identification_document = None
+                instance.save()
+
+            other_identification_document = (
+                models.OtherIdentificationDocument(
+                    user=instance, **other_identification_document_data
+                )
+                if other_identification_document_data
+                else None
+            )
 
             if other_identification_document:
                 other_identification_document.save()
-            elif hasattr(volunteer.user, "other_identification_document"):
-                volunteer.user.other_identification_document.delete()
+                instance.other_identification_document = other_identification_document
+                instance.save()
+        elif hasattr(instance, "other_identification_document"):
+            instance.other_identification_document.delete()
+            instance.other_identification_document = None
+            instance.save()
 
-            if certificates is not None:
-                certificates.all().delete()
-                models.Certificate.objects.bulk_create(
-                    [
-                        models.Certificate(**cert, user=instance.user)
-                        for cert in certificates_data
-                    ]
-                )
+        if certificates is not None:
+            certificates.all().delete()
+            models.Certificate.objects.bulk_create(
+                [
+                    models.Certificate(**cert, user=instance)
+                    for cert in certificates_data
+                ]
+            )
 
         return instance
 

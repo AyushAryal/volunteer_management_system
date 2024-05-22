@@ -219,6 +219,13 @@ class VolunteerProfileTest(TestCase):
         response = view(request)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
+        # No password
+        invalid_data = deepcopy(data)
+        invalid_data.pop("password")
+        request = factory.post("/volunteer/", data=invalid_data, format="json")
+        response = view(request)
+        self.assertNotEqual(response.status_code, status.HTTP_201_CREATED)
+
         # Insecure password
         invalid_data = deepcopy(data)
         invalid_data["password"] = "123"
@@ -292,6 +299,7 @@ class VolunteerProfileTest(TestCase):
         self.assertNotEqual(response.status_code, status.HTTP_200_OK)
 
         data = {
+            "email": "test000@example.com",
             "volunteer": {
                 "first_name": "first_name",
                 "last_name": "last_name",
@@ -352,6 +360,7 @@ class VolunteerProfileTest(TestCase):
         }
 
         modified_data = {
+            "email": "test001@example.com",
             "volunteer": {
                 "first_name": "_first_name",
                 "last_name": "_last_name",

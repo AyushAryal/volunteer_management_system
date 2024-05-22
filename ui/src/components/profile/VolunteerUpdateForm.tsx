@@ -12,7 +12,6 @@ import { useHookstate } from '@hookstate/core';
 import { storeState } from '@models/store';
 import { VolunteerProfileWidget } from './VolunteerProfileWidget';
 import { IdentificationDocumentsWidget } from './IdentificationDocumentsWidget';
-import { endpoints } from '@api/api';
 
 async function perform_volunteer_update(volunteer: Volunteer): Promise<string | Volunteer> {
     let form = {
@@ -27,6 +26,12 @@ async function perform_volunteer_update(volunteer: Volunteer): Promise<string | 
             "gender": volunteer.volunteer.gender,
             "temporary_ward": volunteer.volunteer.temporary_ward,
             "permanent_ward": volunteer.volunteer.permanent_ward,
+            "organization_name": volunteer.volunteer.organization_name,
+            "organization_phone_number": volunteer.volunteer.organization_phone_number,
+            "organization_website": volunteer.volunteer.organization_website,
+            "training_name": volunteer.volunteer.training_name,
+            "training_subject": volunteer.volunteer.training_subject,
+            "training_type": volunteer.volunteer.training_type,
         },
         "citizenship": {
             "id": volunteer.citizenship?.id,
@@ -112,6 +117,12 @@ export function VolunteerUpdateForm(props: VolunteerUpdateFormProps) {
     const [gender,] = genderState;
     const [selectedTemporaryWard,] = temporaryWardState;
     const [selectedPermanentWard,] = permanentWardState;
+    const [organizationName,] = organizationNameState;
+    const [organizationPhoneNumber,] = organizationPhoneNumberState;
+    const [organizationWebsite,] = organizationWebsiteState;
+    const [trainingName,] = trainingNameState;
+    const [trainingSubject,] = trainingSubjectState;
+    const [trainingType,] = trainingTypeState;
     const [formErrors, setFormErrors] = useState<string | boolean>(false);
 
     const [citizenshipId,] = citizenshipIdState;
@@ -127,6 +138,7 @@ export function VolunteerUpdateForm(props: VolunteerUpdateFormProps) {
     const [passportImage,] = passportImageState;
     const [otherIdentificationDocumentName,] = otherIdentificationDocumentNameState;
     const [otherIdentificationDocumentImage,] = otherIdentificationDocumentImageState;
+
 
     const onSubmit = async () => {
         let citizenship = citizenshipId && citizenshipRegistrationDate && citizenshipImage && citizenshipDistrict ? {
@@ -154,7 +166,29 @@ export function VolunteerUpdateForm(props: VolunteerUpdateFormProps) {
             image: otherIdentificationDocumentImage,
         } : undefined;
 
+        if ((citizenshipDistrict || citizenshipId || citizenshipRegistrationDate || citizenshipImage) && !citizenship) {
+            setFormErrors("Citizenship has missing required fields");
+            return;
+        }
+
+        if ((nationalId || nationalIdImage || nationalIdRegistrationDate) && !national_id) {
+            setFormErrors("National Id has missing required fields");
+            return;
+        }
+
+        if ((passportNumber || passportExpiryDate || passportImage || passportIssueDate) && !passport) {
+            setFormErrors("Passport has missing required fields");
+            return;
+        }
+
+        if ((otherIdentificationDocumentImage || otherIdentificationDocumentName) && !other_identification_document) {
+            setFormErrors("Other identification document has missing required fields");
+            return;
+        }
+
         let newProfile = await perform_volunteer_update({
+            email: "",
+            password: "",
             volunteer: {
                 url: props.volunteer.volunteer.url,
                 user: props.volunteer.volunteer.user,
@@ -169,6 +203,12 @@ export function VolunteerUpdateForm(props: VolunteerUpdateFormProps) {
                 category: volunteerType,
                 temporary_ward: selectedTemporaryWard ?? "",
                 permanent_ward: selectedPermanentWard ?? "",
+                organization_name: organizationName,
+                organization_phone_number: organizationPhoneNumber,
+                organization_website: organizationWebsite,
+                training_name: trainingName,
+                training_subject: trainingSubject,
+                training_type: trainingType,
             },
             citizenship,
             passport,
@@ -241,6 +281,7 @@ export function VolunteerUpdateForm(props: VolunteerUpdateFormProps) {
                 trainingSubjectState={trainingSubjectState}
                 trainingTypeState={trainingTypeState}
             />
+            <h2> Identification </h2>
             <IdentificationDocumentsWidget
                 citizenshipIdState={citizenshipIdState}
                 citizenshipRegistrationDateState={citizenshipRegistrationDateState}

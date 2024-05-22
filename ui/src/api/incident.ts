@@ -47,7 +47,9 @@ export let get_job_detail = get_detail<Job, number>(endpoints.job, JobDeserializ
 export async function get_volunteer(): Promise<Volunteer> {
     let response = await token_aware_fetch(endpoints.volunteer);
     let json = await response.json();
-    return VolunteerDeserializer(json);
+    let des = VolunteerDeserializer(json);
+    console.log(des);
+    return des;
 }
 
 export async function signup(body: BodyInit): Promise<Response> {

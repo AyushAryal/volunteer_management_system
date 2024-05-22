@@ -133,6 +133,8 @@ export interface Certificate {
 }
 
 export interface Volunteer {
+    email: string,
+    password: string,
     volunteer: VolunteerProfile,
     citizenship?: Citizenship,
     passport?: Passport,

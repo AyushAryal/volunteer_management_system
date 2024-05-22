@@ -1,5 +1,4 @@
 import { InputText } from 'primereact/inputtext';
-import { InputMask } from 'primereact/inputmask';
 import { RadioButton } from 'primereact/radiobutton';
 import { Dropdown } from 'primereact/dropdown';
 import { StateTuple } from '@models/generics';
@@ -43,15 +42,19 @@ export function VolunteerProfileAddressWidget(props: VolunteerProfileAddressWidg
     />;
 
     return <div className="flex flex-column w-full" style={{ gap: "1rem" }}>
-        Current Address
+        <div className="font-semibold">
+            Temporary Address <span className="text-red-500">*</span>
+        </div>
         {temporaryLocationSelector}
-        Permanent Address
+        <div className="font-semibold">
+            Permanent Address <span className="text-red-500">*</span>
+        </div>
         {permanentLocationSelector}
     </div>;
 
 }
 
-type VolunteerProfileWidgetProps = {
+type VolunteerProfileBasicWidgetProps = {
     firstNameState: StateTuple<string>,
     lastNameState: StateTuple<string>,
     contactNumberState: StateTuple<string>,
@@ -60,8 +63,6 @@ type VolunteerProfileWidgetProps = {
     volunteerTypeState: StateTuple<VolunteerCategory>,
     bloodGroupState: StateTuple<BloodGroup>,
     genderState: StateTuple<Gender>,
-    temporaryWardState: StateTuple<string | null>,
-    permanentWardState: StateTuple<string | null>,
     organizationNameState: StateTuple<string | undefined>,
     organizationPhoneNumberState: StateTuple<string | undefined>,
     organizationWebsiteState: StateTuple<string | undefined>,
@@ -70,7 +71,7 @@ type VolunteerProfileWidgetProps = {
     trainingTypeState: StateTuple<TrainingType | undefined>,
 };
 
-export function VolunteerProfileWidget(props: VolunteerProfileWidgetProps) {
+export function VolunteerProfileBasicWidget(props: VolunteerProfileBasicWidgetProps) {
     const { firstNameState,
         lastNameState,
         contactNumberState,
@@ -79,8 +80,6 @@ export function VolunteerProfileWidget(props: VolunteerProfileWidgetProps) {
         volunteerTypeState,
         bloodGroupState,
         genderState,
-        temporaryWardState,
-        permanentWardState,
         organizationNameState,
         organizationPhoneNumberState,
         organizationWebsiteState,
@@ -152,7 +151,7 @@ export function VolunteerProfileWidget(props: VolunteerProfileWidgetProps) {
                         className="p-inputtext-sm w-full"
                         onChange={(ev) => setFirstName(ev.target.value)}
                     />
-                    <label htmlFor="first-name">First Name</label>
+                    <label htmlFor="first-name">First Name <span className="text-sm text-red-500">*</span></label>
                 </span>
                 <span className="p-float-label">
                     <InputText
@@ -161,7 +160,7 @@ export function VolunteerProfileWidget(props: VolunteerProfileWidgetProps) {
                         className="p-inputtext-sm w-full"
                         onChange={(ev) => setLastName(ev.target.value)}
                     />
-                    <label htmlFor="last-name">Last Name</label>
+                    <label htmlFor="last-name">Last Name <span className="text-sm text-red-500">*</span></label>
                 </span>
                 <span className="p-float-label">
                     <InputText
@@ -171,7 +170,7 @@ export function VolunteerProfileWidget(props: VolunteerProfileWidgetProps) {
                         onChange={(ev) => setContactNumber(ev.target.value)}
                     />
                     <label htmlFor="contact-number">
-                        Contact Number (+977xxxxxxxxxx)
+                        Contact Number (+977xxxxxxxxxx) <span className="text-sm text-red-500">*</span>
                     </label>
                 </span>
                 <span className="p-float-label">
@@ -183,7 +182,7 @@ export function VolunteerProfileWidget(props: VolunteerProfileWidgetProps) {
                         }
                         dateFormat="yy-mm-dd"
                     />
-                    <label htmlFor="date-of-birth">Date of birth (yyyy-mm-dd)</label>
+                    <label htmlFor="date-of-birth">Date of birth (yyyy-mm-dd) <span className="text-sm text-red-500">*</span></label>
                 </span>
                 <div className="flex flex-wrap gap-3">
                     <div className="flex align-items-center">
@@ -260,6 +259,7 @@ export function VolunteerProfileWidget(props: VolunteerProfileWidgetProps) {
                     optionValue="value"
                 />
 
+                <h3> Organization </h3>
                 <span className="p-float-label">
                     <InputText
                         value={organizationName}
@@ -267,7 +267,7 @@ export function VolunteerProfileWidget(props: VolunteerProfileWidgetProps) {
                         className="p-inputtext-sm w-full"
                         onChange={(ev) => setOrganizationName(ev.target.value)}
                     />
-                    <label htmlFor="organization-name">Organization Name</label>
+                    <label htmlFor="organization-name">Organization Name <span className="text-xs">(optional)</span></label>
                 </span>
 
                 <span className="p-float-label">
@@ -277,7 +277,7 @@ export function VolunteerProfileWidget(props: VolunteerProfileWidgetProps) {
                         className="p-inputtext-sm w-full"
                         onChange={(ev) => setOrganizationPhoneNumber(ev.target.value)}
                     />
-                    <label htmlFor="organization-phone-number">Organization Phone Number</label>
+                    <label htmlFor="organization-phone-number">Organization Phone Number <span className="text-xs">(optional)</span></label>
                 </span>
 
                 <span className="p-float-label">
@@ -287,9 +287,10 @@ export function VolunteerProfileWidget(props: VolunteerProfileWidgetProps) {
                         className="p-inputtext-sm w-full"
                         onChange={(ev) => setOrganizationWebsite(ev.target.value)}
                     />
-                    <label htmlFor="organization-website">Organization Website</label>
+                    <label htmlFor="organization-website">Organization Website <span className="text-xs">(optional)</span></label>
                 </span>
 
+                <h3> Training </h3>
                 <span className="p-float-label">
                     <InputText
                         value={trainingName}
@@ -297,7 +298,7 @@ export function VolunteerProfileWidget(props: VolunteerProfileWidgetProps) {
                         className="p-inputtext-sm w-full"
                         onChange={(ev) => setTrainingName(ev.target.value)}
                     />
-                    <label htmlFor="training-name">Training Name</label>
+                    <label htmlFor="training-name">Training Name <span className="text-xs">(optional)</span></label>
                 </span>
 
                 <span className="p-float-label">
@@ -307,7 +308,7 @@ export function VolunteerProfileWidget(props: VolunteerProfileWidgetProps) {
                         className="p-inputtext-sm w-full"
                         onChange={(ev) => setTrainingSubject(ev.target.value)}
                     />
-                    <label htmlFor="training-subject">Training Subject</label>
+                    <label htmlFor="training-subject">Training Subject <span className="text-xs">(optional)</span></label>
                 </span>
 
                 <Dropdown
@@ -316,11 +317,73 @@ export function VolunteerProfileWidget(props: VolunteerProfileWidgetProps) {
                         setTrainingType(ev.value);
                     }}
                     options={trainingTypes}
-                    placeholder="Select training type"
+                    placeholder="Select training type (optional)"
                     optionLabel="label"
                     optionValue="value"
                 />
             </div>
+        </div>
+    );
+}
+
+type VolunteerProfileWidgetProps = {
+    firstNameState: StateTuple<string>,
+    lastNameState: StateTuple<string>,
+    contactNumberState: StateTuple<string>,
+    dateOfBirthState: StateTuple<Date>,
+    nationalityState: StateTuple<Nationality>,
+    volunteerTypeState: StateTuple<VolunteerCategory>,
+    bloodGroupState: StateTuple<BloodGroup>,
+    genderState: StateTuple<Gender>,
+    temporaryWardState: StateTuple<string | null>,
+    permanentWardState: StateTuple<string | null>,
+    organizationNameState: StateTuple<string | undefined>,
+    organizationPhoneNumberState: StateTuple<string | undefined>,
+    organizationWebsiteState: StateTuple<string | undefined>,
+    trainingNameState: StateTuple<string | undefined>,
+    trainingSubjectState: StateTuple<string | undefined>,
+    trainingTypeState: StateTuple<TrainingType | undefined>,
+};
+
+export function VolunteerProfileWidget(props: VolunteerProfileWidgetProps) {
+    const { firstNameState,
+        lastNameState,
+        contactNumberState,
+        dateOfBirthState,
+        nationalityState,
+        volunteerTypeState,
+        bloodGroupState,
+        genderState,
+        temporaryWardState,
+        permanentWardState,
+        organizationNameState,
+        organizationPhoneNumberState,
+        organizationWebsiteState,
+        trainingNameState,
+        trainingSubjectState,
+        trainingTypeState,
+    } = props;
+
+    return (
+        <div>
+            <VolunteerProfileBasicWidget
+                firstNameState={firstNameState}
+                lastNameState={lastNameState}
+                contactNumberState={contactNumberState}
+                dateOfBirthState={dateOfBirthState}
+                nationalityState={nationalityState}
+                volunteerTypeState={volunteerTypeState}
+                bloodGroupState={bloodGroupState}
+                genderState={genderState}
+                organizationNameState={organizationNameState}
+                organizationPhoneNumberState={organizationPhoneNumberState}
+                organizationWebsiteState={organizationWebsiteState}
+                trainingNameState={trainingNameState}
+                trainingSubjectState={trainingSubjectState}
+                trainingTypeState={trainingTypeState}
+            />
+
+            <h2> Address Information </h2>
 
             <VolunteerProfileAddressWidget
                 temporaryWardState={temporaryWardState}

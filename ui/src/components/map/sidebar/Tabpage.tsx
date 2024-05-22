@@ -3,9 +3,9 @@ import {
   TabView,
   TabPanelHeaderTemplateOptions,
 } from "primereact/tabview";
-import { Visualizations } from '@components/sidebar/Visualizations';
-import { Jobs } from '@components/sidebar/Jobs';
-import { Incidents } from '@components/sidebar/Incidents';
+import { Visualizations } from '@components/map/sidebar/Visualizations';
+import { Jobs } from '@components/map/sidebar/Jobs';
+import { Incidents } from '@components/map/sidebar/Incidents';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useHookstate } from "@hookstate/core";
 import { storeState } from "@models/store";
@@ -66,11 +66,11 @@ export function Tabpage() {
 
   return (
     <TabView className="flex flex-column overflow-y-hidden">
-      <TabPanel header="Visualizations" headerTemplate={tabVisualizationTemplate}>
-        <Visualizations />
-      </TabPanel>
       <TabPanel header="Incidents" headerTemplate={tabIncidentTemplate}>
         <Incidents />
+      </TabPanel>
+      <TabPanel header="Visualizations" headerTemplate={tabVisualizationTemplate}>
+        <Visualizations />
       </TabPanel>
       <TabPanel header="Jobs" headerTemplate={tabJobTemplate}>
         <Jobs />

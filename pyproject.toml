@@ -25,6 +25,7 @@ requests = "^2.31.0"
 django-vectortiles = { git = "git@github.com:submarcos/django-vectortiles.git", branch = "1.0.0-beta3" }
 django-select2 = "^8.1.2"
 drf-extra-fields = "^3.7.0"
+drf-writable-nested = "^0.7.0"
 
 
 [tool.poetry.group.dev.dependencies]
