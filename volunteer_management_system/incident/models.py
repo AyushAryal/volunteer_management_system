@@ -64,6 +64,21 @@ class TrainingType(models.IntegerChoices):
         }.get(label, _("None"))
 
 
+# TODO: add
+"""
+health and safety
+logistics
+soft-skills
+leadership
+team-training
+management
+quality-training
+humanitarian
+family-reunification
+driver
+"""
+
+
 class VolunteerCategory(models.IntegerChoices):
     (
         Student,
