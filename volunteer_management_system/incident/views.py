@@ -284,16 +284,14 @@ class JobViewSet(
 
     @action(detail=True, methods=["post"])
     def withdraw(self, request, *args, **kwargs):
-        if hasattr(request.user, "volunteer"):
-            return (
-                Response(
-                    {
-                        "detail": {
-                            "You have to be logged in as a volunteer to perform this action."
-                        }
-                    },
-                    status=status.HTTP_401_UNAUTHORIZED,
-                ),
+        if not hasattr(request.user, "volunteer"):
+            return Response(
+                {
+                    "detail": {
+                        "You have to be logged in as a volunteer to perform this action."
+                    }
+                },
+                status=status.HTTP_401_UNAUTHORIZED,
             )
 
         job = self.get_object()
@@ -318,17 +316,54 @@ class JobViewSet(
         )
 
     @action(detail=True, methods=["post"])
-    def apply(self, request, *args, **kwargs):
-        if hasattr(request.user, "volunteer"):
-            return (
-                Response(
+    def cancel(self, request, *args, **kwargs):
+        if not hasattr(request.user, "volunteer"):
+            return Response(
+                {
+                    "detail": {
+                        "You have to be logged in as a volunteer to perform this action."
+                    }
+                },
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
+
+        job = self.get_object()
+        application = models.JobApplication.objects.filter(
+            job=job,
+            volunteer=request.user.volunteer,
+        ).first()
+
+        if application:
+            if application.status == models.JobApplicationStatus.Accepted:
+                application.status = models.JobApplicationStatus.Cancelled
+                application.save()
+                return Response(status=status.HTTP_200_OK)
+            else:
+                return Response(
                     {
-                        "detail": {
-                            "You have to be logged in as a volunteer to perform this action."
-                        }
+                        "detail": _(
+                            "Job application is either rejected, pending or cancelled."
+                        )
                     },
-                    status=status.HTTP_401_UNAUTHORIZED,
-                ),
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
+        return Response(
+            {"detail": _("Job application does not exist.")},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    @action(detail=True, methods=["post"])
+    def apply(self, request, *args, **kwargs):
+        print(request.user, request, hasattr(request.user, "volunteer"))
+        if not hasattr(request.user, "volunteer"):
+            return Response(
+                {
+                    "detail": {
+                        "You have to be logged in as a volunteer to perform this action."
+                    }
+                },
+                status=status.HTTP_401_UNAUTHORIZED,
             )
 
         job = self.get_object()

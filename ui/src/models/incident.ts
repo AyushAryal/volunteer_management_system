@@ -23,6 +23,9 @@ export type TrainingType = "Rescue" | "Reliefdistribution" | "Evacuation" | "Oth
     "Teamtraining" | "Management" | "Qualitytraining" | "Humanitarian" |
     "Familyreunification" | "Motorvehicleoperator";
 
+export type JobStatus = "Completed" | "Inprogress" | "Notassigned";
+export type JobApplicationStatus = "Accepted" | "Rejected" | "Pending" | "Cancelled";
+
 export interface Incident {
     url: string,
     name: string,
@@ -54,6 +57,10 @@ export interface Job {
     start_date: Date,
     end_date: Date,
     program: string,
+    status: JobStatus,
+    application_status: JobApplicationStatus | "Not applied",
+    vacancy: number,
+    leader: string,
 }
 
 export const JobDeserializer: IDeserializer<Job> = (json: any) => {
@@ -160,12 +167,12 @@ export interface SiteContent {
 }
 
 export interface Statistics {
-  volunteers: number;
-  gender: { gender: number; count: number }[];
-  nationality: { nationality: number; count: number }[];
-  total_incidents: number;
-  total_programs: number;
-  total_jobs: number;
-  provinces: number;
-  municipalities: number;
+    volunteers: number;
+    gender: { gender: number; count: number }[];
+    nationality: { nationality: number; count: number }[];
+    total_incidents: number;
+    total_programs: number;
+    total_jobs: number;
+    provinces: number;
+    municipalities: number;
 }

@@ -38,10 +38,12 @@ function IncidentRibbon({ incident }: IncidentRibbonProps) {
                 <FontAwesomeIcon icon={faClock} className="mx-2" />
                 {incident.date.toDateString()}
             </div>
+            <div className="font-semibold">3 Programs</div>
+            <div className="font-semibold">10 Jobs</div>
             <FontAwesomeIcon className="mr-2 hover:bg-bluegray-100 p-2 border-circle" icon={faAngleRight} onClick={() => setVisible(true)} />
             {visible ? viewIncidentDetail : null}
         </div>
-    </div>
+    </div >
     );
 
 }
@@ -55,15 +57,15 @@ export function Incidents() {
     }
 
     return (
-      <div>
-        <VirtualScroller
-          style={{ width: "100%", height: "75vh" , overflowX: "hidden"}}
-          items={incidentList.get() as Incident[]}
-          itemSize={75}
-          itemTemplate={(incident: Incident) => (
-            <IncidentRibbon key={incident.url} incident={incident} />
-          )}
-        ></VirtualScroller>
-      </div>
+        <div>
+            <VirtualScroller
+                style={{ width: "100%", height: "75vh", overflowX: "hidden" }}
+                items={incidentList.get() as Incident[]}
+                itemSize={75}
+                itemTemplate={(incident: Incident) => (
+                    <IncidentRibbon key={incident.url} incident={incident} />
+                )}
+            ></VirtualScroller>
+        </div>
     );
 }

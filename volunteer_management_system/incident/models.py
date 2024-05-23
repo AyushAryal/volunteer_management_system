@@ -495,7 +495,7 @@ class Job(models.Model):
 
 
 class JobApplicationStatus(models.IntegerChoices):
-    Accepted, Rejected, Pending = range(3)
+    Accepted, Rejected, Pending, Cancelled = range(4)
 
     @DynamicClassAttribute
     def label(self):
@@ -504,6 +504,7 @@ class JobApplicationStatus(models.IntegerChoices):
             "Accepted": _("Accepted"),
             "Rejected": _("Rejected"),
             "Pending": _("Pending"),
+            "Cancelled": _("Cancelled"),
         }.get(label, _("None"))
 
 

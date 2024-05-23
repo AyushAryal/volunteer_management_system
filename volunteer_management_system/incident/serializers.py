@@ -1,10 +1,11 @@
+from functools import cached_property
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 from django.contrib.auth.password_validation import validate_password
 from django.db import transaction
 from rest_framework import serializers
 from drf_extra_fields.fields import Base64ImageField
-from rest_framework.fields import SkipField
+from rest_framework.fields import SerializerMethodField, SkipField
 
 from . import models
 
@@ -463,6 +464,27 @@ class ProgramSerializer(serializers.HyperlinkedModelSerializer):
 
 class JobSerializer(serializers.HyperlinkedModelSerializer):
     status = ChoiceField(models.JobStatus.choices)
+    application_status = SerializerMethodField()
+
+    @cached_property
+    def get_job_applications(self):
+        request = self.context.get("request", None)
+        if request and hasattr(request.user, "volunteer"):
+            return models.JobApplication.objects.filter(
+                volunteer=request.user.volunteer
+            )
+        return models.JobApplication.objects.none()
+
+    def get_application_status(self, job):
+        request = self.context.get("request", None)
+        if request and hasattr(request.user, "volunteer"):
+            job_applications = self.get_job_applications
+            job_applications = list(
+                filter(lambda application: application.job == job, job_applications)
+            )
+            if len(job_applications) != 0:
+                return models.JobApplicationStatus(job_applications[0].status).label
+        return "Not applied"
 
     class Meta:
         model = models.Job

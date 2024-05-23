@@ -34,6 +34,8 @@ export interface JobFilter extends FederalFilter {
     end_date_before?: string,
 }
 
+export interface StatisticsFilter extends FederalFilter { }
+
 export let get_incident_list = get_filtered_list<Incident, IncidentFilter>(endpoints.incident, IncidentDeserializer);
 export let get_program_list = get_filtered_list<Program, ProgramFilter>(endpoints.program);
 export let get_job_list = get_filtered_list<Job, JobFilter>(endpoints.job, JobDeserializer);
@@ -69,6 +71,28 @@ export async function update_volunteer_profile(url: string, body: BodyInit): Pro
     });
 }
 
-export async function get_statistics(): Promise<Statistics>{
-     return fetch(endpoints.statistics).then(response => response.json());
+
+export async function get_statistics(): Promise<Statistics> {
+    return fetch(endpoints.statistics).then(response => response.json());
+}
+
+export async function job_apply(job: string) {
+    return token_aware_fetch(`${job}/apply`, {
+        "headers": { "Content-Type": "application/json" },
+        "method": "POST",
+    });
+}
+
+export async function job_cancel(job: string) {
+    return token_aware_fetch(`${job}/cancel`, {
+        "headers": { "Content-Type": "application/json" },
+        "method": "POST",
+    });
+}
+
+export async function job_withdraw(job: string) {
+    return token_aware_fetch(`${job}/withdraw`, {
+        "headers": { "Content-Type": "application/json" },
+        "method": "POST",
+    });
 }
