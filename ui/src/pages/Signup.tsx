@@ -24,7 +24,7 @@ async function perform_signup(form: Volunteer): Promise<FormState> {
             "first_name": form.volunteer.first_name,
             "last_name": form.volunteer.last_name,
             "contact_number": form.volunteer.contact_number,
-            "date_of_birth": form.volunteer.date_of_birth.toISOString().split('T')[0],
+            "date_of_birth": form.volunteer.date_of_birth?.toISOString().split('T')[0],
             "blood_group": form.volunteer.blood_group,
             "gender": form.volunteer.gender,
             "nationality": form.volunteer.nationality,
@@ -102,11 +102,11 @@ export function Signup() {
     const firstNameState = useState("");
     const lastNameState = useState("");
     const contactNumberState = useState("");
-    const dateOfBirthState = useState<Date>(new Date());
-    const nationalityState = useState<Nationality>("National");
-    const volunteerTypeState = useState<VolunteerCategory>("General");
-    const bloodGroupState = useState<BloodGroup>("O Positive");
-    const genderState = useState<Gender>("Male");
+    const dateOfBirthState = useState<Date>();
+    const nationalityState = useState<Nationality | undefined>();
+    const volunteerTypeState = useState<VolunteerCategory | undefined>();
+    const bloodGroupState = useState<BloodGroup | undefined>();
+    const genderState = useState<Gender | undefined>();
     const organizationNameState = useState<string | undefined>();
     const organizationPhoneNumberState = useState<string | undefined>();
     const organizationWebsiteState = useState<string | undefined>();

@@ -68,12 +68,15 @@ export function IdentificationDocumentsWidget(props: IdentificationDocumentsWidg
 
         <span className="p-float-label">
             <Calendar
+                className="w-full"
                 id="citizenship-registration-date"
                 value={citizenshipRegistrationDate}
                 onChange={(ev) =>
                     setCitizenshipRegistrationDate(ev.target.value ?? undefined)
                 }
                 dateFormat="yy-mm-dd"
+                mask = "9999-99-99"
+                showIcon
             />
             <label htmlFor="citizenship-registration-date">
                 Citizenship Registration Date
@@ -88,81 +91,95 @@ export function IdentificationDocumentsWidget(props: IdentificationDocumentsWidg
         <FileInput file={citizenshipImage} onChange={(file) => setCitizenshipImage(file)} />
     </div>;
 
-    let passportWidget = <div
+    let passportWidget = (
+      <div
         className="flex flex-column w-full align-items-stretch pt-3"
         style={{ gap: "2rem" }}
-    >
+      >
         <span className="p-float-label">
-            <InputText
-                value={passportNumber}
-                id="passport-number"
-                className="p-inputtext-sm w-full"
-                onChange={(ev) => setPassportNumber(ev.target.value)}
-            />
-            <label htmlFor="passport-number">Passport Number</label>
+          <InputText
+            value={passportNumber}
+            id="passport-number"
+            className="p-inputtext-sm w-full"
+            onChange={(ev) => setPassportNumber(ev.target.value)}
+          />
+          <label htmlFor="passport-number">Passport Number</label>
         </span>
 
         <span className="p-float-label">
-            <Calendar
-                id="passport-issue-date"
-                value={passportIssueDate}
-                onChange={(ev) =>
-                    setPassportIssueDate(ev.target.value ?? undefined)
-                }
-                dateFormat="yy-mm-dd"
-            />
-            <label htmlFor="passport-issue-date">
-                Passport Issue Date
-            </label>
+          <Calendar
+            className="w-full"
+            id="passport-issue-date"
+            value={passportIssueDate}
+            onChange={(ev) =>
+              setPassportIssueDate(ev.target.value ?? undefined)
+            }
+            dateFormat="yy-mm-dd"
+            mask="9999-99-99"
+            showIcon
+          />
+          <label htmlFor="passport-issue-date">Passport Issue Date</label>
         </span>
         <span className="p-float-label">
-            <Calendar
-                id="passport-expiry-date"
-                value={passportExpiryDate}
-                onChange={(ev) =>
-                    setPassportExpiryDate(ev.target.value ?? undefined)
-                }
-                dateFormat="yy-mm-dd"
-            />
-            <label htmlFor="passport-expiry-date">
-                Passport Expiry Date
-            </label>
+          <Calendar
+            className="w-full"
+            id="passport-expiry-date"
+            value={passportExpiryDate}
+            onChange={(ev) =>
+              setPassportExpiryDate(ev.target.value ?? undefined)
+            }
+            dateFormat="yy-mm-dd"
+            mask="9999-99-99"
+            showIcon
+          />
+          <label htmlFor="passport-expiry-date">Passport Expiry Date</label>
         </span>
 
-        <FileInput file={passportImage} onChange={(file) => setpassportImage(file)} />
-    </div>;
+        <FileInput
+          file={passportImage}
+          onChange={(file) => setpassportImage(file)}
+        />
+      </div>
+    );
 
-    let nationalIdWidget = <div
+    let nationalIdWidget = (
+      <div
         className="flex flex-column w-full align-items-stretch pt-3"
         style={{ gap: "2rem" }}
-    >
-
+      >
         <span className="p-float-label">
-            <InputText
-                value={nationalId}
-                id="national-id"
-                className="p-inputtext-sm w-full"
-                onChange={(ev) => setNationalId(ev.target.value)}
-            />
-            <label htmlFor="national-id">National Id Number</label>
+          <InputText
+            value={nationalId}
+            id="national-id"
+            className="p-inputtext-sm w-full"
+            onChange={(ev) => setNationalId(ev.target.value)}
+          />
+          <label htmlFor="national-id">National Id Number</label>
         </span>
 
         <span className="p-float-label">
-            <Calendar
-                id="national-id-registration-date"
-                value={nationalIdRegistrationDate}
-                onChange={(ev) =>
-                    setNationalIdRegistrationDate(ev.target.value ?? undefined)
-                }
-                dateFormat="yy-mm-dd"
-            />
-            <label htmlFor="national-id-registration-date">
-                National Id Registration Date
-            </label>
+          <Calendar
+            className="w-full"
+            id="national-id-registration-date"
+            value={nationalIdRegistrationDate}
+            onChange={(ev) =>
+              setNationalIdRegistrationDate(ev.target.value ?? undefined)
+            }
+            dateFormat="yy-mm-dd"
+            mask = "9999-99-99"
+            showIcon
+          />
+          <label htmlFor="national-id-registration-date">
+            National Id Registration Date
+          </label>
         </span>
 
-        <FileInput file={nationalIdImage} onChange={(file) => setnationalIdImage(file)} />
-    </div>;
+        <FileInput
+          file={nationalIdImage}
+          onChange={(file) => setnationalIdImage(file)}
+        />
+      </div>
+    );
 
     let otherIdentificationDocumentWidget = <div
         className="flex flex-column w-full align-items-stretch pt-3"

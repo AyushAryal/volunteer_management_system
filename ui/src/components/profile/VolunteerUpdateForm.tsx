@@ -19,7 +19,7 @@ async function perform_volunteer_update(volunteer: Volunteer): Promise<string | 
             "first_name": volunteer.volunteer.first_name,
             "last_name": volunteer.volunteer.last_name,
             "contact_number": volunteer.volunteer.contact_number,
-            "date_of_birth": volunteer.volunteer.date_of_birth.toISOString().split('T')[0],
+            "date_of_birth": volunteer.volunteer.date_of_birth?.toISOString().split('T')[0],
             "nationality": volunteer.volunteer.nationality,
             "category": volunteer.volunteer.category,
             "blood_group": volunteer.volunteer.blood_group,
