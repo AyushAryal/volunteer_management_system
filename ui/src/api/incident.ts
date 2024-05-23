@@ -2,6 +2,7 @@ import {
     Incident, IncidentDeserializer,
     Job, JobDeserializer,
     Program, SiteContent,
+    Statistics,
     Volunteer, VolunteerDeserializer,
 } from "@models/incident";
 import { get_detail, get_filtered_list, get_id } from "@api/utils";
@@ -48,7 +49,6 @@ export async function get_volunteer(): Promise<Volunteer> {
     let response = await token_aware_fetch(endpoints.volunteer);
     let json = await response.json();
     let des = VolunteerDeserializer(json);
-    console.log(des);
     return des;
 }
 
@@ -67,4 +67,8 @@ export async function update_volunteer_profile(url: string, body: BodyInit): Pro
         "method": "PATCH",
         "body": body
     });
+}
+
+export async function get_statistics(): Promise<Statistics>{
+     return fetch(endpoints.statistics).then(response => response.json());
 }

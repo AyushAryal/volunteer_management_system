@@ -1,5 +1,5 @@
-//export const server = "http://localhost:8000";
-export const server = "http://182.93.86.220:8000";
+export const server = "http://localhost:8000";
+// export const server = "http://182.93.86.220:8000";
 
 export const endpoints = {
     user: `${server}/api/user`,
@@ -17,4 +17,5 @@ export const endpoints = {
     district_brief: `${server}/api/district/brief`,
     municipality_brief: `${server}/api/municipality/brief`,
     ward_brief: `${server}/api/ward/brief`,
+    statistics: `${server}/api/statistics`,
 }

@@ -357,7 +357,7 @@ class StatisticsViewSet(
         date = None
 
     def volunteer_count(self, request):
-        models.VolunteerProfile.objects.count()
+        return models.VolunteerProfile.objects.count()
 
     def volunteer_gender_count(self, request):
         return models.VolunteerProfile.objects.values("gender").annotate(
@@ -393,7 +393,7 @@ class StatisticsViewSet(
     def list(self, request, *args, **kwargs):
         return Response(
             {
-                "volunteer": self.volunteer_count(request),
+                "volunteers": self.volunteer_count(request),
                 "gender": self.volunteer_gender_count(request),
                 "nationality": self.volunteer_nationality_count(request),
                 "total_incidents": self.incident_count(request),
@@ -401,6 +401,6 @@ class StatisticsViewSet(
                 "total_programs": models.Program.objects.count(),
                 "total_jobs": models.Job.objects.count(),
                 "provinces": self.provice_count(request),
-                "municipality": self.municipality_count(request),
+                "municipalities": self.municipality_count(request),
             }
         )

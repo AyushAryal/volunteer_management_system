@@ -1,16 +1,55 @@
 import "@styles/overview.css";
-
+import { Statistics } from "@models/incident";
+import { useState, useEffect } from "react";
+import { ProgressSpinner } from "primereact/progressspinner";
+import { get_statistics } from "@api/incident";
 
 
 const CountsComponent = () => {
+  const [stats, setStats] = useState({} as Statistics);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    get_statistics().then((response) => {
+      setStats(response);
+      setLoading(false);
+    });
+  }, []);
+
+  if (loading) return (
+    <div className="flex align-self-center">
+      <ProgressSpinner />
+    </div>
+  );
+
+  const {
+    volunteers,
+    gender,
+    nationality,
+    total_incidents,
+    total_programs,
+    total_jobs,
+  } = stats
+
   const counts = {
-    "Total Volunteers": 10530,
-    "Assigned Volunteers": 9452,
-    "Total Incidents": 42264,
-    "Total Jobs": 42264,
-    "Active Programs": 757,
-    "Completed Programs": 1642,
+    "Total Volunteers": volunteers,
+    "Male Volunteers": gender.find((g:any) => g.gender === 0)?.count,
+    "Female Volunteers": gender.find((g:any) => g.gender === 1)?.count,
+    "Local Volunteers": nationality.find((n:any) => n.nationality === 0)?.count,
+    "Foreign Volunteers": nationality.find((n:any) => n.nationality === 1)?.count,
+    "Total Incidents": total_incidents,
+    "Total Programs": total_programs,
+    "Total Jobs": total_jobs,
   };
+
+  // const counts = {
+  //   "Total Volunteers": 10456,
+  //   "Assigned Volunteers": 9452,
+  //   "Total Incidents": 42640,
+  //   "Total Jobs": 10600,
+  //   "Active Programs": 757,
+  //   "Completed Programs": 1642,
+  // };
   return (
     <div
       className="gap-2"

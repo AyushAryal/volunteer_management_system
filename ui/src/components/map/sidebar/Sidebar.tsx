@@ -29,9 +29,9 @@ export function Sidebar({ mapRef }: SidebarProps) {
     >
       <div className={`h-full overflow-x-hidden ${visible ? "" : "hidden"}`}>
         <div className="h-full flex flex-column px-3">
-          <div className="flex flex-row justify-content-between px-1">
+          <div className="flex flex-row justify-content-between pb-1 px-1">
             <div
-              className="font-semibold my-1 mx-3 left-0 text-xl"
+              className="font-semibold my-1 mx-3 text-xl"
               style={{ color: "var(--red-600)" }}
             >
               VMS

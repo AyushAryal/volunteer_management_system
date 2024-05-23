@@ -16,7 +16,6 @@ const Hero = () => {
             setSiteContents(response);
         })
     }, []);
-
     const hero = siteContents.find((siteContent) => siteContent.label === "hero");
     const heroContent = <div>
         <p

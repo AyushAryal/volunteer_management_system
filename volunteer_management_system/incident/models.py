@@ -110,8 +110,8 @@ class BloodGroup(models.IntegerChoices):
         O_Positive,
         A_Negative,
         A_Positive,
-        B_Positive,
         B_Negative,
+        B_Positive,
         AB_Negative,
         AB_Positive,
     ) = range(8)
@@ -299,13 +299,11 @@ class VolunteerProfile(models.Model):
 
     gender = models.SmallIntegerField(
         choices=Gender.choices,
-        default=Gender.Male,
         verbose_name=_("gender"),
     )
 
     blood_group = models.SmallIntegerField(
         choices=BloodGroup.choices,
-        default=BloodGroup.B_Positive,
         verbose_name=_("blood type"),
     )
 
@@ -330,7 +328,6 @@ class VolunteerProfile(models.Model):
 
     category = models.SmallIntegerField(
         choices=VolunteerCategory.choices,
-        default=VolunteerCategory.General,
         verbose_name=_("volunteer category"),
     )
 

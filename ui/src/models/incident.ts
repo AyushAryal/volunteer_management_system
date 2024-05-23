@@ -66,11 +66,11 @@ export interface VolunteerProfile {
     last_name: string,
     contact_number: string,
     profile_image: string,
-    date_of_birth: Date,
-    gender: Gender,
-    category: VolunteerCategory,
-    blood_group: BloodGroup,
-    nationality: Nationality,
+    date_of_birth?: Date,
+    gender?: Gender,
+    category?: VolunteerCategory,
+    blood_group?: BloodGroup,
+    nationality?: Nationality,
     temporary_ward: string,
     permanent_ward: string,
     organization_name?: string,
@@ -154,4 +154,15 @@ export const VolunteerDeserializer: IDeserializer<Volunteer> = (json: any) => {
 export interface SiteContent {
     label: string;
     content: string;
+}
+
+export interface Statistics {
+  volunteers: number;
+  gender: { gender: number; count: number }[];
+  nationality: { nationality: number; count: number }[];
+  total_incidents: number;
+  total_programs: number;
+  total_jobs: number;
+  provinces: number;
+  municipalities: number;
 }

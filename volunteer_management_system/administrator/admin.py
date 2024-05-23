@@ -120,7 +120,7 @@ class ProgramAdmin(admin.ModelAdmin):
 
 class UserAdmin(BaseUserAdmin):
     inlines = (
-        # VolunteerProfileInline,
+        VolunteerProfileInline,
         CitizenshipInline,
         PassportInline,
         NationalIdInline,

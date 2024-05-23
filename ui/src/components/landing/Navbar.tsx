@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { VolunteerLoginButton } from "@components/VolunteerLoginButton";
 import { useHookstate } from "@hookstate/core";
 import { storeState } from "@models/store";
+import { logo } from "@assets/index"
 
 const Navbar = () => {
   let store = useHookstate(storeState);
@@ -24,7 +25,7 @@ const Navbar = () => {
 
   return (
     <div className="w-full bg-indigo-900 flex flex-row flex-wrap align-items-center justify-content-between px-3 py-2 overflow-hidden">
-      <img src="/src/assets/logo.png" alt="logo" className="h-3rem" />
+      <img src={logo} alt="logo" className="h-3rem" />
       <div className="flex flex-row justify-content-end">
         <div className="flex flex-wrap">{signupButton}</div>
         <VolunteerLoginButton />
