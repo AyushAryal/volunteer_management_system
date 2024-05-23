@@ -30,21 +30,35 @@ export function JobActionWidget({ job, onChange }: JobActionWidgetProps) {
             }
         }} />;
     } else if (job.application_status == "Accepted") {
-        return <Button className="flex-shrink-0" label="Cancel" onClick={async () => {
-            let response = await job_cancel(job.url);
-            if (response.status == 200) {
-                onChange && onChange();
-            }
-        }} />;
+        // once the application is accpted user can CANCEL it.
+        // once Cancelled the user CANNOT apply to the same job.
+
+        return <div className="flex gap-3 align-items-center">
+            <span className="font-italic text-green-400">{job.application_status}</span>
+            <Button className="flex-shrink-0" label="Cancel" onClick={async () => {
+                let response = await job_cancel(job.url);
+                if (response.status == 200) {
+                    onChange && onChange();
+                }
+            }}
+            />
+        </div>;
     } else if (job.application_status == "Pending") {
-        return <Button className="flex-shrink-0" label="Withdraw" onClick={async () => {
-            let response = await job_withdraw(job.url);
-            if (response.status == 200) {
-                onChange && onChange();
-            }
-        }} />;
+        return <div className="flex gap-3 align-items-center">
+            <span className="font-italic text-yellow-600">{job.application_status}</span>
+            <Button className="flex-shrink-0" label="Withdraw" onClick={async () => {
+                let response = await job_withdraw(job.url);
+                if (response.status == 200) {
+                    onChange && onChange();
+                }
+            }} />
+        </div>;
+    } else if (job.application_status == "Cancelled") {
+        return <span className="font-italic text-red-600">{job.application_status}</span>;
     }
-    return job.application_status
+    // job application: rejected state
+    return <span className="font-italic text-red-500">{job.application_status}</span>
+
 }
 
 export function IncidentDetailModal(props: IncidentDetailModalProps) {
@@ -87,7 +101,8 @@ export function IncidentDetailModal(props: IncidentDetailModalProps) {
             className='flex flex-initial p-2 m-1 align-items-center justify-content-between gap-2'
         >
             <div style={{ flexBasis: "100%" }}>{job.name}</div>
-            <div style={{ flexBasis: "60%" }}> {job.start_date.toDateString()} <br /> {job.end_date.toDateString()}</div>
+            <span className=" flex gap-3 font-semibold" style={{ flexBasis: "50%" }}>{job.status}</span>
+            <div style={{ flexBasis: "55%" }}> {job.start_date.toDateString()} <br /> {job.end_date.toDateString()}</div>
             <JobActionWidget job={job} onChange={() => {
                 get_job_list({ incident: id }).then((jobs) => setJobs(jobs));
             }} />
@@ -103,7 +118,7 @@ export function IncidentDetailModal(props: IncidentDetailModalProps) {
     return <Dialog
         header={incident.name}
         visible={props.visible}
-        style={{ width: '50vw' }}
+        style={{ width: '65vw' }}
         onHide={() => props.setVisible(false)}
     >
         <div className="flex flex-row p-2 m-1 align-items-center justify-content-between ">
