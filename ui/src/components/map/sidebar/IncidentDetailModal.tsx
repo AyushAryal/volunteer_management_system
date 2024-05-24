@@ -1,14 +1,14 @@
 import { Dialog } from 'primereact/dialog';
-import { Button } from "primereact/button";
 import { useEffect, useState } from "react";
 import { Divider } from 'primereact/divider';
-import { Incident, Job, JobApplicationStatus, Program } from '@models/incident';
-import { get_incident_detail, get_job_list, get_program_list, job_apply, job_cancel, job_withdraw } from '@api/incident';
+import { Incident, Job, Program } from '@models/incident';
+import { get_incident_detail, get_job_list, get_program_list } from '@api/incident';
 import { get_id } from '@api/utils';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClock } from '@fortawesome/free-regular-svg-icons/faClock';
 import { Tag } from 'primereact/tag';
+import { JobActionWidget } from "@components/map/sidebar/JobActionWidget";
 
 type IncidentDetailModalProps = {
     incident: string,
@@ -16,50 +16,6 @@ type IncidentDetailModalProps = {
     setVisible: (visible: boolean) => void,
 }
 
-type JobActionWidgetProps = {
-    job: Job,
-    onChange?: (status?: JobApplicationStatus) => void,
-}
-
-export function JobActionWidget({ job, onChange }: JobActionWidgetProps) {
-    if (job.application_status == "Not applied") {
-        return <Button className="flex-shrink-0" label="Apply" onClick={async () => {
-            let response = await job_apply(job.url);
-            if (response.status == 200) {
-                onChange && onChange();
-            }
-        }} />;
-    } else if (job.application_status == "Accepted") {
-        // once the application is accpted user can CANCEL it.
-        // once Cancelled the user CANNOT apply to the same job.
-
-        return <div className="flex gap-3 align-items-center">
-            <span className="font-italic text-green-400">{job.application_status}</span>
-            <Button className="flex-shrink-0" label="Cancel" onClick={async () => {
-                let response = await job_cancel(job.url);
-                if (response.status == 200) {
-                    onChange && onChange();
-                }
-            }}
-            />
-        </div>;
-    } else if (job.application_status == "Pending") {
-        return <div className="flex gap-3 align-items-center">
-            <span className="font-italic text-yellow-600">{job.application_status}</span>
-            <Button className="flex-shrink-0" label="Withdraw" onClick={async () => {
-                let response = await job_withdraw(job.url);
-                if (response.status == 200) {
-                    onChange && onChange();
-                }
-            }} />
-        </div>;
-    } else if (job.application_status == "Cancelled") {
-        return <span className="font-italic text-red-600">{job.application_status}</span>;
-    }
-    // job application: rejected state
-    return <span className="font-italic text-red-500">{job.application_status}</span>
-
-}
 
 export function IncidentDetailModal(props: IncidentDetailModalProps) {
     const id = get_id(props.incident);

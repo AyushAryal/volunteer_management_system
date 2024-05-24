@@ -465,6 +465,7 @@ class ProgramSerializer(serializers.HyperlinkedModelSerializer):
 class JobSerializer(serializers.HyperlinkedModelSerializer):
     status = ChoiceField(models.JobStatus.choices)
     application_status = SerializerMethodField()
+    filled_positions = SerializerMethodField()
 
     @cached_property
     def get_job_applications(self):
@@ -474,6 +475,11 @@ class JobSerializer(serializers.HyperlinkedModelSerializer):
                 volunteer=request.user.volunteer
             )
         return models.JobApplication.objects.none()
+
+    def get_filled_positions(self, job):
+        return job.applications.filter(
+            status=models.JobApplicationStatus.Accepted
+        ).count()
 
     def get_application_status(self, job):
         request = self.context.get("request", None)

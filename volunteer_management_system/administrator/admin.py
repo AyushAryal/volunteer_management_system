@@ -63,7 +63,22 @@ class VolunteerProfileInline(admin.StackedInline):
 
 class JobAdmin(admin.ModelAdmin):
     model = incident.models.Job
-    list_display = ("__str__", "vacancy", "leader", "status")
+    list_display = ("__str__", "vacancy", "start_date", "end_date", "leader", "status")
+    search_fields = ("name",)
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        object_id = request.resolver_match.kwargs.get("object_id", None)
+        if db_field.name == "leader" and object_id:
+            job = self.get_object(request, object_id)
+            accepted_applicants = incident.models.JobApplication.objects.filter(
+                job=job, status=incident.models.JobApplicationStatus.Accepted
+            ).values_list("volunteer_id", flat=True)
+            kwargs["queryset"] = incident.models.VolunteerProfile.objects.filter(
+                pk__in=accepted_applicants
+            )
+        return super(JobAdmin, self).formfield_for_foreignkey(
+            db_field, request, **kwargs
+        )
 
     def leader(self, obj):
         return obj.leader

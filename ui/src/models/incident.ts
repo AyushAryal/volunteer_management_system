@@ -60,6 +60,7 @@ export interface Job {
     status: JobStatus,
     application_status: JobApplicationStatus | "Not applied",
     vacancy: number,
+    filled_positions: number,
     leader: string,
 }
 

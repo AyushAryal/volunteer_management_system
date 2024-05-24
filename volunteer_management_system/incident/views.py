@@ -355,7 +355,6 @@ class JobViewSet(
 
     @action(detail=True, methods=["post"])
     def apply(self, request, *args, **kwargs):
-        print(request.user, request, hasattr(request.user, "volunteer"))
         if not hasattr(request.user, "volunteer"):
             return Response(
                 {
@@ -371,6 +370,18 @@ class JobViewSet(
             job=job,
             volunteer=request.user.volunteer,
         ).exists():
+            empty_positions = (
+                job.vacancy
+                - job.applications.filter(
+                    status=models.JobApplicationStatus.Accepted
+                ).count()
+            )
+
+            if empty_positions <= 0:
+                return Response(
+                    {"detail": _("No vacancy")}, status=status.HTTP_400_BAD_REQUEST
+                )
+
             application = models.JobApplication(
                 job=job,
                 volunteer=request.user.volunteer,
