@@ -14,6 +14,7 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+
 from authentication.urls import router as authentication_router
 from django.conf import settings
 from django.conf.urls.static import static
@@ -36,6 +37,7 @@ favicon_view = RedirectView.as_view(url="/static/favicon.ico", permanent=True)
 urlpatterns = [
     path("admin/", include("administrator.urls")),
     path("api/", include((router.urls, "api"))),
+    path("select2/", include("django_select2.urls")),
     path(
         "api/tiles/federal/<int:z>/<int:x>/<int:y>",
         FederalTileView.as_view(),

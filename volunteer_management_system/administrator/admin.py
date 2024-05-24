@@ -6,6 +6,7 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.sites.models import Site
 from django.utils.translation import gettext_lazy as _
 from leaflet.admin import LeafletGeoAdmin
+from incident.forms import IncidentForm, ProgramForm, JobForm, JobApplicationForm
 
 
 def get_user_controlled_wards(user):
@@ -63,6 +64,8 @@ class VolunteerProfileInline(admin.StackedInline):
 
 class JobAdmin(admin.ModelAdmin):
     model = incident.models.Job
+    form = JobForm
+
     list_display = ("__str__", "vacancy", "start_date", "end_date", "leader", "status")
     search_fields = ("name",)
 
@@ -92,6 +95,7 @@ class JobAdmin(admin.ModelAdmin):
 
 class JobApplicationAdmin(admin.ModelAdmin):
     model = incident.models.JobApplication
+    form = JobApplicationForm
     list_display = ("__str__", "job", "volunteer", "status")
 
     def get_queryset(self, request):
@@ -103,6 +107,7 @@ class JobApplicationAdmin(admin.ModelAdmin):
 
 class IncidentAdmin(LeafletGeoAdmin):
     model = incident.models.Incident
+    # form = IncidentForm
     list_display = ("__str__", "ward", "formatted_date")
     search_fields = ("name", "ward__municipality__name")
 
@@ -123,6 +128,7 @@ class IncidentAdmin(LeafletGeoAdmin):
 
 class ProgramAdmin(admin.ModelAdmin):
     model = incident.models.Program
+    form = ProgramForm
     list_display = ("__str__", "incident")
     search_fields = ("name", "incident__name", "incident__ward__municipality__name")
 
