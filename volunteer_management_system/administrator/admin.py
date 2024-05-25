@@ -5,8 +5,13 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.sites.models import Site
 from django.utils.translation import gettext_lazy as _
+from django.utils.html import mark_safe
 from leaflet.admin import LeafletGeoAdmin
-from incident.forms import IncidentForm, ProgramForm, JobForm, JobApplicationForm
+from administrator.forms import (
+    ProgramForm,
+    JobForm,
+    JobApplicationForm,
+)
 
 
 def get_user_controlled_wards(user):
@@ -61,12 +66,31 @@ class VolunteerProfileInline(admin.StackedInline):
     can_delete = False
     extra = 0
 
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        field = super(VolunteerProfileInline, self).formfield_for_foreignkey(
+            db_field, request, **kwargs
+        )
+        if db_field.name == "permanent_ward" and hasattr(self, "cached_permanent_ward"):
+            field.choices = self.cached_permanent_ward
+        elif db_field.name == "temporary_ward" and hasattr(
+            self, "cached_temporary_ward"
+        ):
+            field.choices = self.cached_temporary_ward
+        return field
+
 
 class JobAdmin(admin.ModelAdmin):
     model = incident.models.Job
     form = JobForm
 
-    list_display = ("__str__", "vacancy", "start_date", "end_date", "leader", "status")
+    list_display = (
+        "__str__",
+        "vacancy_",
+        "start_date",
+        "end_date",
+        "leader_",
+        "status",
+    )
     search_fields = ("name",)
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
@@ -83,8 +107,11 @@ class JobAdmin(admin.ModelAdmin):
             db_field, request, **kwargs
         )
 
-    def leader(self, obj):
-        return obj.leader
+    def vacancy_(self, job):
+        return f"{job.filled()}/{job.vacancy}"
+
+    def leader_(self, job):
+        return job.leader.profile_image_preview_small() if job.leader else "-"
 
     def get_queryset(self, request):
         if request.user.is_superuser:
@@ -96,7 +123,39 @@ class JobAdmin(admin.ModelAdmin):
 class JobApplicationAdmin(admin.ModelAdmin):
     model = incident.models.JobApplication
     form = JobApplicationForm
-    list_display = ("__str__", "job", "volunteer", "status")
+    list_display = ("__str__", "applicant", "application_status")
+    search_fields = (
+        "job__name",
+        "volunteer__first_name",
+        "volunteer__last_name",
+    )
+
+    def application_status(self, application):
+        status = incident.models.JobApplicationStatus(application.status)
+        color_map = {
+            incident.models.JobApplicationStatus.Accepted: "text-success",
+            incident.models.JobApplicationStatus.Rejected: "text-danger",
+            incident.models.JobApplicationStatus.Pending: "text-secondary",
+            incident.models.JobApplicationStatus.Cancelled: "text-muted",
+        }
+        icon_map = {
+            incident.models.JobApplicationStatus.Accepted: "fa-regular fa-circle-check",
+            incident.models.JobApplicationStatus.Rejected: "fa fa-xmark",
+            incident.models.JobApplicationStatus.Pending: "fa fa-clock",
+            incident.models.JobApplicationStatus.Cancelled: "fa fa-ban",
+        }
+        return mark_safe(
+            f"""
+            <span class="{color_map.get(status, "text-fg")}">
+            <i class="{icon_map.get(status, "")}"></i>
+            <strong>
+            {status.label}
+            </strong> </span>
+            """
+        )
+
+    def applicant(self, application):
+        return application.volunteer.profile_image_preview_small()
 
     def get_queryset(self, request):
         if request.user.is_superuser:
@@ -107,7 +166,6 @@ class JobApplicationAdmin(admin.ModelAdmin):
 
 class IncidentAdmin(LeafletGeoAdmin):
     model = incident.models.Incident
-    # form = IncidentForm
     list_display = ("__str__", "ward", "formatted_date")
     search_fields = ("name", "ward__municipality__name")
 
@@ -177,6 +235,16 @@ class UserAdmin(BaseUserAdmin):
     )
     ordering = ("email",)
     search_fields = ("email",)
+
+    def get_formsets_with_inlines(self, request, obj=None):
+        for inline in self.get_inline_instances(request, obj):
+            inline.cached_temporary_ward = [
+                (i.pk, str(i)) for i in federal.models.Ward.objects.all()
+            ]
+            inline.cached_permanent_ward = [
+                (i.pk, str(i)) for i in federal.models.Ward.objects.all()
+            ]
+            yield inline.get_formset(request, obj), inline
 
 
 class MainAdminSite(admin.AdminSite):

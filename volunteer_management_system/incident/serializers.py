@@ -477,9 +477,7 @@ class JobSerializer(serializers.HyperlinkedModelSerializer):
         return models.JobApplication.objects.none()
 
     def get_filled_positions(self, job):
-        return job.applications.filter(
-            status=models.JobApplicationStatus.Accepted
-        ).count()
+        return job.filled()
 
     def get_application_status(self, job):
         request = self.context.get("request", None)

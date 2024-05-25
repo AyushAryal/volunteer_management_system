@@ -386,6 +386,16 @@ class VolunteerProfile(models.Model):
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
 
+    def profile_image_preview_small(self):
+        return mark_safe(
+            f"""
+            <div class="d-flex flex-row gap-3 align-items-center">
+                <img class="rounded-circle border border-primary" src="{self.profile_image.url}" style="max-height: 30px;" />
+                <span class="flex-shrink-0"> {self} </span>
+            </div>
+            """
+        )
+
     def profile_image_preview(self):
         return mark_safe(
             f'<img src="{self.profile_image.url}" style="max-height: 200px;" />'
@@ -489,6 +499,9 @@ class Job(models.Model):
         verbose_name=_("leader"),
         related_name="leading_jobs",  # Hard to name correctly
     )
+
+    def filled(self):
+        return self.applications.filter(status=JobApplicationStatus.Accepted).count()
 
     def __str__(self):
         return str(self.name)

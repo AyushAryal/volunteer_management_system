@@ -1,6 +1,6 @@
 from django import forms
 from django_select2.forms import ModelSelect2Widget
-from .models import Program, Incident, Job, JobApplication, VolunteerProfile
+from incident.models import Program, Incident, Job, JobApplication, VolunteerProfile
 from federal.models import Ward
 
 
@@ -92,7 +92,6 @@ class JobApplicationForm(forms.ModelForm):
                     "first_name__icontains",
                     "last_name__icontains",
                     "contact_number__icontains",
-                    "id__icontains",
                 ],
                 attrs={
                     "data-placeholder": "Search for a Volunteer",
