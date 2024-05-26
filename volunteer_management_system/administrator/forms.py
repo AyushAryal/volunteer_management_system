@@ -89,6 +89,7 @@ class JobApplicationForm(forms.ModelForm):
             "volunteer": ModelSelect2Widget(
                 model=VolunteerProfile,
                 search_fields=[
+                    "user__email__icontains",
                     "first_name__icontains",
                     "last_name__icontains",
                     "contact_number__icontains",

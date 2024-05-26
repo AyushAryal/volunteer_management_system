@@ -34,6 +34,8 @@ export interface Incident {
     point: LatLngTuple,
     ward: string,
     severity: string,
+    jobs: number,
+    programs: number,
 }
 
 export const IncidentDeserializer: IDeserializer<Incident> = (json: any) => {
@@ -61,7 +63,7 @@ export interface Job {
     application_status: JobApplicationStatus | "Not applied",
     vacancy: number,
     filled_positions: number,
-    leader: string,
+    leader: string | null,
 }
 
 export const JobDeserializer: IDeserializer<Job> = (json: any) => {
@@ -176,4 +178,17 @@ export interface Statistics {
     total_jobs: number;
     provinces: number;
     municipalities: number;
+}
+
+export interface Notification {
+    url: string,
+    user: string,
+    date: Date,
+    message: string,
+    viewed: boolean,
+}
+
+export const NotificationDeserializer: IDeserializer<Notification> = (json: any) => {
+    json.date = new Date(json.date);
+    return json as Notification;
 }

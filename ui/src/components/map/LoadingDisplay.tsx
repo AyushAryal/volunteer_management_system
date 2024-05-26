@@ -16,6 +16,7 @@ export function LoadingDisplay() {
         ["jobList", "Loading Jobs..."],
         ["programList", "Loading Programs..."],
         ["wardList", "Loading Wards..."],
+        ["notificationList", "Loading Notifications..."],
     ]);
 
     let messages = Object.entries(loaded)

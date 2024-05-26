@@ -5,6 +5,7 @@ from django.contrib.gis.db import models as gis_models
 from django.db import models
 from django.utils.html import mark_safe
 from django.utils.translation import gettext_lazy as _
+from django.utils import timezone
 
 from django_ckeditor_5.fields import CKEditor5Field
 from phonenumber_field.modelfields import PhoneNumberField
@@ -506,6 +507,17 @@ class Job(models.Model):
     def __str__(self):
         return str(self.name)
 
+    def save(self, *args, **kwargs):
+        if self.pk:
+            old_job = Job.objects.get(pk=self.pk)
+            if old_job.leader != self.leader:
+                Notification.objects.create(
+                    user=self.leader.user,
+                    date=timezone.now(),
+                    message=f"Your have been appointed leader for {self}",
+                )
+        return super().save(*args, **kwargs)
+
 
 class JobApplicationStatus(models.IntegerChoices):
     Accepted, Rejected, Pending, Cancelled = range(4)
@@ -554,3 +566,39 @@ class JobApplication(models.Model):
 
     def __str__(self):
         return str(self.job)
+
+    def save(self, *args, **kwargs):
+        status = JobApplicationStatus(self.status)
+        if status in [
+            JobApplicationStatus.Accepted,
+            JobApplicationStatus.Cancelled,
+            JobApplicationStatus.Rejected,
+            JobApplicationStatus.Pending,
+        ]:
+            Notification.objects.create(
+                user=self.volunteer.user,
+                date=timezone.now(),
+                message=f"Your application for {self.job} is {status.label}",
+            )
+        return super().save(*args, **kwargs)
+
+
+class Notification(models.Model):
+    class Meta:
+        verbose_name = _("Notification")
+        verbose_name_plural = _("Notifications")
+        ordering = ("-date",)
+
+    user = models.ForeignKey(
+        get_user_model(),
+        on_delete=models.CASCADE,
+        related_name="notifications",
+        verbose_name=_("user"),
+    )
+
+    message = models.TextField(verbose_name=_("message"))
+    date = models.DateTimeField(verbose_name=_("date"))
+    viewed = models.BooleanField(verbose_name=_("viewed"), default=False)
+
+    def __str__(self):
+        return self.message

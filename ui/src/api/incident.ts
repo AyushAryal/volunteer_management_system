@@ -1,6 +1,7 @@
 import {
     Incident, IncidentDeserializer,
     Job, JobDeserializer,
+    Notification, NotificationDeserializer,
     Program, SiteContent,
     Statistics,
     Volunteer, VolunteerDeserializer,
@@ -40,10 +41,12 @@ export let get_incident_list = get_filtered_list<Incident, IncidentFilter>(endpo
 export let get_program_list = get_filtered_list<Program, ProgramFilter>(endpoints.program);
 export let get_job_list = get_filtered_list<Job, JobFilter>(endpoints.job, JobDeserializer);
 export let get_site_content_list = get_filtered_list<SiteContent, {}>(endpoints.site_content);
+export let get_notification_list = get_filtered_list<Notification, {}>(endpoints.notification, NotificationDeserializer);
 
 export let get_incident_detail = get_detail<Incident, number>(endpoints.incident, IncidentDeserializer);
 export let get_program_detail = get_detail<Program, number>(endpoints.program);
 export let get_job_detail = get_detail<Job, number>(endpoints.job, JobDeserializer);
+export let get_notification_detail = get_filtered_list<Notification, {}>(endpoints.notification);
 
 // -----------------------------------------------------------------------------
 
@@ -92,6 +95,13 @@ export async function job_cancel(job: string) {
 
 export async function job_withdraw(job: string) {
     return token_aware_fetch(`${job}/withdraw`, {
+        "headers": { "Content-Type": "application/json" },
+        "method": "POST",
+    });
+}
+
+export async function notification_view(notification: string) {
+    return token_aware_fetch(`${notification}/view`, {
         "headers": { "Content-Type": "application/json" },
         "method": "POST",
     });

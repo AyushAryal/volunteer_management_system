@@ -12,9 +12,13 @@ class IsOwner(IsAuthenticated):
     def has_object_permission(self, request, view, obj):
         return request.user.is_superuser or {
             models.VolunteerProfile: self.owns_volunteer_profile,
+            models.Notification: self.owns_notification,
         }[type(obj)](request, view, obj)
 
     def owns_volunteer_profile(self, request, _, volunteer):
         return (
             hasattr(request.user, "volunteer") and request.user.volunteer == volunteer
         )
+
+    def owns_notification(self, request, _, notification):
+        return notification.user == request.user

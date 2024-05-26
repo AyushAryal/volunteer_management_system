@@ -9,35 +9,50 @@ export type JobActionWidgetProps = {
 
 export function JobActionWidget({ job, onChange }: JobActionWidgetProps) {
     if (job.application_status == "Not applied" && job.vacancy - job.filled_positions > 0) {
-        return <Button outlined className="flex-shrink-0" label="Apply" onClick={async () => {
-            let response = await job_apply(job.url);
-            if (response.status == 200) {
-                onChange && onChange();
-            }
-        }} />;
+        return <Button
+            outlined
+            className="flex-shrink-0"
+            size="small"
+            label="Apply"
+            onClick={async () => {
+                let response = await job_apply(job.url);
+                if (response.status == 200) {
+                    onChange && onChange();
+                }
+            }} />;
     } else if (job.application_status == "Accepted") {
         // once the application is accpted user can CANCEL it.
         // once Cancelled the user CANNOT apply to the same job.
 
         return <div className="flex gap-3 align-items-center">
             <span className="font-italic text-green-400">{job.application_status}</span>
-            <Button outlined className="flex-shrink-0" label="Cancel" onClick={async () => {
-                let response = await job_cancel(job.url);
-                if (response.status == 200) {
-                    onChange && onChange();
-                }
-            }}
+            <Button
+                outlined
+                className="flex-shrink-0"
+                size="small"
+                label="Cancel"
+                onClick={async () => {
+                    let response = await job_cancel(job.url);
+                    if (response.status == 200) {
+                        onChange && onChange();
+                    }
+                }}
             />
         </div>;
     } else if (job.application_status == "Pending") {
         return <div className="flex gap-3 align-items-center">
             <span className="font-italic text-yellow-600">{job.application_status}</span>
-            <Button outlined className="flex-shrink-0" label="Withdraw" onClick={async () => {
-                let response = await job_withdraw(job.url);
-                if (response.status == 200) {
-                    onChange && onChange();
-                }
-            }} />
+            <Button
+                outlined
+                className="flex-shrink-0"
+                size="small"
+                label="Withdraw"
+                onClick={async () => {
+                    let response = await job_withdraw(job.url);
+                    if (response.status == 200) {
+                        onChange && onChange();
+                    }
+                }} />
         </div>;
     } else if (job.application_status == "Cancelled") {
         return <span className="font-italic text-red-600">{job.application_status}</span>;

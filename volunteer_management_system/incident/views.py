@@ -13,6 +13,7 @@ from django.utils import timezone
 
 from . import models
 from authentication import permissions as authentication_permissions
+from . import permissions as incident_permissions
 from . import serializers
 
 
@@ -24,11 +25,6 @@ class SiteContentViewSet(
     queryset = models.SiteContent.objects.all()
     serializer_class = serializers.SiteContentSerializer
     pagination_class = None
-
-    def get_serializer_class(self):
-        return {
-            "brief": serializers.SiteContentSerializer,
-        }.get(self.action, super().get_serializer_class())
 
 
 class VolunteerProfileViewSet(
@@ -177,7 +173,11 @@ class IncidentViewSet(
     viewsets.mixins.RetrieveModelMixin,
     viewsets.mixins.ListModelMixin,
 ):
-    queryset = models.Incident.objects.all()
+    queryset = (
+        models.Incident.objects.all()
+        .prefetch_related("programs")
+        .prefetch_related("programs__jobs")
+    )
     serializer_class = serializers.IncidentSerializer
     pagination_class = None
     filterset_class = IncidentFilter
@@ -449,4 +449,37 @@ class StatisticsViewSet(
                 "provinces": self.provice_count(request),
                 "municipalities": self.municipality_count(request),
             }
+        )
+
+
+class NotificationViewSet(
+    viewsets.GenericViewSet,
+    viewsets.mixins.ListModelMixin,
+    viewsets.mixins.RetrieveModelMixin,
+):
+    queryset = models.Notification.objects.all()
+    serializer_class = serializers.NotificationSerializer
+    pagination_class = None
+
+    def get_permissions(self):
+        permissions_classes = {
+            "list": [permissions.IsAuthenticated],
+            "retrieve": [incident_permissions.IsOwner],
+            "view": [incident_permissions.IsOwner],
+        }.get(self.action, [permissions.AllowAny])
+        return (permission() for permission in permissions_classes)
+
+    def get_queryset(self):
+        if self.request.user.is_superuser:
+            return super().get_queryset()
+        return super().get_queryset().filter(user=self.request.user)
+
+    @action(detail=True, methods=["post"])
+    def view(self, request, *args, **kwargs):
+        notification = self.get_object()
+        notification.viewed = True
+        notification.save()
+        serializer_class = self.get_serializer_class()
+        return Response(
+            serializer_class(notification, context={"request": request}).data
         )

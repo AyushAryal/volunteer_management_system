@@ -9,10 +9,17 @@ import { Incidents } from '@components/map/sidebar/Incidents';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useHookstate } from "@hookstate/core";
 import { storeState } from "@models/store";
+import { faBell } from "@fortawesome/free-solid-svg-icons";
+import { Badge } from "primereact/badge";
+import { Notifications } from "./Notifications";
 
 export function Tabpage() {
   const incidentCount = useHookstate(storeState.incidentList).length;
   const jobCount = useHookstate(storeState.jobList).length;
+  const notificationCount = useHookstate(storeState.notificationList)
+    .get()
+    .filter((notification) => !notification.viewed)
+    .length;
 
   const counts = {
     incidents: incidentCount,
@@ -64,17 +71,56 @@ export function Tabpage() {
     );
   };
 
+  const notificationHeaderTemplate = (options: TabPanelHeaderTemplateOptions) => {
+    return <div
+      className={`${options.className} flex flex-column align-items-center text-sm`}
+      style={{ cursor: "pointer" }}
+      onClick={options.onClick}
+    >
+      <div className="text-xl p-overlay-badge">
+        <FontAwesomeIcon icon={faBell} />
+        {
+          notificationCount == 0 ? null :
+            <Badge value={notificationCount} severity="danger"></Badge>
+        }
+
+      </div>
+      <span className="white-space-nowrap">{options.titleElement}</span>
+    </div>;
+
+  }
+  const profileHeaderTemplate = (
+    options: TabPanelHeaderTemplateOptions
+  ) => {
+    return (
+      <div
+        className={`${options.className} flex flex-column align-items-center text-sm`}
+        style={{ cursor: "pointer" }}
+        onClick={options.onClick}
+      >
+        <div className="text-xl">
+          <FontAwesomeIcon icon="user" />
+        </div>
+        <span className="white-space-nowrap">{options.titleElement}</span>
+      </div>
+    );
+  };
+
   return (
     <TabView className="flex flex-column overflow-y-hidden">
       <TabPanel header="Incidents" headerTemplate={tabIncidentTemplate}>
         <Incidents />
       </TabPanel>
-      <TabPanel header="Visualizations" headerTemplate={tabVisualizationTemplate}>
-        <Visualizations />
-      </TabPanel>
       <TabPanel header="Jobs" headerTemplate={tabJobTemplate}>
         <Jobs />
       </TabPanel>
+      <TabPanel header="Visualizations" headerTemplate={tabVisualizationTemplate}>
+        <Visualizations />
+      </TabPanel>
+      <TabPanel header="Notifications" headerTemplate={notificationHeaderTemplate}>
+        <Notifications />
+      </TabPanel>
+      <TabPanel header="Profile" headerTemplate={profileHeaderTemplate}></TabPanel>
     </TabView>
   );
 }

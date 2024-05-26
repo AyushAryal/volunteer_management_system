@@ -5,14 +5,13 @@ from django.contrib.auth.password_validation import validate_password
 from django.db import transaction
 from rest_framework import serializers
 from drf_extra_fields.fields import Base64ImageField
-from rest_framework.fields import SerializerMethodField, SkipField
+from rest_framework.fields import SerializerMethodField
 
 from . import models
 
 
 class Base64ImageFieldWithUrl(Base64ImageField):
     def to_representation(self, file):
-        print(file)
         return "data:image/*;base64," + super().to_representation(file)
 
 
@@ -442,6 +441,14 @@ class VolunteerSerializer(serializers.ModelSerializer):
 
 class IncidentSerializer(serializers.HyperlinkedModelSerializer):
     severity = ChoiceField(models.IncidentSeverity.choices)
+    programs = SerializerMethodField()
+    jobs = SerializerMethodField()
+
+    def get_programs(self, incident):
+        return incident.programs.count()
+
+    def get_jobs(self, incident):
+        return sum(program.jobs.count() for program in incident.programs.all())
 
     class Meta:
         model = models.Incident
@@ -497,4 +504,14 @@ class JobSerializer(serializers.HyperlinkedModelSerializer):
             "url": {"view_name": "api:job-detail"},
             "program": {"view_name": "api:program-detail"},
             "leader": {"view_name": "api:volunteer-detail"},
+        }
+
+
+class NotificationSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = models.Notification
+        fields = ("url", "user", "viewed", "message", "date")
+        extra_kwargs = {
+            "url": {"view_name": "api:notification-detail"},
+            "user": {"view_name": "api:user-detail"},
         }

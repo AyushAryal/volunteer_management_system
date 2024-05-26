@@ -16,6 +16,7 @@ def modelicon(model):
         incident.models.Incident: "fa-solid fa-user-injured",
         incident.models.Job: "fa-solid fa-briefcase",
         incident.models.Program: "fa-solid fa-tent",
+        incident.models.Notification: "fa-solid fa-bell",
         federal.models.Province: "fa-solid fa-landmark-dome",
         federal.models.District: "fa-solid fa-landmark-dome",
         federal.models.Municipality: "fa-solid fa-landmark-dome",

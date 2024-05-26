@@ -10,11 +10,21 @@ import { storeState } from "@models/store.ts";
 import { VolunteerLoginButton } from '@components/VolunteerLoginButton.tsx';
 import { Tabpage } from '@components/map/sidebar/Tabpage.tsx';
 
+import EmblemOfNepal from '../../../emblem_of_nepal.svg';
+import { faCalendar } from '@fortawesome/free-solid-svg-icons';
 
 type SidebarProps = { mapRef: RefObject<LeafletMap> }
 export function Sidebar({ mapRef }: SidebarProps) {
   let store = useHookstate(storeState);
   let federal_body = get_selected_local_body(store);
+  let startDate = store.mapControls.startDate.get();
+  if (startDate) {
+    startDate = new Date(startDate.getTime() - (startDate.getTimezoneOffset() * 60 * 1000));
+  }
+  let endDate = store.mapControls.endDate.get();
+  if (endDate) {
+    endDate = new Date(endDate.getTime() - (endDate.getTimezoneOffset() * 60 * 1000));
+  }
 
   let [visible, setVisible] = useState(true);
 
@@ -29,11 +39,12 @@ export function Sidebar({ mapRef }: SidebarProps) {
     >
       <div className={`h-full overflow-x-hidden ${visible ? "" : "hidden"}`}>
         <div className="h-full flex flex-column px-3">
-          <div className="flex flex-row justify-content-between pb-1 px-1">
+          <div className="flex flex-row justify-content-between align-items-center p-2">
             <div
-              className="font-semibold my-1 mx-3 text-xl"
+              className="flex align-items-center gap-1 font-semibold text-2xl"
               style={{ color: "var(--red-600)" }}
             >
+              <img style={{ width: "4rem" }} src={EmblemOfNepal} alt="Emblem of Nepal" />
               VMS
             </div>
             <div
@@ -42,9 +53,14 @@ export function Sidebar({ mapRef }: SidebarProps) {
             >
               {federal_body?.name ?? "National"}{" "}
             </div>
-
             <VolunteerLoginButton />
           </div>
+          <span className="text-xs font-bold text-300 flex gap-2 align-items-center pt-3 pb-2 pl-2 ">
+            <FontAwesomeIcon
+              icon={faCalendar}>
+            </FontAwesomeIcon>
+            {startDate?.toDateString()} - {endDate?.toDateString()}
+          </span>
           <Tabpage />
         </div>
       </div>

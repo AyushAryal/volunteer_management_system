@@ -8,6 +8,8 @@ import { useHookstate } from "@hookstate/core";
 import { storeState } from "@models/store";
 import { IncidentDetailModal } from "@components/map/sidebar/IncidentDetailModal";
 import { ListSkeleton } from "@components/map/sidebar/ListSkeleton";
+import { Chip } from "primereact/chip";
+import { faLocation } from "@fortawesome/free-solid-svg-icons";
 
 type IncidentRibbonProps = { incident: Incident }
 
@@ -33,14 +35,22 @@ function IncidentRibbon({ incident }: IncidentRibbonProps) {
             borderLeft: `5px solid ${serverity_color_map.get(incident.severity)}`,
         }}>
         <div className="m-1"> {incident.name}</div>
-        <div className="text-sm text-400 flex flex-row justify-content-between">
-            <div>
-                <FontAwesomeIcon icon={faClock} className="mx-2" />
-                {incident.date.toDateString()}
+        <div className="text-xs text-400 flex flex-row justify-content-between align-items-center">
+            <div className="flex gap-2">
+                <div>
+                    <FontAwesomeIcon icon={faClock} className="mx-2" />
+                    {incident.date.toDateString()}
+                </div>
+                <div>
+                    <FontAwesomeIcon icon={faLocation} className="mx-2" />
+                    {incident.point[0].toFixed(4)}°N, {incident.point[1].toFixed(4)}°E
+                </div>
             </div>
-            <div className="font-semibold">3 Programs</div>
-            <div className="font-semibold">10 Jobs</div>
-            <FontAwesomeIcon className="mr-2 hover:bg-bluegray-100 p-2 border-circle" icon={faAngleRight} onClick={() => setVisible(true)} />
+            <div className="flex align-items-center gap-2">
+                <span className="border-1 text-primary border-round px-2"> {incident.programs} Programs </span>
+                <span className="border-1 text-red-600 border-round px-2"> {incident.jobs} Jobs </span>
+                <FontAwesomeIcon className="mr-2 hover:bg-bluegray-100 p-2 border-circle" icon={faAngleRight} onClick={() => setVisible(true)} />
+            </div>
             {visible ? viewIncidentDetail : null}
         </div>
     </div >

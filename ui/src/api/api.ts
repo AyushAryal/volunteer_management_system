@@ -18,4 +18,5 @@ export const endpoints = {
     municipality_brief: `${server}/api/municipality/brief`,
     ward_brief: `${server}/api/ward/brief`,
     statistics: `${server}/api/statistics`,
+    notification: `${server}/api/notification`,
 }

@@ -60,11 +60,11 @@ export function VolunteerProfileMenu() {
     return <div className="flex flex-row">
         <img
             onClick={(event) => menu?.current?.toggle(event)}
-            className="shadow-4 mb-2"
+            className="mb-2 border-2 border-red-600"
             src={volunteer.volunteer.profile_image}
             style={{
-                width: "3rem",
-                height: "3rem",
+                width: "3.5rem",
+                height: "3.5rem",
                 objectFit: "cover",
                 borderRadius: "50%"
             }}
@@ -131,19 +131,38 @@ function VolunteerLoginModal({ visible, setVisible }: VolunteerLoginModalProps) 
                 className="flex flex-row"
                 style={{ width: "100%", height: "100%", borderRadius: "20px", overflow: "hidden" }}
             >
-                <div className="flex flex-column justify-content-center align-items-center bg-primary" style={{ width: "100%" }}>
+                <div
+                    className="flex flex-column justify-content-center align-items-center bg-primary"
+                    style={{ width: "100%" }}
+                >
                     <img style={{ width: "70%" }} src={EmblemOfNepal} alt="Emblem of Nepal" />
                 </div>
                 <div className="flex flex-column justify-content-evenly p-4 bg-white w-full">
-                    <Button text className="text-2xl align-self-end" onClick={hide}> <FontAwesomeIcon icon={faClose} /> </Button>
-                    <div className="text-2xl"> NDRRMA - <span style={{ color: "var(--red-600)", borderBottom: "1px solid var(--primary-color)" }}> VMS </span> </div>
+                    <Button text className="text-2xl align-self-end" onClick={hide}>
+                        <FontAwesomeIcon icon={faClose} />
+                    </Button>
+                    <div className="text-2xl">
+                        NDRRMA -
+                        <span
+                            style={{
+                                color: "var(--red-600)",
+                                borderBottom: "1px solid var(--primary-color)"
+                            }}>
+                            VMS
+                        </span>
+                    </div>
                     <div className="flex flex-column gap-2">
                         <label htmlFor="email">Email</label>
                         <InputText ref={emailRef} id="email" aria-describedby="email-help" />
                     </div>
                     <div className="flex flex-column gap-2">
                         <label htmlFor="password">Password</label>
-                        <Password pt={{ input: { ref: passwordRef } }} feedback={false} id="password" aria-describedby="password-help" />
+                        <Password
+                            pt={{ input: { ref: passwordRef } }}
+                            feedback={false}
+                            id="password"
+                            aria-describedby="password-help"
+                        />
                     </div>
                     {response}
                     <Button label="Login" onClick={onLogin} />

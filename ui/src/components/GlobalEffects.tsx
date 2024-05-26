@@ -8,7 +8,7 @@ import {
     get_province_brief_list,
     get_ward_brief_list
 } from "@api/federal";
-import { get_volunteer } from "@api/incident";
+import { get_notification_list, get_volunteer } from "@api/incident";
 
 export function GlobalEffects() {
     const store = useHookstate(storeState);
@@ -62,6 +62,16 @@ export function GlobalEffects() {
             }
         }
         networkRequest();
+    }, []);
+
+    useEffect(() => {
+        let network_request = async () => {
+            storeState.loaded.notificationList.set(false);
+            let notificationList = await get_notification_list();
+            storeState.notificationList.set(notificationList);
+            storeState.loaded.notificationList.set(true);
+        }
+        network_request();
     }, []);
     return null;
 }

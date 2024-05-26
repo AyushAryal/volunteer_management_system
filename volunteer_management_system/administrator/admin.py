@@ -164,6 +164,11 @@ class JobApplicationAdmin(admin.ModelAdmin):
         return self.model.objects.filter(job__program__incident__ward__in=wards)
 
 
+class NotificationAdmin(admin.ModelAdmin):
+    model = incident.models.Notification
+    list_display = ("__str__", "user", "date", "viewed")
+
+
 class IncidentAdmin(LeafletGeoAdmin):
     model = incident.models.Incident
     list_display = ("__str__", "ward", "formatted_date")
@@ -292,5 +297,6 @@ admin_site.register(incident.models.Incident, IncidentAdmin)
 admin_site.register(incident.models.Program, ProgramAdmin)
 admin_site.register(incident.models.JobApplication, JobApplicationAdmin)
 admin_site.register(incident.models.Job, JobAdmin)
+admin_site.register(incident.models.Notification, NotificationAdmin)
 
 admin_site.register(get_user_model(), UserAdmin)
