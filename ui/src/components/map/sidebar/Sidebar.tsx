@@ -10,8 +10,9 @@ import { storeState } from "@models/store.ts";
 import { VolunteerLoginButton } from '@components/VolunteerLoginButton.tsx';
 import { Tabpage } from '@components/map/sidebar/Tabpage.tsx';
 
-import EmblemOfNepal from '../../../emblem_of_nepal.svg';
+import EmblemOfNepal from '@assets/emblem_of_nepal.svg';
 import { faCalendar } from '@fortawesome/free-solid-svg-icons';
+import { useNavigate } from 'react-router-dom';
 
 type SidebarProps = { mapRef: RefObject<LeafletMap> }
 export function Sidebar({ mapRef }: SidebarProps) {
@@ -25,7 +26,7 @@ export function Sidebar({ mapRef }: SidebarProps) {
   if (endDate) {
     endDate = new Date(endDate.getTime() - (endDate.getTimezoneOffset() * 60 * 1000));
   }
-
+  const navigate = useNavigate();
   let [visible, setVisible] = useState(true);
 
   useEffect(() => {
@@ -42,7 +43,8 @@ export function Sidebar({ mapRef }: SidebarProps) {
           <div className="flex flex-row justify-content-between align-items-center p-2">
             <div
               className="flex align-items-center gap-1 font-semibold text-2xl"
-              style={{ color: "var(--red-600)" }}
+              style={{ color: "var(--red-600)", cursor: "pointer" }}
+              onClick={() => navigate("/")}
             >
               <img style={{ width: "4rem" }} src={EmblemOfNepal} alt="Emblem of Nepal" />
               VMS
@@ -59,7 +61,7 @@ export function Sidebar({ mapRef }: SidebarProps) {
             <FontAwesomeIcon
               icon={faCalendar}>
             </FontAwesomeIcon>
-            {startDate?.toDateString()} - {endDate?.toDateString()}
+            Data From {startDate?.toDateString()} - {endDate?.toDateString()}
           </span>
           <Tabpage />
         </div>

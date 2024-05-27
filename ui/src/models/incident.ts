@@ -155,7 +155,7 @@ export interface Certificate {
 export interface Volunteer {
     email: string,
     password: string,
-    volunteer?: string,
+    volunteer: VolunteerProfile,
     citizenship?: Citizenship,
     passport?: Passport,
     national_id?: NationalId,

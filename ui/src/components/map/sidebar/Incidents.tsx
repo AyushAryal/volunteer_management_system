@@ -8,7 +8,6 @@ import { useHookstate } from "@hookstate/core";
 import { storeState } from "@models/store";
 import { IncidentDetailModal } from "@components/map/sidebar/IncidentDetailModal";
 import { ListSkeleton } from "@components/map/sidebar/ListSkeleton";
-import { Chip } from "primereact/chip";
 import { faLocation } from "@fortawesome/free-solid-svg-icons";
 
 type IncidentRibbonProps = { incident: Incident }
@@ -69,9 +68,9 @@ export function Incidents() {
     return (
         <div>
             <VirtualScroller
-                style={{ width: "100%", height: "75vh", overflowX: "hidden" }}
+                style={{ width: "100%", height: "65vh", overflowX: "hidden" }}
                 items={incidentList.get() as Incident[]}
-                itemSize={75}
+                itemSize={70}
                 itemTemplate={(incident: Incident) => (
                     <IncidentRibbon key={incident.url} incident={incident} />
                 )}

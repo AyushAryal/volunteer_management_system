@@ -5,7 +5,7 @@ import { Password } from 'primereact/password';
 
 import { ReactNode, useRef, useState } from 'react';
 
-import EmblemOfNepal from '../emblem_of_nepal.svg';
+import EmblemOfNepal from '@assets/emblem_of_nepal.svg';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClose, faUser, faRightFromBracket, faEdit, faSignOut } from '@fortawesome/free-solid-svg-icons';
 import { useHookstate } from '@hookstate/core';
@@ -61,7 +61,7 @@ export function VolunteerProfileMenu() {
         <img
             onClick={(event) => menu?.current?.toggle(event)}
             className="mb-2 border-2 border-red-600"
-            src={volunteer.volunteer.profile_image}
+            src={volunteer.volunteer?.profile_image}
             style={{
                 width: "3.1rem",
                 height: "3.1rem",
@@ -181,7 +181,7 @@ export function VolunteerLoginButton() {
         if (modalVisible) {
             return <VolunteerLoginModal visible={modalVisible} setVisible={setModalVisible} />;
         } else {
-            return <Button outlined size="small" className="mx-1" label='Login' onClick={() => setModalVisible(true)} >
+            return <Button outlined size="small" className="mx-1 text-primary border-white hover:underline" label='Login' onClick={() => setModalVisible(true)} >
                 <FontAwesomeIcon className="ml-2" icon={faUser} />
             </Button>;
         }
