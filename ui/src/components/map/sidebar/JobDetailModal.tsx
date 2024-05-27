@@ -7,7 +7,7 @@ import { ProgressSpinner } from 'primereact/progressspinner';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClock } from '@fortawesome/free-regular-svg-icons/faClock';
 import { JobActionWidget } from './JobActionWidget';
-import { faCalendarDay } from '@fortawesome/free-solid-svg-icons';
+import { faCalendarDay, faPeopleGroup } from '@fortawesome/free-solid-svg-icons';
 
 type JobDetailModalProps = {
     job: string,
@@ -31,6 +31,23 @@ export function JobDetailModal(props: JobDetailModalProps) {
         return <ProgressSpinner style={{ width: '50px', height: '50px' }} />;
     }
 
+    let leader_display = job.leader ?
+        <div className="flex text-xs align-items-center gap-2 bg-gray-400 text-white pr-2"
+            style={{ borderRadius: "500px" }}>
+            <img className="border-2 border-green-600"
+                src={job.leader?.profile_image}
+                style={{
+                    width: "2rem",
+                    height: "2rem",
+                    objectFit: "cover",
+                    borderRadius: "50%"
+                }}
+            />
+            <span>
+                {job.leader.first_name} {job.leader.last_name}
+            </span>
+        </div> : "No Leader Assigned";
+
     return <Dialog
         header={job.name}
         visible={props.visible}
@@ -38,19 +55,29 @@ export function JobDetailModal(props: JobDetailModalProps) {
         onHide={() => props.setVisible(false)}
     >
         <div className="flex flex-row p-2 m-1 align-items-center justify-content-between ">
-            <div className="text-xs font-semibold">
-                <FontAwesomeIcon icon={faCalendarDay} /> &nbsp;
-                {job.start_date.toDateString()} - {job.end_date.toDateString()}
+            <div>
+                <div className="text-xs">
+                    <FontAwesomeIcon icon={faCalendarDay} /> &nbsp;
+                    {job.start_date.toDateString()} - {job.end_date.toDateString()}
+                </div>
+                <span className="text-xs">
+                    <FontAwesomeIcon icon={faPeopleGroup} /> &nbsp;
+                    Quota filled: {job.filled_positions}/{job.vacancy}
+                </span>
             </div>
-            <span className="font-semibold"> Leader {job.leader ?? "Not assigned"} </span>
-            <span> {job.filled_positions}/{job.vacancy} </span>
+            {leader_display}
         </div>
-        <span> <div dangerouslySetInnerHTML={{ __html: job.description || "" }} /></span>
-        <JobActionWidget
-            job={job}
-            onChange={() => {
-                get_job_detail(id).then((job) => setJob(job));
-            }}
-        />
+        <span>{job.program.name}</span>
+        <span>
+            <div className="surface-50 border-round-lg p-4" dangerouslySetInnerHTML={{ __html: job.description || "" }} />
+        </span>
+        <div className="flex justify-content-end p-2">
+            <JobActionWidget
+                job={job}
+                onChange={() => {
+                    get_job_detail(id).then((job) => setJob(job));
+                }}
+            />
+        </div>
     </Dialog>;
 };

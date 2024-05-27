@@ -63,8 +63,8 @@ export function VolunteerProfileMenu() {
             className="mb-2 border-2 border-red-600"
             src={volunteer.volunteer.profile_image}
             style={{
-                width: "3.5rem",
-                height: "3.5rem",
+                width: "3.1rem",
+                height: "3.1rem",
                 objectFit: "cover",
                 borderRadius: "50%"
             }}

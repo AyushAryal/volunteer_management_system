@@ -24,6 +24,20 @@ export function JobRibbon({ job }: JobRibbonProps) {
         setVisible={setVisible}
     />;
 
+    const application_status_color_map = {
+        "Accepted": "green",
+        "Rejected": "#d94f3a",
+        "Pending": "#d9b124",
+        "Cancelled": "#d94f3a",
+        "Not applied": "#748ddc"
+    }
+
+    const job_status_color_map = {
+        "Completed": "green",
+        "In Progress": "#d9b124",
+        "Not Assigned": "#748ddc",
+    }
+
 
     return <div>
         <div className="flex flex-column flex-wrap p-2 w-full">
@@ -40,11 +54,21 @@ export function JobRibbon({ job }: JobRibbonProps) {
                         &nbsp;{job.filled_positions} / {job.vacancy}
                     </div>
                 </div>
-                <FontAwesomeIcon
-                    className="mr-2 hover:bg-bluegray-100 p-2 border-circle"
-                    icon={faAngleRight}
-                    onClick={() => setVisible(true)}
-                />
+                <div className="flex align-items-center gap-2">
+                    <span style={{ "color": job_status_color_map[job.status] }}
+                        className="border-1 text-xs border-round px-2">
+                        {job.status}
+                    </span>
+                    <span style={{ "color": application_status_color_map[job.application_status] }}
+                        className="border-1 font-italic font-semibold text-xs border-round px-2">
+                        {job.application_status}
+                    </span>
+                    <FontAwesomeIcon
+                        className="mr-2 hover:bg-bluegray-100 p-2 border-circle"
+                        icon={faAngleRight}
+                        onClick={() => setVisible(true)}
+                    />
+                </div>
             </div>
         </div>
         <Divider />

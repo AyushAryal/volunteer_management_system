@@ -9,6 +9,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.db.models import Count
 from datetime import timedelta
+
 from django.utils import timezone
 
 from . import models
@@ -334,6 +335,10 @@ class JobViewSet(
         ).first()
 
         if application:
+            if job.end_date < timezone.now():
+                return Response(
+                    {"detail": {"Job has ended."}}, status=status.HTTP_400_BAD_REQUEST
+                )
             if application.status == models.JobApplicationStatus.Accepted:
                 application.status = models.JobApplicationStatus.Cancelled
                 application.save()
@@ -376,6 +381,10 @@ class JobViewSet(
                     status=models.JobApplicationStatus.Accepted
                 ).count()
             )
+            if job.end_date < timezone.now():
+                return Response(
+                    {"detail": {"Job has ended."}}, status=status.HTTP_400_BAD_REQUEST
+                )
 
             if empty_positions <= 0:
                 return Response(

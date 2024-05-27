@@ -469,10 +469,19 @@ class ProgramSerializer(serializers.HyperlinkedModelSerializer):
         }
 
 
+class LeaderProfileSerializer(serializers.ModelSerializer):
+    profile_image = Base64ImageFieldWithUrl(represent_in_base64=True)
+
+    class Meta:
+        model = models.VolunteerProfile
+        fields = ("first_name", "last_name", "profile_image")
+
+
 class JobSerializer(serializers.HyperlinkedModelSerializer):
     status = ChoiceField(models.JobStatus.choices)
     application_status = SerializerMethodField()
     filled_positions = SerializerMethodField()
+    leader = LeaderProfileSerializer()
 
     @cached_property
     def get_job_applications(self):

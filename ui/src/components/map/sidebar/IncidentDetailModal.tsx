@@ -9,6 +9,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClock } from '@fortawesome/free-regular-svg-icons/faClock';
 import { Tag } from 'primereact/tag';
 import { JobActionWidget } from "@components/map/sidebar/JobActionWidget";
+import { faPeopleGroup } from '@fortawesome/free-solid-svg-icons';
 
 type IncidentDetailModalProps = {
     incident: string,
@@ -22,6 +23,7 @@ export function IncidentDetailModal(props: IncidentDetailModalProps) {
     let [incident, setIncident] = useState<Incident>();
     let [programs, setPrograms] = useState<Program[]>([]);
     let [jobs, setJobs] = useState<Job[]>([]);
+
 
     const serverity_color_map = new Map([
         ["Critical", "var(--red-500)"],
@@ -58,7 +60,15 @@ export function IncidentDetailModal(props: IncidentDetailModalProps) {
         >
             <div style={{ flexBasis: "100%" }}>{job.name}</div>
             <span className=" flex gap-3 font-semibold" style={{ flexBasis: "50%" }}>{job.status}</span>
-            <div style={{ flexBasis: "55%" }}> {job.start_date.toDateString()} <br /> {job.end_date.toDateString()}</div>
+            <div className="text-xs" style={{ flexBasis: "55%" }}>
+                {job.start_date.toDateString()}
+                <br />
+                {job.end_date.toDateString()}
+            </div>
+            <div style={{ flexBasis: "20%" }} className="flex gap-2">
+                <FontAwesomeIcon icon={faPeopleGroup} />
+                {job.filled_positions}/ {job.vacancy}
+            </div>
             <JobActionWidget job={job} onChange={() => {
                 get_job_list({ incident: id }).then((jobs) => setJobs(jobs));
             }} />
@@ -66,7 +76,7 @@ export function IncidentDetailModal(props: IncidentDetailModalProps) {
     };
 
     const programList = programs.map((program) => <div key={program.url}>
-        {program.name}
+        <span className="font-semibold">{program.name} has the following available jobs:</span>
         {jobBuilder(jobsByProgram[program.url] ?? [])}
         <Divider />
     </div>);

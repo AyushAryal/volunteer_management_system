@@ -48,7 +48,7 @@ export function Notifications() {
                     </div>
                 </div>
                 <div className="flex justify-content-between">
-                    <div className="text-sm text-400 ">
+                    <div className="text-xs text-400 ">
                         <FontAwesomeIcon icon={faClock} className="mx-2" />
                         {notification.date.toDateString()}
                     </div>

@@ -23,7 +23,7 @@ export type TrainingType = "Rescue" | "Reliefdistribution" | "Evacuation" | "Oth
     "Teamtraining" | "Management" | "Qualitytraining" | "Humanitarian" |
     "Familyreunification" | "Motorvehicleoperator";
 
-export type JobStatus = "Completed" | "Inprogress" | "Notassigned";
+export type JobStatus = "Completed" | "In Progress" | "Not Assigned";
 export type JobApplicationStatus = "Accepted" | "Rejected" | "Pending" | "Cancelled";
 
 export interface Incident {
@@ -52,18 +52,25 @@ export interface Program {
     incident: string,
 }
 
+
+export interface LeaderProfile {
+    first_name: string,
+    last_name: string,
+    profile_image: string,
+}
+
 export interface Job {
     url: string,
     name: string,
     description: string,
     start_date: Date,
     end_date: Date,
-    program: string,
+    program: Program,
     status: JobStatus,
     application_status: JobApplicationStatus | "Not applied",
     vacancy: number,
     filled_positions: number,
-    leader: string | null,
+    leader: LeaderProfile | null,
 }
 
 export const JobDeserializer: IDeserializer<Job> = (json: any) => {
@@ -148,7 +155,7 @@ export interface Certificate {
 export interface Volunteer {
     email: string,
     password: string,
-    volunteer: VolunteerProfile,
+    volunteer?: string,
     citizenship?: Citizenship,
     passport?: Passport,
     national_id?: NationalId,
@@ -157,7 +164,7 @@ export interface Volunteer {
 }
 
 export const VolunteerDeserializer: IDeserializer<Volunteer> = (json: any) => {
-    json.volunteer = VolunteerProfileDeserializer(json.volunteer);
+    json.volunteer = json.volunteer === null ? null : VolunteerProfileDeserializer(json.volunteer);
     json.citizenship = json.citizenship === null ? null : CitizenshipDeserializer(json.citizenship);
     json.passport = json.passport === null ? null : PassportDeserializer(json.passport);
     json.national_id = json.national_id === null ? null : NationalIdDeserializer(json.national_id);
