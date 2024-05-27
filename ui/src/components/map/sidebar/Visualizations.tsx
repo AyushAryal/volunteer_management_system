@@ -1,18 +1,6 @@
-import { endpoints, server } from "@api/api";
-import { token_aware_fetch } from "@api/token";
-import { VolunteerCategoryStats, GenderStats, VolunteersOnProvinceStats } from "@components/landing/Stats";
+import { VolunteerCategoryStats } from "@components/landing/Stats";
 import { Chart } from "primereact/chart";
 import { ScrollPanel } from "primereact/scrollpanel";
-
-
-async function foo() {
-  let response = await token_aware_fetch(endpoints.statistics);
-  if (!response.ok) {
-    return [];
-  }
-  return await response.json();
-}
-
 
 export const VolunteerStats = () => {
   const volunteerCategories = [
@@ -68,17 +56,15 @@ export function Visualizations() {
   return (
     <ScrollPanel className="w-full" style={{ height: "75vh" }}>
       <div className="flex flex-column align-items-center">
-        <div className="m-1 w-30rem" style={{ height: "75vh" }}>
+        {/* <div className="m-1 w-30rem" style={{ height: "60vh" }}>
           <VolunteersOnProvinceStats />
-        </div>
-        <div className="p-1 my-3 w-30rem" style={{ height: "75vh" }}>
+        </div> */}
+        <div className="p-1 my-3 w-30rem" style={{ height: "60vh" }}>
           <VolunteerCategoryStats />
         </div>
-        <div className="my-3">
+        {/* <div className="my-3">
           <GenderStats />
-          <VolunteerStats />
-
-        </div>
+        </div> */}
       </div>
     </ScrollPanel>
   );

@@ -24,7 +24,6 @@ const CountsComponent = () => {
 
   const {
     volunteers,
-    gender,
     nationality,
     total_incidents,
     total_programs,
@@ -33,8 +32,8 @@ const CountsComponent = () => {
 
   const counts = {
     "Total Volunteers": volunteers,
-    "Male Volunteers": gender.find((g:any) => g.gender === 0)?.count,
-    "Female Volunteers": gender.find((g:any) => g.gender === 1)?.count,
+    // "Male Volunteers": gender.find((g:any) => g.gender === 0)?.count,
+    // "Female Volunteers": gender.find((g:any) => g.gender === 1)?.count,
     "Local Volunteers": nationality.find((n:any) => n.nationality === 0)?.count,
     "Foreign Volunteers": nationality.find((n:any) => n.nationality === 1)?.count,
     "Total Incidents": total_incidents,
@@ -59,10 +58,11 @@ const CountsComponent = () => {
       }}
     >
       {Object.entries(counts).map(([label, count]) => (
-        <div key={label}
+        <div
+          key={label}
           className="flex flex-column justify-content-center align-items-center text-center border-round-sm bg-primary p-5"
         >
-          <div className="font-bold text-2xl">{count}</div>
+          <div className="font-bold text-2xl text-cyan-100">{count}</div>
           <div className="font-semibold">{label}</div>
         </div>
       ))}

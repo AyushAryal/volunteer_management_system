@@ -10,6 +10,8 @@ export const  GenderStats = () => {
       {
         label: "Volunteers",
         data: [5400, 3250, 170],
+        // backgroundColor: ["#295bac", "#618fd9", "#90b0e5"],
+        // borderColor: ["#d6ddf5", "#d6ddf5", "#d6ddf5"],
         backgroundColor: ["#2f4b7c", "#f95d6a", "#ffa600"],
         borderColor: ["#2f4b7c", "#f95d6a", "#ffa600"],
         borderWidth: 1,
@@ -36,7 +38,7 @@ export const VolunteerCategoryStats = () => {
     "RSS",
     "Retired APF",
     "Retired Army",
-    "Retired Government Service",
+    ["Retired", "Government Service",],
     "Senior Citizen",
     "Community",
     "General",
@@ -45,9 +47,10 @@ export const VolunteerCategoryStats = () => {
     labels: volunteerCategories,
     datasets: [
       {
-        label: "Volunteer Categories",  
+        label: "Volunteer Categories",
         data: [1370, 1150, 1840, 1290, 950, 1310, 1350, 1270],
         backgroundColor: [
+          //"#447ad2",
           "#003f5c",
           "#665191",
           "#a05195",
@@ -57,23 +60,27 @@ export const VolunteerCategoryStats = () => {
           "#ffa600",
           "#2f4b7c",
         ],
-        borderColor: [
-          "#003f5c",
-          "#665191",
-          "#a05195",
-          "#d45087",
-          "#f95d6a",
-          "#ff7c43",
-          "#ffa600",
-          "#2f4b7c",
-        ],
-        borderWidth: 1,
       },
     ],
   };
   const options = {
     indexAxis: "y",
     maintainAspectRatio: false,
+    plugins: {
+      tooltip: {
+        callbacks:{
+          title: (context: any) =>{
+            return context[0].label.replaceAll(","," ")
+          }
+        }
+      }
+    },
+    scales: {
+      y: {
+        ticks: {
+        },
+      },
+    },
   };
   return <Chart className="h-full w-full" type="bar" data={data} options={options}></Chart>;
 }
@@ -102,16 +109,6 @@ export const VolunteersOnProvinceStats = () => {
           "#ffa600",
           "#2f4b7c",
         ],
-        borderColor: [
-          "#665191",
-          "#a05195",
-          "#d45087",
-          "#f95d6a",
-          "#ff7c43",
-          "#ffa600",
-          "#2f4b7c",
-        ],
-        borderWidth: 1,
       },
     ],
   };
@@ -137,16 +134,6 @@ export const TrainingStats = () => {
           "#ffa600",
           "#2f4b7c",
         ],
-        borderColor: [
-          "#665191",
-          "#a05195",
-          "#d45087",
-          "#f95d6a",
-          "#ff7c43",
-          "#ffa600",
-          "#2f4b7c",
-        ],
-        borderWidth: 1,
       },
     ],
   };
