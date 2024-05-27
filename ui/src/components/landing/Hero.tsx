@@ -38,7 +38,7 @@ const Hero = () => {
                     <Button
                         className="my-3 fadeinleft animation-duration-1000 animation-iteration-1 animation-ease-in shadow-4"
                         label="Dashboard"
-                        raised
+                        size="small"
                         onClick={() => navigate("/dashboard")}
                     />
                 </div>

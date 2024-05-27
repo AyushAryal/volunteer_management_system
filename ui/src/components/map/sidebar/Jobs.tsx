@@ -38,6 +38,8 @@ export function JobRibbon({ job }: JobRibbonProps) {
         "Not Assigned": "#748ddc",
     }
 
+    const store = useHookstate(storeState);
+    let volunteer = store.volunteer.get();
 
     return <div>
         <div className="flex flex-column flex-wrap p-2 w-full">
@@ -59,10 +61,11 @@ export function JobRibbon({ job }: JobRibbonProps) {
                         className="border-1 text-xs border-round px-2">
                         {job.status}
                     </span>
-                    <span style={{ "color": application_status_color_map[job.application_status] }}
-                        className="border-1 font-italic font-semibold text-xs border-round px-2">
-                        {job.application_status}
-                    </span>
+                    {volunteer === null ? <></> :
+                        <span style={{ "color": application_status_color_map[job.application_status] }}
+                            className="border-1 font-italic font-semibold text-xs border-round px-2">
+                            {job.application_status}
+                        </span>}
                     <FontAwesomeIcon
                         className="mr-2 hover:bg-bluegray-100 p-2 border-circle"
                         icon={faAngleRight}

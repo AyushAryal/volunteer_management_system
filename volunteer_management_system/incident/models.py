@@ -391,7 +391,7 @@ class VolunteerProfile(models.Model):
         return mark_safe(
             f"""
             <div class="d-flex flex-row gap-3 align-items-center">
-                <img class="rounded-circle border border-primary" src="{self.profile_image.url}" style="max-height: 30px;" />
+                <img class="rounded-circle  border border-primary" src="{self.profile_image.url}" style="max-height: 30px;/>
                 <span class="flex-shrink-0"> {self} </span>
             </div>
             """

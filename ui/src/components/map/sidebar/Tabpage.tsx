@@ -106,7 +106,11 @@ export function Tabpage() {
     );
   };
 
+  const store = useHookstate(storeState);
+  let volunteer = store.volunteer.get();
+
   return (
+
     <TabView className="flex flex-column overflow-y-hidden">
       <TabPanel header="Incidents" headerTemplate={tabIncidentTemplate}>
         <Incidents />
@@ -117,10 +121,13 @@ export function Tabpage() {
       <TabPanel header="Visualizations" headerTemplate={tabVisualizationTemplate}>
         <Visualizations />
       </TabPanel>
-      <TabPanel header="Notifications" headerTemplate={notificationHeaderTemplate}>
-        <Notifications />
-      </TabPanel>
-      <TabPanel header="Profile" headerTemplate={profileHeaderTemplate}></TabPanel>
+      {(volunteer === null) ? <></> :
+        <TabPanel header="Notifications" headerTemplate={notificationHeaderTemplate}>
+          <Notifications />
+        </TabPanel>}
+      {(volunteer === null) ? <></> :
+        <TabPanel header="Profile" headerTemplate={profileHeaderTemplate}></TabPanel>
+      }
     </TabView>
   );
 }

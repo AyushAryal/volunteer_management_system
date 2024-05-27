@@ -52,7 +52,7 @@ export function VolunteerProfileMenu() {
     }];
 
     if (volunteer === null) {
-        return <Button onClick={() => logout(store)} >
+        return <Button outlined size="small" onClick={() => logout(store)} >
             <FontAwesomeIcon icon={faRightFromBracket} /> &nbsp; Logout
         </Button>;
     }
@@ -165,7 +165,8 @@ function VolunteerLoginModal({ visible, setVisible }: VolunteerLoginModalProps) 
                         />
                     </div>
                     {response}
-                    <Button label="Login" onClick={onLogin} />
+                    <Button outlined
+                        size="small" label="Login" onClick={onLogin} />
                 </div>
             </div>
         )}
@@ -180,7 +181,7 @@ export function VolunteerLoginButton() {
         if (modalVisible) {
             return <VolunteerLoginModal visible={modalVisible} setVisible={setModalVisible} />;
         } else {
-            return <Button className="mx-1" label='Login' raised onClick={() => setModalVisible(true)} >
+            return <Button outlined size="small" className="mx-1" label='Login' onClick={() => setModalVisible(true)} >
                 <FontAwesomeIcon className="ml-2" icon={faUser} />
             </Button>;
         }

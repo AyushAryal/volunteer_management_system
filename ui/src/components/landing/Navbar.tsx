@@ -12,6 +12,7 @@ const Navbar = () => {
 
   const signupButton = store.token.get() ? null : (
     <Button
+      size="small"
       className="mx-1 text-white bg-indigo-800"
       text
       raised

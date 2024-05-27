@@ -10,6 +10,8 @@ import { faClock } from '@fortawesome/free-regular-svg-icons/faClock';
 import { Tag } from 'primereact/tag';
 import { JobActionWidget } from "@components/map/sidebar/JobActionWidget";
 import { faPeopleGroup } from '@fortawesome/free-solid-svg-icons';
+import { storeState } from '@models/store';
+import { useHookstate } from '@hookstate/core';
 
 type IncidentDetailModalProps = {
     incident: string,
@@ -19,6 +21,8 @@ type IncidentDetailModalProps = {
 
 
 export function IncidentDetailModal(props: IncidentDetailModalProps) {
+    const store = useHookstate(storeState);
+    let volunteer = store.volunteer.get();
     const id = get_id(props.incident);
     let [incident, setIncident] = useState<Incident>();
     let [programs, setPrograms] = useState<Program[]>([]);
@@ -56,22 +60,26 @@ export function IncidentDetailModal(props: IncidentDetailModalProps) {
     const jobBuilder = (jobs: Job[]) => {
         return jobs.map((job) => <div
             key={job.url}
-            className='flex flex-initial p-2 m-1 align-items-center justify-content-between gap-2'
+            className='flex flex-initial p-2 m-1 align-items-center justify-content-between gap-2 text-sm'
         >
             <div style={{ flexBasis: "100%" }}>{job.name}</div>
-            <span className=" flex gap-3 font-semibold" style={{ flexBasis: "50%" }}>{job.status}</span>
+            <span className=" flex gap-3 font-semibold"
+                style={{ flexBasis: "50%" }}>
+                {job.status}
+            </span>
             <div className="text-xs" style={{ flexBasis: "55%" }}>
                 {job.start_date.toDateString()}
                 <br />
                 {job.end_date.toDateString()}
             </div>
-            <div style={{ flexBasis: "20%" }} className="flex gap-2">
+            <div style={{ flexBasis: "20%" }}
+                className="flex align-items-center gap-2">
                 <FontAwesomeIcon icon={faPeopleGroup} />
                 {job.filled_positions}/ {job.vacancy}
-            </div>
-            <JobActionWidget job={job} onChange={() => {
-                get_job_list({ incident: id }).then((jobs) => setJobs(jobs));
-            }} />
+            </div>{volunteer === null ? <></> :
+                <JobActionWidget job={job} onChange={() => {
+                    get_job_list({ incident: id }).then((jobs) => setJobs(jobs));
+                }} />}
         </div>);
     };
 
@@ -88,7 +96,7 @@ export function IncidentDetailModal(props: IncidentDetailModalProps) {
         onHide={() => props.setVisible(false)}
     >
         <div className="flex flex-row p-2 m-1 align-items-center justify-content-between ">
-            <div>
+            <div className="text-xs">
                 <FontAwesomeIcon icon={faClock} /> &nbsp;
                 {incident.date.toDateString()}
             </div>

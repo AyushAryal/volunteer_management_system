@@ -8,6 +8,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClock } from '@fortawesome/free-regular-svg-icons/faClock';
 import { JobActionWidget } from './JobActionWidget';
 import { faCalendarDay, faPeopleGroup } from '@fortawesome/free-solid-svg-icons';
+import { storeState } from '@models/store';
+import { useHookstate } from '@hookstate/core';
 
 type JobDetailModalProps = {
     job: string,
@@ -17,6 +19,9 @@ type JobDetailModalProps = {
 
 
 export function JobDetailModal(props: JobDetailModalProps) {
+    const store = useHookstate(storeState);
+    let volunteer = store.volunteer.get();
+
     const id = get_id(props.job);
     let [job, setJob] = useState<Job>();
 
@@ -72,12 +77,14 @@ export function JobDetailModal(props: JobDetailModalProps) {
             <div className="surface-50 border-round-lg p-4" dangerouslySetInnerHTML={{ __html: job.description || "" }} />
         </span>
         <div className="flex justify-content-end p-2">
-            <JobActionWidget
-                job={job}
-                onChange={() => {
-                    get_job_detail(id).then((job) => setJob(job));
-                }}
-            />
+            {(volunteer === null) ?
+                <span className=" font-italic text-xs border-1 border-primary border-round p-1">Login to apply</span> :
+                <JobActionWidget
+                    job={job}
+                    onChange={() => {
+                        get_job_detail(id).then((job) => setJob(job));
+                    }}
+                />}
         </div>
     </Dialog>;
 };

@@ -13,10 +13,13 @@ import { get_notification_list, notification_view } from "@api/incident";
 
 
 export function Notifications() {
+    const store = useHookstate(storeState);
+    let volunteer = store.volunteer.get();
     const notificationList = useHookstate(storeState.notificationList);
-    const loadedNotificationList = useHookstate(storeState.loaded.notificationList);
+    let loadedNotificationList = useHookstate(storeState.loaded.notificationList);
 
-    if (!loadedNotificationList.get()) {
+
+    if (!loadedNotificationList.get() || volunteer == null) {
         return <ListSkeleton />
     }
 
