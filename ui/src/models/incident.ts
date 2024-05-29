@@ -18,6 +18,13 @@ export type VolunteerCategory = "Student" |
     "Community" |
     "General";
 
+export type AcademicQualification = "Secondarylevel" |
+    "Highschool" |
+    "Undergrad" |
+    "Grad" |
+    "Doctorate" |
+    "Postdoc";
+
 export type TrainingType = "Rescue" | "Reliefdistribution" | "Evacuation" | "Other" |
     "Healthandsafety" | "Logistics" | "Softskills" | "Leadership" |
     "Teamtraining" | "Management" | "Qualitytraining" | "Humanitarian" |
@@ -90,6 +97,7 @@ export interface VolunteerProfile {
     gender?: Gender,
     category?: VolunteerCategory,
     blood_group?: BloodGroup,
+    academic_qualification?: AcademicQualification,
     nationality?: Nationality,
     temporary_ward: string,
     permanent_ward: string,
@@ -182,6 +190,7 @@ export interface Statistics {
         gender: { [key: string]: number },
         nationality: { [key: string]: number },
         blood_group: { [key: string]: number },
+        academic_qualification: { [key: string]: number },
         category: { [key: string]: number },
         training_type: { [key: string]: number },
     }

@@ -23,6 +23,7 @@ async function perform_volunteer_update(volunteer: Volunteer): Promise<string | 
             "nationality": volunteer.volunteer.nationality,
             "category": volunteer.volunteer.category,
             "blood_group": volunteer.volunteer.blood_group,
+            "academic_qualification": volunteer.volunteer.academic_qualification,
             "gender": volunteer.volunteer.gender,
             "temporary_ward": volunteer.volunteer.temporary_ward,
             "permanent_ward": volunteer.volunteer.permanent_ward,
@@ -83,6 +84,7 @@ export function VolunteerUpdateForm(props: VolunteerUpdateFormProps) {
     const nationalityState = useState(props.volunteer.volunteer.nationality);
     const volunteerTypeState = useState(props.volunteer.volunteer.category);
     const bloodGroupState = useState(props.volunteer.volunteer.blood_group);
+    const academicQualificationState = useState(props.volunteer.volunteer.academic_qualification);
     const genderState = useState(props.volunteer.volunteer.gender);
     const temporaryWardState = useState<string | null>(props.volunteer.volunteer.temporary_ward);
     const permanentWardState = useState<string | null>(props.volunteer.volunteer.permanent_ward);
@@ -114,6 +116,7 @@ export function VolunteerUpdateForm(props: VolunteerUpdateFormProps) {
     const [nationality,] = nationalityState;
     const [volunteerType,] = volunteerTypeState;
     const [bloodGroup,] = bloodGroupState;
+    const [academicQualification,] = academicQualificationState;
     const [gender,] = genderState;
     const [selectedTemporaryWard,] = temporaryWardState;
     const [selectedPermanentWard,] = permanentWardState;
@@ -198,6 +201,7 @@ export function VolunteerUpdateForm(props: VolunteerUpdateFormProps) {
                 contact_number: contactNumber,
                 date_of_birth: dateOfBirth,
                 blood_group: bloodGroup,
+                academic_qualification: academicQualification,
                 gender,
                 nationality,
                 category: volunteerType,
@@ -271,6 +275,7 @@ export function VolunteerUpdateForm(props: VolunteerUpdateFormProps) {
                 nationalityState={nationalityState}
                 volunteerTypeState={volunteerTypeState}
                 bloodGroupState={bloodGroupState}
+                academicQualificationState={academicQualificationState}
                 genderState={genderState}
                 temporaryWardState={temporaryWardState}
                 permanentWardState={permanentWardState}

@@ -42,6 +42,7 @@ class VolunteerProfileSerializer(serializers.HyperlinkedModelSerializer):
     gender = ChoiceField(models.Gender.choices)
     blood_group = ChoiceField(models.BloodGroup.choices)
     nationality = ChoiceField(models.Nationality.choices)
+    academic_qualification = ChoiceField(models.AcademicQualification.choices)
     category = ChoiceField(models.VolunteerCategory.choices)
     training_type = ChoiceField(models.TrainingType.choices, required=False)
 
@@ -330,6 +331,7 @@ class VolunteerSerializer(serializers.ModelSerializer):
         volunteer.nationality               = volunteer_data.get("nationality", volunteer.nationality)
         volunteer.permanent_ward            = volunteer_data.get("permanent_ward", volunteer.permanent_ward)
         volunteer.temporary_ward            = volunteer_data.get("temporary_ward", volunteer.temporary_ward)
+        volunteer.academic_qualification    = volunteer_data.get("academic_qualification", volunteer.academic_qualification)
         volunteer.category                  = volunteer_data.get("category", volunteer.category)
         volunteer.organization_name         = volunteer_data.get("organization_name", volunteer.organization_name)
         volunteer.organization_phone_number = volunteer_data.get("organization_phone_number", volunteer.organization_phone_number)

@@ -3,7 +3,7 @@ import { InputMask } from 'primereact/inputmask';
 import { RadioButton } from 'primereact/radiobutton';
 import { Dropdown } from 'primereact/dropdown';
 import { StateTuple } from '@models/generics';
-import { BloodGroup, Gender, Nationality, TrainingType, VolunteerCategory } from '@models/incident';
+import { AcademicQualification, BloodGroup, Gender, Nationality, TrainingType, VolunteerCategory } from '@models/incident';
 import { LocationSelector } from '@components/LocationSelector';
 import { useState } from 'react';
 import { Calendar } from 'primereact/calendar';
@@ -64,6 +64,7 @@ type VolunteerProfileBasicWidgetProps = {
     nationalityState: StateTuple<Nationality | undefined>,
     volunteerTypeState: StateTuple<VolunteerCategory | undefined>,
     bloodGroupState: StateTuple<BloodGroup | undefined>,
+    academicQualificationState: StateTuple<AcademicQualification | undefined>,
     genderState: StateTuple<Gender | undefined>,
     organizationNameState: StateTuple<string | undefined>,
     organizationPhoneNumberState: StateTuple<string | undefined>,
@@ -80,6 +81,7 @@ export function VolunteerProfileBasicWidget(props: VolunteerProfileBasicWidgetPr
         dateOfBirthState,
         nationalityState,
         volunteerTypeState,
+        academicQualificationState,
         bloodGroupState,
         genderState,
         organizationNameState,
@@ -97,6 +99,7 @@ export function VolunteerProfileBasicWidget(props: VolunteerProfileBasicWidgetPr
     const [nationality, setNationality] = nationalityState;
     const [volunteerType, setVolunteerType] = volunteerTypeState;
     const [bloodGroup, setBloodGroup] = bloodGroupState;
+    const [academicQualification, setAcademicQualification] = academicQualificationState;
     const [gender, setGender] = genderState;
     const [organizationName, setOrganizationName] = organizationNameState;
     const [organizationPhoneNumber, setOrganizationPhoneNumber] = organizationPhoneNumberState;
@@ -115,6 +118,15 @@ export function VolunteerProfileBasicWidget(props: VolunteerProfileBasicWidgetPr
         { value: "AB Negative" },
         { value: "AB Positive" },
     ];
+
+    const academicQualifications = [
+        { value: "Secondary Level" },
+        { value: "High School" },
+        { value: "Under Grad" },
+        { value: "Grad" },
+        { value: "Doctorate" },
+        { value: "Post Doc" }
+    ]
 
     const nationalities = [
         { value: "National" },
@@ -259,6 +271,16 @@ export function VolunteerProfileBasicWidget(props: VolunteerProfileBasicWidgetPr
                     placeholder="Select a blood group"
                     optionLabel="value"
                 />
+
+                <Dropdown
+                    value={academicQualification}
+                    onChange={(ev) => {
+                        setAcademicQualification(ev.value);
+                    }}
+                    options={academicQualifications}
+                    placeholder="Select a academic qualification"
+                    optionLabel="value"
+                />
                 <Dropdown
                     value={nationality}
                     onChange={(ev) => {
@@ -364,6 +386,7 @@ type VolunteerProfileWidgetProps = {
     nationalityState: StateTuple<Nationality | undefined>,
     volunteerTypeState: StateTuple<VolunteerCategory | undefined>,
     bloodGroupState: StateTuple<BloodGroup | undefined>,
+    academicQualificationState: StateTuple<AcademicQualification | undefined>,
     genderState: StateTuple<Gender | undefined>,
     temporaryWardState: StateTuple<string | null>,
     permanentWardState: StateTuple<string | null>,
@@ -383,6 +406,7 @@ export function VolunteerProfileWidget(props: VolunteerProfileWidgetProps) {
         nationalityState,
         volunteerTypeState,
         bloodGroupState,
+        academicQualificationState,
         genderState,
         temporaryWardState,
         permanentWardState,
@@ -404,6 +428,7 @@ export function VolunteerProfileWidget(props: VolunteerProfileWidgetProps) {
                 nationalityState={nationalityState}
                 volunteerTypeState={volunteerTypeState}
                 bloodGroupState={bloodGroupState}
+                academicQualificationState={academicQualificationState}
                 genderState={genderState}
                 organizationNameState={organizationNameState}
                 organizationPhoneNumberState={organizationPhoneNumberState}

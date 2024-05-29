@@ -78,6 +78,21 @@ export const BloodGroupStats = () => {
   />;
 }
 
+export const AcademicQualificationStats = () => {
+  let statistics = useHookstate(storeState.statistics).get();
+  if (!statistics) return <ProgressSpinner />;
+
+  return <Chart
+    className="h-full w-full"
+    type="radar"
+    data={make_dataset("Academic Qualification", statistics.volunteers.academic_qualification)}
+    options={{
+      indexAxis: "y",
+      maintainAspectRatio: false,
+    }}
+  />;
+}
+
 export const JobStatusStats = () => {
   let statistics = useHookstate(storeState.statistics).get();
   if (!statistics) return <ProgressSpinner />;

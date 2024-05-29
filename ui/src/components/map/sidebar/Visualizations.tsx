@@ -1,4 +1,4 @@
-import { VolunteerCategoryStats, GenderStats, VolunteerTrainingStats, BloodGroupStats, JobStatusStats, IncidentByTimeRangeStats, JobByTimeRangeStats } from "@components/landing/Stats";
+import { VolunteerCategoryStats, GenderStats, VolunteerTrainingStats, BloodGroupStats, JobStatusStats, IncidentByTimeRangeStats, JobByTimeRangeStats, AcademicQualificationStats } from "@components/landing/Stats";
 import { Divider } from "primereact/divider";
 import { ScrollPanel } from "primereact/scrollpanel";
 
@@ -17,6 +17,10 @@ export function Visualizations() {
         <span className="">Volunteers By Training</span>
         <div className="p-1 my-3 w-30rem" style={{ height: "20rem" }}>
           <VolunteerTrainingStats />
+        </div>
+        <span className="">Volunteers By Academic Qualification</span>
+        <div className="p-1 my-3 w-30rem" style={{ height: "20rem" }}>
+          <AcademicQualificationStats />
         </div>
         <span className="">Volunteers By Blood Group</span>
 

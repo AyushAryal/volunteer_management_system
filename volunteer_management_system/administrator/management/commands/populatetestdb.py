@@ -329,9 +329,10 @@ class Command(BaseCommand):
                 date_of_birth=date_of_birth,
                 temporary_ward=ward,
                 permanent_ward=ward,
-                category=random.choice(
-                    incident.models.VolunteerCategory.values
+                academic_qualification=random.choice(
+                    incident.models.AcademicQualification.values
                 ),
+                category=random.choice(incident.models.VolunteerCategory.values),
             )
             volunteer.save()
             self.stdout.write(self.style.SUCCESS(f"Created volunteer {email}"))

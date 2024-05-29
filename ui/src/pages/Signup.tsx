@@ -10,7 +10,7 @@ import { SignupBasicInformation } from '@components/signup/SignupBasicInformatio
 
 import { signup } from '@api/incident';
 import { describe_api_errors } from '@api/utils';
-import { BloodGroup, Gender, Nationality, TrainingType, Volunteer, VolunteerCategory } from '@models/incident';
+import { AcademicQualification, BloodGroup, Gender, Nationality, TrainingType, Volunteer, VolunteerCategory } from '@models/incident';
 import { FormState } from '@api/form.tsx';
 import { VolunteerProfileAddressWidget, VolunteerProfileBasicWidget } from '@components/profile/VolunteerProfileWidget';
 import { IdentificationDocumentsWidget } from '@components/profile/IdentificationDocumentsWidget';
@@ -28,6 +28,7 @@ async function perform_signup(form: Volunteer): Promise<FormState> {
             "blood_group": form.volunteer.blood_group,
             "gender": form.volunteer.gender,
             "nationality": form.volunteer.nationality,
+            "academicQualification": form.volunteer.academic_qualification,
             "category": form.volunteer.category,
             "temporary_ward": form.volunteer.temporary_ward,
             "permanent_ward": form.volunteer.permanent_ward,
@@ -106,6 +107,7 @@ export function Signup() {
     const nationalityState = useState<Nationality | undefined>();
     const volunteerTypeState = useState<VolunteerCategory | undefined>();
     const bloodGroupState = useState<BloodGroup | undefined>();
+    const academicQualificationState = useState<AcademicQualification | undefined>();
     const genderState = useState<Gender | undefined>();
     const organizationNameState = useState<string | undefined>();
     const organizationPhoneNumberState = useState<string | undefined>();
@@ -145,6 +147,7 @@ export function Signup() {
         const [nationality,] = nationalityState;
         const [volunteerType,] = volunteerTypeState;
         const [bloodGroup,] = bloodGroupState;
+        const [academicQualification,] = academicQualificationState;
         const [gender,] = genderState;
         const [temporaryWard,] = temporaryWardState;
         const [permanentWard,] = permanentWardState;
@@ -234,6 +237,7 @@ export function Signup() {
                 contact_number: contactNumber,
                 date_of_birth: dateOfBirth,
                 blood_group: bloodGroup,
+                academic_qualification: academicQualification,
                 gender: gender,
                 nationality: nationality,
                 category: volunteerType,
@@ -328,6 +332,7 @@ export function Signup() {
             nationalityState={nationalityState}
             volunteerTypeState={volunteerTypeState}
             bloodGroupState={bloodGroupState}
+            academicQualificationState={academicQualificationState}
             genderState={genderState}
             organizationNameState={organizationNameState}
             organizationPhoneNumberState={organizationPhoneNumberState}

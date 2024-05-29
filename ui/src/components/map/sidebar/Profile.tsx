@@ -1,6 +1,6 @@
 
 import { faHandshake } from "@fortawesome/free-regular-svg-icons";
-import { faCakeCandles, faDroplet, faPaperPlane, faPerson, faPersonDress, faPersonHalfDress, faPhone, faTrophy } from "@fortawesome/free-solid-svg-icons";
+import { faCakeCandles, faDroplet, faPaperPlane, faPen, faPerson, faPersonDress, faPersonHalfDress, faPhone, faTrophy } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useHookstate } from "@hookstate/core";
 import { storeState } from "@models/store";
@@ -54,6 +54,12 @@ export function Profile() {
                         &nbsp;
                         &nbsp;
                         {volunteer.volunteer.blood_group}</div>
+                    <div className="pb-2">
+                        <FontAwesomeIcon className="text-red-700 text-lg" icon={faPen} />
+                        &nbsp;
+                        &nbsp;
+                        &nbsp;
+                        {volunteer.volunteer.academic_qualification}</div>
                     <div className="pb-2">
                         <FontAwesomeIcon className="text-orange-200 text-lg" icon={faCakeCandles} />
                         &nbsp;

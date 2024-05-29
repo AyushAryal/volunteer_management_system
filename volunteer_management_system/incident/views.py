@@ -517,6 +517,11 @@ class StatisticsViewSet(
                     "blood_group": self.count_by_criteria(
                         "blood_group", models.BloodGroup, volunteer_qs
                     ),
+                    "academic_qualification": self.count_by_criteria(
+                        "academic_qualification",
+                        models.AcademicQualification,
+                        volunteer_qs,
+                    ),
                     "category": self.count_by_criteria(
                         "category", models.VolunteerCategory, volunteer_qs
                     ),

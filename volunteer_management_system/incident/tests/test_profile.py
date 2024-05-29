@@ -148,6 +148,7 @@ class VolunteerProfileTest(TestCase):
                 "date_of_birth": "2005-01-01",
                 "gender": "Male",
                 "nationality": "National",
+                "academics": "High School",
                 "blood_group": "O Positive",
                 "category": "General",
                 "temporary_ward": reverse(

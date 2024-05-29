@@ -84,7 +84,7 @@ class TrainingType(models.IntegerChoices):
             "Teamtraining": _("Team Training"),
             "Management": _("Management"),
             "Qualitytraining": _("Quality Training"),
-            "Humanitarian": _("Humanitarium"),
+            "Humanitarian": _("Humanitarian"),
             "Familyreunification": _("Family Reunification"),
             "Motorvehicleoperator": _("Motor Vehicle Operator"),
         }.get(label, _("None"))
@@ -127,6 +127,29 @@ class Gender(models.IntegerChoices):
             "Male": _("Male"),
             "Female": _("Female"),
             "Other": _("Other"),
+        }.get(label, _("None"))
+
+
+class AcademicQualification(models.IntegerChoices):
+    (
+        SecondaryLevel,
+        HighSchool,
+        UnderGrad,
+        Grad,
+        Doctorate,
+        PostDoc,
+    ) = range(6)
+
+    @DynamicClassAttribute
+    def label(self):
+        label = super().label
+        return {
+            "Secondarylevel": _("Secondary Level"),
+            "Highschool": _("High School"),
+            "Undergrad": _("Under Grad"),
+            "Grad": _("Grad"),
+            "Doctorate": _("Doctorate"),
+            "Postdoc": _("Post Doc"),
         }.get(label, _("None"))
 
 
@@ -350,6 +373,10 @@ class VolunteerProfile(models.Model):
         on_delete=models.CASCADE,
         verbose_name=_("temporary ward"),
         related_name="transient_volunteers",
+    )
+
+    academic_qualification = models.PositiveSmallIntegerField(
+        choices=AcademicQualification.choices, verbose_name=_("academic qualification")
     )
 
     category = models.SmallIntegerField(
