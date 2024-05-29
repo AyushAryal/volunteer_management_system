@@ -391,7 +391,10 @@ class VolunteerProfile(models.Model):
         return mark_safe(
             f"""
             <div class="d-flex flex-row gap-3 align-items-center">
-                <img class="rounded-circle  border border-primary" src="{self.profile_image.url}" style="max-height: 30px;/>
+                <img 
+                    class="rounded-circle border border-primary flex-shrink-0" 
+                    src="{self.profile_image.url}" 
+                    style="height: 30px; width: 30px;"/>
                 <span class="flex-shrink-0"> {self} </span>
             </div>
             """
@@ -399,7 +402,11 @@ class VolunteerProfile(models.Model):
 
     def profile_image_preview(self):
         return mark_safe(
-            f'<img src="{self.profile_image.url}" style="max-height: 200px;" />'
+            f"""<img 
+                    src="{self.profile_image.url}"
+                    style="height: 200px; width: 200px;"
+                />
+            """
         )
 
 

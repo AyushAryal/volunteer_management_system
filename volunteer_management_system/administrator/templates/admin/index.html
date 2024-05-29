@@ -1,105 +1,10 @@
 {% extends "admin/base_site.html" %}
-{% load i18n static leaflet_tags %}
+{% load i18n static %}
 
 {% block content_title %}{% endblock %}
 {% block nav-breadcrumbs %}{% endblock %}
 {% block extrahead %}
-    {% leaflet_js %}
-    {% leaflet_css %}
-    <script> document.addEventListener("DOMContentLoaded", () => document.querySelector("br.clear").remove()); </script>
-    <style>
-        #content {
-            min-height: initial !important;
-            height: 100% !important;
-            padding: 0 !important;
-        }
-        #index_map {
-            height: 100%;
-        }
-
-        div.circle-marker {
-          height: 15px;
-          width: 15px;
-          background-color: #47407e;
-          border-radius: 50%;
-          display: inline-block;
-        }
-    </style>
-
-    <script>
-        async function* depaginate(url) {
-            while (url !== null) {
-                let response = await fetch(url);
-                let json = await response.json();
-                url = json["next"];
-                yield json["results"];
-            }
-        }
-
-        function add_query(url, query) {
-            if (Object.keys(query ?? {}).length != 0) {
-                const query_string = Object.entries(query ?? {})
-                    .filter(([_, value]) => value !== undefined)
-                    .map(([key, value]) => `${key}=${value}`)
-                    .join("&");
-                return `${url}?${query_string}`;
-            }
-            return url;
-        }
-
-        {% comment %} async function fetch_incidents() {
-            let startDate= new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
-            let startDateRepr = undefined;
-
-            if (startDate) {
-                startDate = new Date(startDate.getTime() - (startDate.getTimezoneOffset() * 60 * 1000));
-                startDateRepr = startDate.toISOString().split('T')[0];
-            }
-
-            let endDate= new Date();
-            let endDateRepr = undefined;
-
-            if (endDate) {
-                endDate = new Date(endDate.getTime() - (endDate.getTimezoneOffset() * 60 * 1000));
-                endDateRepr = endDate.toISOString().split('T')[0];
-            }
-
-            let query = {
-                date_after: startDateRepr,
-                date_before: endDateRepr,
-            };
-
-            let data = await fetch(add_query("/api/incident", query));
-            return await data.json();
-        } {% endcomment %}
-
-        window.addEventListener("map:init", async function (e) {
-            let map = e.detail.map;
-            let id = e.detail.id;
-
-            if (id === "index_map") {
-                for await (let provinces of depaginate("/api/province/")) {
-                    for (let province of provinces) {
-                        let shape = province.shape.coordinates[0];
-                        let name = province.name;
-                        for (coordinate of shape) {
-                            [coordinate[0], coordinate[1]] = [coordinate[1], coordinate[0]];
-                        }
-                        L.polygon(shape, {color: '#8f091c', weight: 3}).addTo(map);
-                    }
-                }
-
-                for (let incident of await fetch_incidents()) {
-                    let point = incident.point.coordinates;
-                    let name = incident.name;
-                    [point[0], point[1]] = [point[1], point[0]];
-                    L.circleMarker(point, { color: "#47407e", radius: 1}).addTo(map);
-                }
-            }
-        }, false);
-    </script>
 {% endblock %}
 
 {% block content %}
-    {% leaflet_map "index_map" %}
 {% endblock %}

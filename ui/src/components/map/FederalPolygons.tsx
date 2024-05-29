@@ -8,6 +8,9 @@ import { get_id } from "@api/utils";
 import { get_federal_body_detail } from "@api/federal";
 import { FederalBody } from "@models/federal";
 import { LatLngTuple } from "leaflet";
+import { Stats } from "@components/landing";
+import { ProgressSpinner } from "primereact/progressspinner";
+import { Divider } from "primereact/divider";
 
 
 export function SelectedFederalBodyPolygons() {
@@ -32,11 +35,28 @@ export function SelectedFederalBodyPolygons() {
         store.mapControls.selectedMunicipality,
         store.mapControls.selectedWard,
     ]);
+    let statistics = useHookstate(storeState.statistics).get();
+    if (!statistics) return <ProgressSpinner />;
 
     if (federalBody) {
         let points = federalBody.shape.coordinates as LatLngTuple[][];
         return <Polygon key={federalBody.url} positions={points} color="blue" weight={1}>
-            <Tooltip sticky>{federalBody.name}</Tooltip>
+            <Tooltip className="bg-primary-100 border-round-lg" sticky>
+                <div className="text-xs surface-primary flex flex-column p-2">
+                    <span className="text-2xl font-semibold ">{federalBody.name}</span>
+                    <span>
+                        <span className="text-primary font-semibold">{statistics.volunteers.total}</span>
+                        &nbsp;Volunteers
+                    </span>
+                    <span>
+                        <span className="text-primary font-semibold">{statistics.incidents.total}</span>
+                        &nbsp;Incidents
+                    </span>
+                    <span><span className="text-primary font-semibold">{statistics.jobs.total}</span>
+                        &nbsp;Jobs
+                    </span>
+                </div>
+            </Tooltip>
         </Polygon >;
     }
 
@@ -65,7 +85,7 @@ export function AllFederalBodyPolygons() {
                 color: mapControls.showMunicipalityBorders.get() ? "#095409ff" : "#00000000",
                 weight: 0.2,
             },
-            ward: function(_: any, zoomLevel: number) {
+            ward: function (_: any, zoomLevel: number) {
                 return {
                     color: mapControls.showWardBorders.get() && zoomLevel > 7 ? "#ff0000ff" : "#00000000",
                     weight: 0.1,
@@ -79,7 +99,7 @@ export function AllFederalBodyPolygons() {
         newFederalTileLayer._vms_federal_polygon_layer = true;
 
         let polygonLayer: any = undefined;
-        mapRef.eachLayer(function(layer: any) {
+        mapRef.eachLayer(function (layer: any) {
             if (layer._vms_federal_polygon_layer) {
                 polygonLayer = layer;
             }

@@ -5,7 +5,7 @@ import { TileLayer, MapContainer } from 'react-leaflet';
 import { useHookstate } from '@hookstate/core';
 
 import { storeState } from '@models/store.ts';
-import { IncidentFilter, JobFilter, ProgramFilter, get_incident_list, get_job_list, get_program_list } from '@api/incident.ts';
+import { IncidentFilter, JobFilter, ProgramFilter, StatisticsFilter, get_incident_list, get_job_list, get_program_list, get_statistics } from '@api/incident.ts';
 
 import { FederalBodyPolygons } from '@components/map/FederalPolygons.tsx';
 import { Sidebar } from '@components/map/sidebar/Sidebar';
@@ -76,9 +76,21 @@ export function VmsMap() {
                 store.jobList.set(jobList);
                 store.loaded.jobList.set(true);
             });
+
+            let statistics_query: StatisticsFilter = {
+                province, district, municipality, ward,
+                date_before: endDateRepr,
+                date_after: startDateRepr,
+            };
+            store.loaded.statistics.set(false);
+            get_statistics(statistics_query).then((statistics) => {
+                store.statistics.set(statistics);
+                store.loaded.statistics.set(true);
+            });
         }
         networkRequest();
     }, [
+        store.mapControls.selectedWard,
         store.mapControls.selectedDistrict,
         store.mapControls.selectedMunicipality,
         store.mapControls.selectedProvince,

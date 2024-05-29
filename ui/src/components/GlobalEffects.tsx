@@ -55,23 +55,25 @@ export function GlobalEffects() {
 
     useEffect(() => {
         let networkRequest = async () => {
-            if (store.volunteer.get() === null) {
+            if (store.volunteer.get() === null && store.token.get() !== null) {
                 await get_volunteer().then((volunteer) => {
                     store.volunteer.set(volunteer);
                 });
             }
         }
         networkRequest();
-    }, []);
+    }, [store.token]);
 
     useEffect(() => {
         let network_request = async () => {
-            storeState.loaded.notificationList.set(false);
-            let notificationList = await get_notification_list();
-            storeState.notificationList.set(notificationList);
-            storeState.loaded.notificationList.set(true);
+            if (store.volunteer.get() !== null && store.token.get()) {
+                storeState.loaded.notificationList.set(false);
+                let notificationList = await get_notification_list();
+                storeState.notificationList.set(notificationList);
+                storeState.loaded.notificationList.set(true);
+            }
         }
         network_request();
-    }, []);
+    }, [store.volunteer]);
     return null;
 }

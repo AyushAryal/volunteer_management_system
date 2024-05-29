@@ -51,15 +51,15 @@ function getDescendents(tree: Tree, url: string): string[] {
 }
 
 export function ProvinceSelector({ selectedProvinceState }: { selectedProvinceState: StateTuple<string | undefined> }) {
-    const store = useHookstate(storeState);
+    const provinceList = useHookstate(storeState.provinceList);
     const [selectedProvince, setProvince] = selectedProvinceState;
 
     const progressSpinner = <ProgressSpinner style={{ width: '50px', height: '50px' }} />;
     return <Dropdown
-        value={store.provinceList.get().find((province) => selectedProvince == province.url)}
+        value={provinceList.get().find((province) => selectedProvince == province.url)}
         onChange={(ev) => setProvince(ev.value?.url ?? undefined)}
-        options={store.provinceList.get() as ProvinceBrief[]}
-        emptyMessage={store.provinceList.get().length == 0 ? progressSpinner : null}
+        options={provinceList.get() as ProvinceBrief[]}
+        emptyMessage={provinceList.get().length == 0 ? progressSpinner : null}
         optionLabel="name"
         showClear
         filter
@@ -67,16 +67,16 @@ export function ProvinceSelector({ selectedProvinceState }: { selectedProvinceSt
 }
 
 export function DistrictSelector({ label, districtState }: { label: string, districtState: StateTuple<string | undefined> }) {
-    const store = useHookstate(storeState);
+    const districtList = useHookstate(storeState.districtList);
     const [district, setDistrict] = districtState;
     const progressSpinner = <ProgressSpinner style={{ width: '50px', height: '50px' }} />;
 
     return <div className="flex flex-column justify-content-center align-content-center">
         <Dropdown
-            value={store.districtList.get().find((d) => district == d.url)}
+            value={districtList.get().find((d) => district == d.url)}
             onChange={(ev) => { setDistrict(ev.value?.url ?? undefined); }}
-            options={store.districtList.get() as DistrictBrief[]}
-            emptyMessage={store.districtList.get().length == 0 ? progressSpinner : null}
+            options={districtList.get() as DistrictBrief[]}
+            emptyMessage={districtList.get().length == 0 ? progressSpinner : null}
             optionLabel="name"
             showClear
             filter
@@ -85,16 +85,16 @@ export function DistrictSelector({ label, districtState }: { label: string, dist
 }
 
 export function MunicipalitySelector({ municipalityState }: { municipalityState: StateTuple<string | undefined> }) {
-    const store = useHookstate(storeState);
+    const municipalityList = useHookstate(storeState.municipalityList);
     const [municipality, setMunicipality] = municipalityState;
     const progressSpinner = <ProgressSpinner style={{ width: '50px', height: '50px' }} />;
 
     return <div className="flex flex-column justify-content-center align-content-center">
         <Dropdown
-            value={store.municipalityList.get().find((m) => municipality == m.url)}
+            value={municipalityList.get().find((m) => municipality == m.url)}
             onChange={(ev) => { setMunicipality(ev.value?.url ?? undefined); }}
-            options={store.municipalityList.get() as MunicipalityBrief[]}
-            emptyMessage={store.municipalityList.get().length == 0 ? progressSpinner : null}
+            options={municipalityList.get() as MunicipalityBrief[]}
+            emptyMessage={municipalityList.get().length == 0 ? progressSpinner : null}
             optionLabel="name"
             showClear
             filter
@@ -104,16 +104,16 @@ export function MunicipalitySelector({ municipalityState }: { municipalityState:
 
 
 export function WardSelector({ wardState }: { wardState: StateTuple<string | null> }) {
-    const store = useHookstate(storeState);
+    const wardList = useHookstate(storeState.wardList);
     const [ward, setWard] = wardState;
     const progressSpinner = <ProgressSpinner style={{ width: '50px', height: '50px' }} />;
 
     return <div className="flex flex-column justify-content-center align-content-center">
         <Dropdown
-            value={store.wardList.get().find((w) => ward == w.url)}
+            value={wardList.get().find((w) => ward == w.url)}
             onChange={(ev) => { setWard(ev.value?.url ?? null); }}
-            options={store.wardList.get() as WardBrief[]}
-            emptyMessage={store.wardList.get().length == 0 ? progressSpinner : null}
+            options={wardList.get() as WardBrief[]}
+            emptyMessage={wardList.get().length == 0 ? progressSpinner : null}
             optionLabel="name"
             showClear
             filter

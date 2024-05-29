@@ -4,9 +4,10 @@ import {
     Notification, NotificationDeserializer,
     Program, SiteContent,
     Statistics,
+    StatisticsDeserializer,
     Volunteer, VolunteerDeserializer,
 } from "@models/incident";
-import { get_detail, get_filtered_list, get_id } from "@api/utils";
+import { get_detail, get_filtered_endpoint, get_filtered_list, get_id } from "@api/utils";
 import { endpoints } from "@api/api";
 import { token_aware_fetch } from "@api/token";
 
@@ -35,7 +36,7 @@ export interface JobFilter extends FederalFilter {
     end_date_before?: string,
 }
 
-export interface StatisticsFilter extends FederalFilter { }
+export interface StatisticsFilter extends IncidentFilter { }
 
 export let get_incident_list = get_filtered_list<Incident, IncidentFilter>(endpoints.incident, IncidentDeserializer);
 export let get_program_list = get_filtered_list<Program, ProgramFilter>(endpoints.program);
@@ -48,13 +49,17 @@ export let get_program_detail = get_detail<Program, number>(endpoints.program);
 export let get_job_detail = get_detail<Job, number>(endpoints.job, JobDeserializer);
 export let get_notification_detail = get_filtered_list<Notification, {}>(endpoints.notification);
 
+export let get_statistics = get_filtered_endpoint<Statistics, StatisticsFilter>(endpoints.statistics, StatisticsDeserializer);
+
 // -----------------------------------------------------------------------------
 
 export async function get_volunteer(): Promise<Volunteer> {
     let response = await token_aware_fetch(endpoints.volunteer);
-    let json = await response.json();
-    let des = VolunteerDeserializer(json);
-    return des;
+    if (response.status == 200) {
+        return VolunteerDeserializer(await response.json());
+    } else {
+        return Promise.reject(await response.json());
+    }
 }
 
 export async function signup(body: BodyInit): Promise<Response> {
@@ -74,10 +79,6 @@ export async function update_volunteer_profile(url: string, body: BodyInit): Pro
     });
 }
 
-
-export async function get_statistics(): Promise<Statistics> {
-    return fetch(endpoints.statistics).then(response => response.json());
-}
 
 export async function job_apply(job: string) {
     return token_aware_fetch(`${job}/apply`, {

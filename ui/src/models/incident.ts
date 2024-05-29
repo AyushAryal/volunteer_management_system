@@ -65,7 +65,7 @@ export interface Job {
     description: string,
     start_date: Date,
     end_date: Date,
-    program: Program,
+    program: string,
     status: JobStatus,
     application_status: JobApplicationStatus | "Not applied",
     vacancy: number,
@@ -155,7 +155,7 @@ export interface Certificate {
 export interface Volunteer {
     email: string,
     password: string,
-    volunteer?: string,
+    volunteer: VolunteerProfile,
     citizenship?: Citizenship,
     passport?: Passport,
     national_id?: NationalId,
@@ -177,14 +177,43 @@ export interface SiteContent {
 }
 
 export interface Statistics {
-    volunteers: number;
-    gender: { gender: number; count: number }[];
-    nationality: { nationality: number; count: number }[];
-    total_incidents: number;
-    total_programs: number;
-    total_jobs: number;
-    provinces: number;
-    municipalities: number;
+    volunteers: {
+        total: number,
+        gender: { [key: string]: number },
+        nationality: { [key: string]: number },
+        blood_group: { [key: string]: number },
+        category: { [key: string]: number },
+        training_type: { [key: string]: number },
+    }
+    jobs: {
+        total: number,
+        status: { [key: string]: number },
+        by_time: { date: Date, value: number }[]
+    },
+    incidents: {
+        total: number,
+        by_time: { date: Date, value: number }[]
+    },
+    programs: {
+        total: number,
+        by_time: { date: Date, value: number }[]
+    }
+}
+
+export const StatisticsDeserializer: IDeserializer<Statistics> = (json: any) => {
+    json.incidents.by_time = json.incidents.by_time
+        .map(([date, value]: [string, number]) => {
+            return { date: new Date(date), value: value }
+        });
+    json.programs.by_time = json.programs.by_time
+        .map(([date, value]: [string, number]) => {
+            return { date: new Date(date), value: value }
+        });
+    json.jobs.by_time = json.jobs.by_time
+        .map(([date, value]: [string, number]) => {
+            return { date: new Date(date), value: value }
+        });
+    return json as Statistics;
 }
 
 export interface Notification {

@@ -1,159 +1,138 @@
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useHookstate } from "@hookstate/core";
+import { storeState } from "@models/store";
 import { Chart } from "primereact/chart";
+import { ProgressSpinner } from "primereact/progressspinner";
 
-export const  GenderStats = () => {
-  const genders = ["Male", "Female", "Other"]
-  const data = {
-    labels: genders,
+function make_dataset(label: string, data: { [key: string]: number }) {
+  return {
+    labels: Object.keys(data),
     datasets: [
       {
-        label: "Volunteers",
-        data: [5400, 3250, 170],
-        backgroundColor: ["#2f4b7c", "#f95d6a", "#ffa600"],
-        borderColor: ["#2f4b7c", "#f95d6a", "#ffa600"],
+        label: label,
+        data: Object.values(data),
         borderWidth: 1,
       },
     ],
   };
-  const options = {
-    maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        labels: {
-          usePointStyle: true,
-        },
-      },
-    },
-  };
-  
-  return <Chart className="w-full h-full" type="pie" data={data} options={options}></Chart>;
+}
+
+export const GenderStats = () => {
+  let statistics = useHookstate(storeState.statistics).get();
+  if (!statistics) return <ProgressSpinner />;
+
+  return <Chart
+    className="w-full h-full"
+    type="pie"
+    data={make_dataset("Volunteer Gender", statistics.volunteers.gender)}
+    options={{
+      maintainAspectRatio: false,
+      plugins: { legend: { labels: { usePointStyle: true } } },
+    }}
+  />;
 }
 
 export const VolunteerCategoryStats = () => {
-  const volunteerCategories = [
-    "Student",
-    "RSS",
-    "Retired APF",
-    "Retired Army",
-    "Retired Government Service",
-    "Senior Citizen",
-    "Community",
-    "General",
-  ];
-  const data = {
-    labels: volunteerCategories,
-    datasets: [
-      {
-        label: "Volunteer Categories",  
-        data: [1370, 1150, 1840, 1290, 950, 1310, 1350, 1270],
-        backgroundColor: [
-          "#003f5c",
-          "#665191",
-          "#a05195",
-          "#d45087",
-          "#f95d6a",
-          "#ff7c43",
-          "#ffa600",
-          "#2f4b7c",
-        ],
-        borderColor: [
-          "#003f5c",
-          "#665191",
-          "#a05195",
-          "#d45087",
-          "#f95d6a",
-          "#ff7c43",
-          "#ffa600",
-          "#2f4b7c",
-        ],
-        borderWidth: 1,
-      },
-    ],
-  };
-  const options = {
-    indexAxis: "y",
-    maintainAspectRatio: false,
-  };
-  return <Chart className="h-full w-full" type="bar" data={data} options={options}></Chart>;
+  let statistics = useHookstate(storeState.statistics).get();
+  if (!statistics) return <ProgressSpinner />;
+
+  return <Chart
+    className="h-full w-full"
+    type="bar"
+    data={make_dataset("Volunteer Category", statistics.volunteers.category)}
+    options={{
+      indexAxis: "y",
+      maintainAspectRatio: false,
+    }}
+  />;
 }
-export const VolunteersOnProvinceStats = () => {
-  const provinces = [
-    "Koshi",
-    "Madhesh",
-    "Bagmati",
-    "Gandaki",
-    "Lumbini",
-    "Karnali",
-    "Sudurpashchim",
-  ];
-  const data = {
-    labels: provinces,
-    datasets: [
-      {
-        label: "Volunteers on  Province",
-        data: [1370, 1150, 1840, 1290, 950, 1310, 1350],
-        backgroundColor: [
-          "#665191",
-          "#a05195",
-          "#d45087",
-          "#f95d6a",
-          "#ff7c43",
-          "#ffa600",
-          "#2f4b7c",
-        ],
-        borderColor: [
-          "#665191",
-          "#a05195",
-          "#d45087",
-          "#f95d6a",
-          "#ff7c43",
-          "#ffa600",
-          "#2f4b7c",
-        ],
-        borderWidth: 1,
-      },
-    ],
-  };
-  const options = {
-    maintainAspectRatio: false,
-  };
-  return <Chart className="h-full w-full" type="bar" data={data} options={options}></Chart>;
+
+export const VolunteerTrainingStats = () => {
+  let statistics = useHookstate(storeState.statistics).get();
+  if (!statistics) return <ProgressSpinner />;
+
+  return <Chart
+    className="h-full w-full"
+    type="radar"
+    data={make_dataset("Volunteer Training", statistics.volunteers.training_type)}
+    options={{
+      indexAxis: "y",
+      maintainAspectRatio: false,
+    }}
+  />;
 }
-export const TrainingStats = () => {
-  const trainings = ["Rescue", "Relief Distribution", "Evacuation", "Other"];
-  const data = {
-    labels: trainings,
-    datasets: [
-      {
-        label: "Volunteers with Trainings",
-        data: [1370, 1150, 1840, 1290],
-        backgroundColor: [
-          "#665191",
-          "#a05195",
-          "#d45087",
-          "#f95d6a",
-          "#ff7c43",
-          "#ffa600",
-          "#2f4b7c",
-        ],
-        borderColor: [
-          "#665191",
-          "#a05195",
-          "#d45087",
-          "#f95d6a",
-          "#ff7c43",
-          "#ffa600",
-          "#2f4b7c",
-        ],
-        borderWidth: 1,
-      },
-    ],
-  };
-  const options = {
-    maintainAspectRatio: false,
-  };
-  return <Chart className="h-full w-full" type="bar" data={data} options={options}></Chart>;
+
+export const BloodGroupStats = () => {
+  let statistics = useHookstate(storeState.statistics).get();
+  if (!statistics) return <ProgressSpinner />;
+
+  return <Chart
+    className="h-full w-full"
+    type="radar"
+    data={make_dataset("Blood Group", statistics.volunteers.blood_group)}
+    options={{
+      indexAxis: "y",
+      maintainAspectRatio: false,
+    }}
+  />;
+}
+
+export const JobStatusStats = () => {
+  let statistics = useHookstate(storeState.statistics).get();
+  if (!statistics) return <ProgressSpinner />;
+
+  return <Chart
+    className="h-full w-full"
+    type="pie"
+    data={make_dataset("Job Status", statistics.jobs.status)}
+    options={{
+      indexAxis: "y",
+      maintainAspectRatio: false,
+    }}
+  />;
+}
+
+export const IncidentByTimeRangeStats = () => {
+  let statistics = useHookstate(storeState.statistics).get();
+  if (!statistics) return <ProgressSpinner />;
+
+  const data = statistics.incidents.by_time
+    .slice()
+    .reduce((o, { date, value }) => {
+      return Object.assign(o, { [date.toDateString()]: value });
+    }, {});
+
+  return <Chart
+    className="h-full w-full"
+    type="line"
+    data={make_dataset("Incidents By Time Range", data)}
+    options={{
+      tension: 0.4,
+      maintainAspectRatio: false,
+    }}
+  />;
+}
+
+export const JobByTimeRangeStats = () => {
+  let statistics = useHookstate(storeState.statistics).get();
+  if (!statistics) return <ProgressSpinner />;
+
+  const data = statistics.jobs.by_time
+    .slice()
+    .reduce((o, { date, value }) => {
+      return Object.assign(o, { [date.toDateString()]: value });
+    }, {});
+
+  return <Chart
+    className="h-full w-full"
+    type="line"
+    data={make_dataset("Jobs By Time Range", data)}
+    options={{
+      tension: 0.4,
+      maintainAspectRatio: false,
+    }}
+  />;
 }
 
 const Stats = () => {
@@ -168,16 +147,13 @@ const Stats = () => {
         <div className="bg-indigo-100 border-round p-3 shadow-4 w-5 min-w-max h-24rem">
           <GenderStats />
         </div>
-        <div className="bg-indigo-100 border-round p-3 shadow-4 w-5 min-w-max h-24rem">
-          <VolunteersOnProvinceStats />
-        </div>
       </div>
       <div className="flex flex-row flex-wrap justify-content-around gap-7 mb-7">
         <div className="bg-indigo-100 border-round p-3 shadow-4 w-5 min-w-max h-24rem">
           <VolunteerCategoryStats />
         </div>
         <div className="bg-indigo-100 border-round p-3 shadow-4 w-5 min-w-max h-24rem">
-          <TrainingStats />
+          <VolunteerTrainingStats />
         </div>
       </div>
     </section>

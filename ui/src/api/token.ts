@@ -1,7 +1,8 @@
 import { server } from "@api/api";
 
-import { Token, Store, storeState } from "@models/store";
+import { Token, storeState } from "@models/store";
 import { State } from "@hookstate/core";
+import { Volunteer } from "@models/incident";
 
 export async function token_aware_fetch(resource: RequestInfo | URL, options?: RequestInit): Promise<Response> {
     let encoded_token = localStorage.getItem("token");
@@ -14,7 +15,7 @@ export async function token_aware_fetch(resource: RequestInfo | URL, options?: R
         extended_options.headers = headers;
         const response = await fetch(resource, extended_options);
         if (response.status === 401) {
-            logout(storeState);
+            logout(storeState.token, storeState.volunteer);
         }
         return response;
     }
@@ -30,10 +31,11 @@ export async function login(email: string, password: string): Promise<Response> 
     return response;
 }
 
-export async function logout(store: State<Store, {}>) {
+export async function logout(token: State<Token | null, {}>, volunteer: State<Volunteer | null, {}>) {
     await token_aware_fetch(`${server}/api/token`, {
         "method": "DELETE",
     });
-    store.token.set(null);
+    token.set(null);
+    volunteer.set(null);
     localStorage.removeItem("token");
 }

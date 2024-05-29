@@ -8,7 +8,6 @@ import { useHookstate } from "@hookstate/core";
 import { storeState } from "@models/store";
 import { IncidentDetailModal } from "@components/map/sidebar/IncidentDetailModal";
 import { ListSkeleton } from "@components/map/sidebar/ListSkeleton";
-import { Chip } from "primereact/chip";
 import { faLocation } from "@fortawesome/free-solid-svg-icons";
 
 type IncidentRibbonProps = { incident: Incident }

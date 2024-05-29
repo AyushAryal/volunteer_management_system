@@ -26,6 +26,8 @@ django-vectortiles = { git = "git@github.com:submarcos/django-vectortiles.git", 
 django-select2 = "^8.1.2"
 drf-extra-fields = "^3.7.0"
 drf-writable-nested = "^0.7.0"
+django-tables2 = "^2.7.0"
+django-htmx = "^1.17.3"
 
 
 [tool.poetry.group.dev.dependencies]

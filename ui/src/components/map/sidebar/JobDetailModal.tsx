@@ -5,7 +5,6 @@ import { get_job_detail } from '@api/incident';
 import { get_id } from '@api/utils';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faClock } from '@fortawesome/free-regular-svg-icons/faClock';
 import { JobActionWidget } from './JobActionWidget';
 import { faCalendarDay, faPeopleGroup } from '@fortawesome/free-solid-svg-icons';
 import { storeState } from '@models/store';
@@ -72,7 +71,6 @@ export function JobDetailModal(props: JobDetailModalProps) {
             </div>
             {leader_display}
         </div>
-        <span>{job.program.name}</span>
         <span>
             <div className="surface-50 border-round-lg p-4" dangerouslySetInnerHTML={{ __html: job.description || "" }} />
         </span>

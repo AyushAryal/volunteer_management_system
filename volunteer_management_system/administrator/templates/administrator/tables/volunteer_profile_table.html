@@ -1,0 +1,26 @@
+{% extends "admin/base_site.html" %}
+
+{% load render_table from django_tables2 %}
+{% load i18n %}
+
+{% block content %}
+    <h1>Volunteer Profile table</h1>
+
+    <a class="button p-3" href="{% url 'admin:export_volunteer_csv' %}"> Export CSV</a>
+
+    {# Search form #}
+    <form hx-get="{% url 'admin:volunteer_profile_table' %}" 
+          hx-target="div.table-container" 
+          hx-swap="outerHTML" 
+          hx-indicator=".progress" 
+          class="form-inline">
+        {{ filter.form }}
+        <input type="submit"> Submit </input>
+    </form>
+
+    {# Progress indicator #}
+    <div class="progress"> </div>
+
+    {# The actual table #}
+    {% render_table table %}
+{% endblock %}

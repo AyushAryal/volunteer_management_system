@@ -4,7 +4,7 @@ import {
     MunicipalityBrief,
     WardBrief,
 } from '@models/federal';
-import { Incident, Job, Program, Volunteer, Notification } from '@models/incident';
+import { Incident, Job, Program, Volunteer, Notification, Statistics } from '@models/incident';
 
 import { hookstate } from '@hookstate/core';
 
@@ -38,6 +38,7 @@ export interface Store {
     jobList: Job[],
     programList: Program[],
     notificationList: Notification[],
+    statistics: Statistics | null,
     loaded: {
         provinceList: boolean,
         districtList: boolean,
@@ -47,6 +48,7 @@ export interface Store {
         jobList: boolean,
         programList: boolean,
         notificationList: boolean,
+        statistics: boolean,
     },
     mapControls: MapControls
 }
@@ -72,6 +74,7 @@ export const storeState = hookstate<Store>({
     jobList: [],
     programList: [],
     notificationList: [],
+    statistics: null,
     loaded: {
         provinceList: false,
         districtList: false,
@@ -80,7 +83,8 @@ export const storeState = hookstate<Store>({
         incidentList: false,
         jobList: false,
         programList: false,
-        notificationList: false,
+        notificationList: true,
+        statistics: false,
     },
     mapControls: {
         selectedProvince: null,

@@ -1,22 +1,28 @@
+import csv
 import federal.models
 import incident.models
 from django.contrib import admin
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user, get_user_model
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.sites.models import Site
 from django.utils.translation import gettext_lazy as _
 from django.utils.html import mark_safe
+from django.http import HttpResponse
 from leaflet.admin import LeafletGeoAdmin
+from django.urls import path
 from administrator.forms import (
     ProgramForm,
     JobForm,
     JobApplicationForm,
 )
+from administrator.tables import VolunteerProfileTableView
 
 
 def get_user_controlled_wards(user):
     wards = []
-    if hasattr(user, "province_admin"):
+    if user.is_superuser:
+        return federal.models.Ward.objects.all()
+    elif hasattr(user, "province_admin"):
         province = user.province_admin
         wards = federal.models.Ward.objects.filter(
             municipality__district__province=province
@@ -28,6 +34,62 @@ def get_user_controlled_wards(user):
         municipality = user.municipality_admin
         wards = federal.models.Ward.objects.filter(municipality=municipality)
     return wards
+
+
+def csv_response_from_queryset(queryset, filename="export"):
+    response = HttpResponse()
+    response["Content-Disposition"] = f"attachment;filename={filename}.csv"
+    writer = csv.writer(response)
+    field_names = [field.name for field in queryset.model._meta.fields]
+    writer.writerow(field_names)
+    for obj in queryset:
+        writer.writerow([getattr(obj, field) for field in field_names])
+    return response
+
+
+class MainAdminSite(admin.AdminSite):
+    site_title = "Dashboard"
+    site_header = "Admin Dashboard"
+    index_title = "Volunteer Management System"
+
+    def export_volunteer_csv(self, request):
+        wards = get_user_controlled_wards(request.user)
+        qs = incident.models.VolunteerProfile.objects.filter(temporary_ward__in=wards)
+        return csv_response_from_queryset(qs)
+
+    def get_urls(self):
+        urls = super().get_urls()
+        my_urls = [
+            path(
+                "table/",
+                self.admin_view(VolunteerProfileTableView.as_view()),
+                name="volunteer_profile_table",
+            ),
+            path(
+                "export/volunteer",
+                self.admin_view(self.export_volunteer_csv),
+                name="export_volunteer_csv",
+            ),
+        ]
+        return my_urls + urls
+
+    def index(self, request, extra_context=None):
+        if not extra_context:
+            extra_context = {}
+
+        extra_context[
+            "volunteers"
+        ] = incident.models.VolunteerProfile.objects.all().prefetch_related(
+            "user",
+            "temporary_ward",
+            "permanent_ward",
+        )
+        return super().index(request, extra_context)
+
+
+admin_site = MainAdminSite()
+
+admin_site.register(Site)
 
 
 class CertificateInline(admin.StackedInline):
@@ -67,15 +129,21 @@ class VolunteerProfileInline(admin.StackedInline):
     extra = 0
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if not hasattr(self, "cached_wards"):
+            self.cached_wards = [
+                (i.pk, str(i))
+                for i in federal.models.Ward.objects.all().prefetch_related(
+                    "municipality"
+                )
+            ]
+
         field = super(VolunteerProfileInline, self).formfield_for_foreignkey(
             db_field, request, **kwargs
         )
-        if db_field.name == "permanent_ward" and hasattr(self, "cached_permanent_ward"):
-            field.choices = self.cached_permanent_ward
-        elif db_field.name == "temporary_ward" and hasattr(
-            self, "cached_temporary_ward"
-        ):
-            field.choices = self.cached_temporary_ward
+        if db_field.name == "permanent_ward":
+            field.choices = self.cached_wards
+        elif db_field.name == "temporary_ward":
+            field.choices = self.cached_wards
         return field
 
 
@@ -240,27 +308,6 @@ class UserAdmin(BaseUserAdmin):
     )
     ordering = ("email",)
     search_fields = ("email",)
-
-    def get_formsets_with_inlines(self, request, obj=None):
-        for inline in self.get_inline_instances(request, obj):
-            inline.cached_temporary_ward = [
-                (i.pk, str(i)) for i in federal.models.Ward.objects.all()
-            ]
-            inline.cached_permanent_ward = [
-                (i.pk, str(i)) for i in federal.models.Ward.objects.all()
-            ]
-            yield inline.get_formset(request, obj), inline
-
-
-class MainAdminSite(admin.AdminSite):
-    site_title = "Dashboard"
-    site_header = "Admin Dashboard"
-    index_title = "Volunteer Management System"
-
-
-admin_site = MainAdminSite()
-
-admin_site.register(Site)
 
 
 class ProvinceAdmin(admin.ModelAdmin):

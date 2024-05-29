@@ -6,6 +6,22 @@ export function get_id(url: string): number {
     return +url.split("/").reverse()[0];
 }
 
+export function get_filtered_endpoint<T, F>(url: string, deserializer?: IDeserializer<T>): (query?: F) => Promise<T> {
+    deserializer = deserializer || GenericDeserializer<T>();
+    return async (query?: F) => {
+        if (Object.keys(query ?? {}).length != 0) {
+            const query_string = Object.entries(query ?? {})
+                .filter(([_, value]) => value !== undefined)
+                .map(([key, value]) => `${key}=${value}`)
+                .join("&");
+            let response = await token_aware_fetch(`${url}?${query_string}`);
+            return deserializer(await response.json());
+        }
+        let response = await token_aware_fetch(url);
+        return deserializer(await response.json());
+    }
+}
+
 export function get_filtered_list<T, F>(url: string, deserializer?: IDeserializer<T>): (query?: F) => Promise<T[]> {
     deserializer = deserializer || GenericDeserializer<T>();
     return async (query?: F) => {
@@ -20,7 +36,15 @@ export function get_filtered_list<T, F>(url: string, deserializer?: IDeserialize
         }
         let response = await token_aware_fetch(url);
         let list: any[] = await response.json();
-        return list.map(deserializer || GenericDeserializer<T>());
+        return list.map(deserializer);
+    }
+}
+
+export function get_detail_singular<T>(url: string, deserializer?: IDeserializer<T>): () => Promise<T> {
+    deserializer = deserializer || GenericDeserializer<T>();
+    return async () => {
+        let response = await token_aware_fetch(`${url}`);
+        return deserializer(await response.json());
     }
 }
 

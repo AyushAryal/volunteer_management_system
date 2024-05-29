@@ -1,3 +1,5 @@
+import datetime
+from functools import reduce
 import django_filters
 import federal.models
 from authentication import utils
@@ -26,6 +28,40 @@ class SiteContentViewSet(
     queryset = models.SiteContent.objects.all()
     serializer_class = serializers.SiteContentSerializer
     pagination_class = None
+
+
+class VolunteerProfileFilter(django_filters.FilterSet):
+    date = django_filters.DateFromToRangeFilter(
+        field_name="user__date_joined", lookup_expr="range"
+    )
+
+    province = django_filters.ModelChoiceFilter(
+        label="Province",
+        field_name="temporary_ward__municipality__district__province",
+        queryset=federal.models.Province.objects.all(),
+    )
+
+    district = django_filters.ModelChoiceFilter(
+        label="District",
+        field_name="temporary_ward__municipality__district",
+        queryset=federal.models.District.objects.all(),
+    )
+
+    municipality = django_filters.ModelChoiceFilter(
+        label="Municipality",
+        field_name="temporary_ward__municipality",
+        queryset=federal.models.Municipality.objects.all(),
+    )
+
+    ward = django_filters.ModelChoiceFilter(
+        label="Ward",
+        field_name="temporary_ward",
+        queryset=federal.models.Ward.objects.all(),
+    )
+
+    class Meta:
+        model = models.VolunteerProfile
+        fields = []
 
 
 class VolunteerProfileViewSet(
@@ -406,57 +442,111 @@ class JobViewSet(
 
 class StatisticsViewSet(
     viewsets.GenericViewSet,
-    viewsets.mixins.ListModelMixin,
 ):
-    class IncidentFilterWithoutDate(IncidentFilter):
-        date = None
-
-    def volunteer_count(self, request):
-        return models.VolunteerProfile.objects.count()
-
-    def volunteer_gender_count(self, request):
-        return models.VolunteerProfile.objects.values("gender").annotate(
-            count=Count("gender")
+    class JobFilterWithEndDate(JobFilter):
+        date = django_filters.DateFromToRangeFilter(
+            field_name="end_date", lookup_expr="range"
         )
 
-    def volunteer_nationality_count(self, request):
-        return models.VolunteerProfile.objects.values("nationality").annotate(
-            count=Count("nationality")
-        )
+    def count_by_criteria(self, key, model, qs):
+        qs = qs.values(key).annotate(count=Count(key))
+        counts_initial = {m: 0 for m in model}
+        for pair in qs:
+            if pair[key] is not None:
+                counts_initial[model(pair[key])] = pair["count"]
+            else:
+                counts_initial["None"] = pair["count"]
 
-    def incident_monthly_counts(self, request):
-        today = timezone.now()
+        return {
+            (str(k.label) if k != "None" else "None"): v
+            for k, v in counts_initial.items()
+        }
 
-        for i in range(30):
-            yield StatisticsViewSet.IncidentFilterWithoutDate(
-                request.GET,
-                queryset=models.Incident.objects.filter(
-                    date__gte=today - timedelta(days=i),
-                    date__lte=today - timedelta(days=i - 1),
-                ),
-            ).qs.count()
+    def count_by_date_range(self, qs, start_date=None, end_date=None, field="date"):
+        if not end_date:
+            end_date = timezone.now()
+        if not start_date:
+            start_date = end_date - timedelta(days=10)
 
-    def provice_count(self, request):
-        return federal.models.Province.objects.count()
+        dt = end_date - start_date
+        dt_days = None
+        threshold = 20
+        for division in [1, 7, 30, 30 * 3, 30 * 6, 365, 365 * 5, 365 * 10]:
+            if dt.days // division < threshold:
+                dt_days = division
+                break
 
-    def municipality_count(self, request):
-        return federal.models.Municipality.objects.count()
+        if not dt_days:
+            dt_days = (end_date - start_date).days // threshold
 
-    def incident_count(self, request):
-        return IncidentFilter(request.GET).qs.count()
+        dt = timedelta(days=dt_days)
+
+        if end_date < start_date:
+            return iter(())
+
+        while start_date < end_date:
+            kwargs = {field + "__gte": start_date, field + "__lte": start_date + dt}
+            yield (start_date, qs.filter(**kwargs).count())
+            start_date += dt
 
     def list(self, request, *args, **kwargs):
+        volunteer_qs = VolunteerProfileFilter(request.GET).qs
+        job_qs = StatisticsViewSet.JobFilterWithEndDate(request.GET).qs
+        incident_qs = IncidentFilter(request.GET).qs
+        program_qs = ProgramFilter(request.GET).qs
+
+        start_date = request.GET.get("date_after", None)
+        end_date = request.GET.get("date_before", None)
+        if start_date:
+            start_date = timezone.make_aware(
+                datetime.datetime.fromisoformat(start_date)
+            )
+        if end_date:
+            end_date = timezone.make_aware(datetime.datetime.fromisoformat(end_date))
+
         return Response(
             {
-                "volunteers": self.volunteer_count(request),
-                "gender": self.volunteer_gender_count(request),
-                "nationality": self.volunteer_nationality_count(request),
-                "total_incidents": self.incident_count(request),
-                "incident_30_days": list(self.incident_monthly_counts(request)),
-                "total_programs": models.Program.objects.count(),
-                "total_jobs": models.Job.objects.count(),
-                "provinces": self.provice_count(request),
-                "municipalities": self.municipality_count(request),
+                "volunteers": {
+                    "total": volunteer_qs.count(),
+                    "gender": self.count_by_criteria(
+                        "gender", models.Gender, volunteer_qs
+                    ),
+                    "nationality": self.count_by_criteria(
+                        "nationality", models.Nationality, volunteer_qs
+                    ),
+                    "blood_group": self.count_by_criteria(
+                        "blood_group", models.BloodGroup, volunteer_qs
+                    ),
+                    "category": self.count_by_criteria(
+                        "category", models.VolunteerCategory, volunteer_qs
+                    ),
+                    "training_type": self.count_by_criteria(
+                        "training_type", models.TrainingType, volunteer_qs
+                    ),
+                },
+                "jobs": {
+                    "total": job_qs.count(),
+                    "status": self.count_by_criteria(
+                        "status", models.JobStatus, job_qs
+                    ),
+                    "by_time": self.count_by_date_range(
+                        job_qs, start_date, end_date, field="end_date"
+                    ),
+                },
+                "incidents": {
+                    "total": incident_qs.count(),
+                    "by_time": self.count_by_date_range(
+                        incident_qs,
+                        start_date,
+                        end_date,
+                    ),
+                },
+                "programs": {
+                    "total": program_qs.count(),
+                    "by_time": self.count_by_date_range(
+                        program_qs, start_date, end_date, field="incident__date"
+                    ),
+                },
             }
         )
 

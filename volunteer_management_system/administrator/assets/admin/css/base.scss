@@ -28,6 +28,11 @@ $secondary: #d82e2e;
   display: none;
 }
 
+.paginator a:link, .paginator a:visited {
+  border-radius: 1rem;
+  padding: 0 10px;
+}
+
 /* Fixes for bootstrap */
 
 a.deletelink,

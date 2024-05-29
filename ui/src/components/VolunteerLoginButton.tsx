@@ -20,8 +20,8 @@ import { FormState } from '@api/form.tsx';
 import { Volunteer } from '@models/incident';
 
 export function VolunteerProfileMenu() {
-    const store = useHookstate(storeState);
-    let volunteer = store.volunteer.get();
+    const token = useHookstate(storeState.token);
+    const volunteer = useHookstate(storeState.volunteer);
 
 
     const menu = useRef<Menu>(null);
@@ -48,11 +48,11 @@ export function VolunteerProfileMenu() {
         label: 'Logout',
         icon: faSignOut,
         template: itemRenderer,
-        command: (_) => logout(store),
+        command: (_) => logout(token, volunteer),
     }];
 
-    if (volunteer === null) {
-        return <Button outlined size="small" onClick={() => logout(store)} >
+    if (volunteer.get() === null) {
+        return <Button outlined size="small" onClick={() => logout(token, volunteer)} >
             <FontAwesomeIcon icon={faRightFromBracket} /> &nbsp; Logout
         </Button>;
     }
@@ -61,7 +61,7 @@ export function VolunteerProfileMenu() {
         <img
             onClick={(event) => menu?.current?.toggle(event)}
             className="mb-2 border-2 border-red-600"
-            src={volunteer.volunteer.profile_image}
+            src={volunteer.get()?.volunteer?.profile_image}
             style={{
                 width: "3.1rem",
                 height: "3.1rem",
@@ -73,7 +73,7 @@ export function VolunteerProfileMenu() {
         {
             volunteerProfileEditVisible &&
             <VolunteerUpdateForm
-                volunteer={volunteer as Volunteer}
+                volunteer={volunteer.get() as Volunteer}
                 visible={volunteerProfileEditVisible}
                 setVisible={setVolunteerProfileEditVisible}
             />
@@ -88,7 +88,8 @@ type VolunteerLoginModalProps = {
 }
 
 function VolunteerLoginModal({ visible, setVisible }: VolunteerLoginModalProps) {
-    const store = useHookstate(storeState);
+    const token = useHookstate(storeState.token);
+    const volunteer = useHookstate(storeState.volunteer);
 
     let emailRef = useRef<HTMLInputElement>(null);
     let passwordRef = useRef<HTMLInputElement>(null);
@@ -101,10 +102,10 @@ function VolunteerLoginModal({ visible, setVisible }: VolunteerLoginModalProps) 
             let password = (passwordRef.current.value);
             login(email, password).then(async (response): Promise<void> => {
                 if (response.status == 200) {
-                    let token: Token = await response.json();
-                    store.token.set(token);
-                    localStorage.setItem("token", JSON.stringify(token));
-                    store.volunteer.set(await get_volunteer());
+                    let token_: Token = await response.json();
+                    token.set(token_);
+                    localStorage.setItem("token", JSON.stringify(token_));
+                    volunteer.set(await get_volunteer());
                     setVisible(false);
                     setFormState(new FormState({ errors: "", submitted: true }));
                 } else if (response.status == 400 || response.status == 401) {
@@ -174,10 +175,10 @@ function VolunteerLoginModal({ visible, setVisible }: VolunteerLoginModalProps) 
 }
 
 export function VolunteerLoginButton() {
-    const store = useHookstate(storeState);
+    const token = useHookstate(storeState.token);
     let [modalVisible, setModalVisible] = useState(false);
 
-    if (store.token.get() === null) {
+    if (token.get() === null) {
         if (modalVisible) {
             return <VolunteerLoginModal visible={modalVisible} setVisible={setModalVisible} />;
         } else {

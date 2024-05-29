@@ -22,34 +22,17 @@ const CountsComponent = () => {
     </div>
   );
 
-  const {
-    volunteers,
-    gender,
-    nationality,
-    total_incidents,
-    total_programs,
-    total_jobs,
-  } = stats
-
   const counts = {
-    "Total Volunteers": volunteers,
-    "Male Volunteers": gender.find((g:any) => g.gender === 0)?.count,
-    "Female Volunteers": gender.find((g:any) => g.gender === 1)?.count,
-    "Local Volunteers": nationality.find((n:any) => n.nationality === 0)?.count,
-    "Foreign Volunteers": nationality.find((n:any) => n.nationality === 1)?.count,
-    "Total Incidents": total_incidents,
-    "Total Programs": total_programs,
-    "Total Jobs": total_jobs,
+    "Total Volunteers": stats.volunteers.total,
+    "Male Volunteers": stats.volunteers.gender.Male,
+    "Female Volunteers": stats.volunteers.gender.Female,
+    "National Volunteers": stats.volunteers.nationality.National,
+    "International Volunteers": stats.volunteers.nationality.International,
+    "Total Incidents": stats.incidents.total,
+    "Total Programs": stats.programs.total,
+    "Total Jobs": stats.jobs.total,
   };
 
-  // const counts = {
-  //   "Total Volunteers": 10456,
-  //   "Assigned Volunteers": 9452,
-  //   "Total Incidents": 42640,
-  //   "Total Jobs": 10600,
-  //   "Active Programs": 757,
-  //   "Completed Programs": 1642,
-  // };
   return (
     <div
       className="gap-2"

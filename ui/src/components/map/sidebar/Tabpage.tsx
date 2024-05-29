@@ -12,8 +12,10 @@ import { storeState } from "@models/store";
 import { faBell } from "@fortawesome/free-solid-svg-icons";
 import { Badge } from "primereact/badge";
 import { Notifications } from "./Notifications";
+import { Profile } from "./Profile";
 
 export function Tabpage() {
+  const volunteer = useHookstate(storeState.volunteer);
   const incidentCount = useHookstate(storeState.incidentList).length;
   const jobCount = useHookstate(storeState.jobList).length;
   const notificationCount = useHookstate(storeState.notificationList)
@@ -106,8 +108,6 @@ export function Tabpage() {
     );
   };
 
-  const store = useHookstate(storeState);
-  let volunteer = store.volunteer.get();
 
   return (
 
@@ -121,12 +121,14 @@ export function Tabpage() {
       <TabPanel header="Visualizations" headerTemplate={tabVisualizationTemplate}>
         <Visualizations />
       </TabPanel>
-      {(volunteer === null) ? <></> :
+      {(volunteer.get() === null) ? <></> :
         <TabPanel header="Notifications" headerTemplate={notificationHeaderTemplate}>
           <Notifications />
         </TabPanel>}
-      {(volunteer === null) ? <></> :
-        <TabPanel header="Profile" headerTemplate={profileHeaderTemplate}></TabPanel>
+      {(volunteer.get() === null) ? <></> :
+        <TabPanel header="Profile" headerTemplate={profileHeaderTemplate}>
+          <Profile />
+        </TabPanel>
       }
     </TabView>
   );
