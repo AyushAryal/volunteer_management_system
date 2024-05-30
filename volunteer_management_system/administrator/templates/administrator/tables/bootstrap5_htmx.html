@@ -10,9 +10,9 @@
       <tr>
           {% for column in table.columns %}
               <th {{ column.attrs.th.as_html }}
-                  hx-get="{% querystring table.prefixed_order_by_field=column.order_by_alias.next %}"
+                  hx-get="{{table.url}}{% querystring table.prefixed_order_by_field=column.order_by_alias.next %}"
                   hx-trigger="click"
-                  hx-target="div.table-container"
+                  hx-target="div.table-container-all"
                   hx-swap="outerHTML"
                   hx-indicator=".progress"
                   style="cursor: pointer;">
@@ -27,14 +27,14 @@
 {# Pagination block overrides #}
 {% block pagination.previous %}
     <li class="previous page-item">
-        <div hx-get="{% querystring table.prefixed_page_field=table.page.previous_page_number %}"
+        <div hx-get="{{table.url}}{% querystring table.prefixed_page_field=table.page.previous_page_number %}"
              hx-trigger="click"
-             hx-target="div.table-container"
+             hx-target="div.table-container-all"
              hx-swap="outerHTML"
              hx-indicator=".progress"
              class="page-link">
-            <span aria-hidden="true">&laquo;</span>
             {% trans 'previous' %}
+            <span aria-hidden="true">&laquo;</span>
         </div>
     </li>
 {% endblock pagination.previous %}
@@ -42,9 +42,9 @@
     {% for p in table.page|table_page_range:table.paginator %}
         <li class="page-item{% if table.page.number == p %} active{% endif %}">
             <div class="page-link" 
-                 {% if p != '...' %}hx-get="{% querystring table.prefixed_page_field=p %}"{% endif %}
+                {% if p != '...' %}hx-get="{{table.url}}{% querystring table.prefixed_page_field=p %}"{% endif %}
                  hx-trigger="click"
-                 hx-target="div.table-container"
+                 hx-target="div.table-container-all"
                  hx-swap="outerHTML"
                  hx-indicator=".progress">
                 {{ p }}
@@ -54,9 +54,9 @@
 {% endblock pagination.range %}
 {% block pagination.next %}
     <li class="next page-item">
-        <div hx-get="{% querystring table.prefixed_page_field=table.page.next_page_number %}"
+        <div hx-get="{{table.url}}{% querystring table.prefixed_page_field=table.page.next_page_number %}"
              hx-trigger="click"
-             hx-target="div.table-container"
+             hx-target="div.table-container-all"
              hx-swap="outerHTML"
              hx-indicator=".progress"
              class="page-link">

@@ -7,4 +7,15 @@
 {% endblock %}
 
 {% block content %}
+    <h1> Index </h1>
+    <div hx-get="{% url 'admin:volunteer_profile_table' %}" 
+          hx-swap="outerHTML" 
+          hx-trigger="load"
+    >
+    </div>
+    <div hx-get="{% url 'admin:job_application_table' %}" 
+          hx-swap="outerHTML" 
+          hx-trigger="load"
+    >
+    </div>
 {% endblock %}

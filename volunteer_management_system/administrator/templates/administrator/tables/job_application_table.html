@@ -2,11 +2,11 @@
 {% load render_table from django_tables2 %}
 
 
-<div id="volunteer_profile_table" class="d-flex flex-column table-container-all">
+<div id="job_application_table" class="d-flex flex-column table-container-all">
     <div class="d-flex flex-row justify-content-between align-items-center">
-        <h2>Volunteer Profile table</h2>
+        <h2>Job Application Table</h2>
         <div class="p-absolute m-4 align-self-end">
-            <button class="btn btn-primary" onclick="onExportVolunteerProfile();"> Export CSV</button>
+            <button class="btn btn-primary" onclick="onExportJobApplication();"> Export CSV</button>
         </div>
     </div>
 
@@ -20,12 +20,12 @@
     </style>
 
     {# Search form #}
-    <form hx-get="{% url 'admin:volunteer_profile_table' %}" 
-          hx-target="#volunteer_profile_table" 
+    <form hx-get="{% url 'admin:job_application_table' %}" 
+          hx-target="#job_application_table" 
           hx-swap="outerHTML" 
           hx-indicator=".progress" 
           class="form-inline"
-          id="volunteer_profile_form"
+          id="job_application_form"
     >
         {% csrf_token %}
         {% for field in filter.form %}
@@ -50,17 +50,17 @@
 </div>
 
 <script defer>
-    function onExportVolunteerProfile() {
-        let form = document.getElementById("volunteer_profile_form");
+    function onExportJobApplication() {
+        let form = document.getElementById("job_application_form");
         let formData = new FormData(form);
 
-        fetch("{% url 'admin:export_volunteer_csv' %}?" + new URLSearchParams(formData))
+        fetch("{% url 'admin:export_job_application_csv' %}?" + new URLSearchParams(formData))
         .then((response) => response.blob())
         .then(blob => {
             var url = window.URL.createObjectURL(blob);
             var a = document.createElement('a');
             a.href = url;
-            a.download = "volunteer_profile_data.csv";
+            a.download = "job_application.csv";
             document.body.appendChild(a);
             a.click();    
             a.remove();

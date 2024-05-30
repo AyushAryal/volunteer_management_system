@@ -2,7 +2,7 @@ import csv
 import federal.models
 import incident.models
 from django.contrib import admin
-from django.contrib.auth import get_user, get_user_model
+from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.sites.models import Site
 from django.utils.translation import gettext_lazy as _
@@ -15,25 +15,13 @@ from administrator.forms import (
     JobForm,
     JobApplicationForm,
 )
-from administrator.tables import VolunteerProfileTableView
-
-
-def get_user_controlled_wards(user):
-    wards = []
-    if user.is_superuser:
-        return federal.models.Ward.objects.all()
-    elif hasattr(user, "province_admin"):
-        province = user.province_admin
-        wards = federal.models.Ward.objects.filter(
-            municipality__district__province=province
-        )
-    elif hasattr(user, "district_admin"):
-        district = user.district_admin
-        wards = federal.models.Ward.objects.filter(municipality__district=district)
-    elif hasattr(user, "municipality_admin"):
-        municipality = user.municipality_admin
-        wards = federal.models.Ward.objects.filter(municipality=municipality)
-    return wards
+from administrator.tables import (
+    VolunteerProfileFilter,
+    VolunteerProfileTableView,
+    JobApplicationFilter,
+    JobApplicationTableView,
+    get_user_controlled_wards,
+)
 
 
 def csv_response_from_queryset(queryset, filename="export"):
@@ -55,36 +43,42 @@ class MainAdminSite(admin.AdminSite):
     def export_volunteer_csv(self, request):
         wards = get_user_controlled_wards(request.user)
         qs = incident.models.VolunteerProfile.objects.filter(temporary_ward__in=wards)
+        qs = VolunteerProfileFilter(request.GET, queryset=qs).qs
+        return csv_response_from_queryset(qs)
+
+    def export_job_application_csv(self, request):
+        wards = get_user_controlled_wards(request.user)
+        qs = incident.models.JobApplication.objects.filter(
+            job__program__incident__ward__in=wards
+        )
+        qs = JobApplicationFilter(request.GET, queryset=qs).qs
         return csv_response_from_queryset(qs)
 
     def get_urls(self):
         urls = super().get_urls()
         my_urls = [
             path(
-                "table/",
+                "table/volunteer",
                 self.admin_view(VolunteerProfileTableView.as_view()),
                 name="volunteer_profile_table",
+            ),
+            path(
+                "table/job_application",
+                self.admin_view(JobApplicationTableView.as_view()),
+                name="job_application_table",
             ),
             path(
                 "export/volunteer",
                 self.admin_view(self.export_volunteer_csv),
                 name="export_volunteer_csv",
             ),
+            path(
+                "export/job_application",
+                self.admin_view(self.export_job_application_csv),
+                name="export_job_application_csv",
+            ),
         ]
         return my_urls + urls
-
-    def index(self, request, extra_context=None):
-        if not extra_context:
-            extra_context = {}
-
-        extra_context[
-            "volunteers"
-        ] = incident.models.VolunteerProfile.objects.all().prefetch_related(
-            "user",
-            "temporary_ward",
-            "permanent_ward",
-        )
-        return super().index(request, extra_context)
 
 
 admin_site = MainAdminSite()
