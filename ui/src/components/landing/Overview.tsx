@@ -42,10 +42,11 @@ const CountsComponent = () => {
       }}
     >
       {Object.entries(counts).map(([label, count]) => (
-        <div key={label}
+        <div
+          key={label}
           className="flex flex-column justify-content-center align-items-center text-center border-round-sm bg-primary p-5"
         >
-          <div className="font-bold text-2xl">{count}</div>
+          <div className="font-bold text-2xl text-cyan-100">{count}</div>
           <div className="font-semibold">{label}</div>
         </div>
       ))}

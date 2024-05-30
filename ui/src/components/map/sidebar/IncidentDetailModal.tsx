@@ -50,10 +50,10 @@ export function IncidentDetailModal(props: IncidentDetailModalProps) {
     }
 
     const jobsByProgram = jobs.reduce((acc: { [key: string]: Job[] }, job) => {
-        if (!acc[job.program]) {
-            acc[job.program] = [];
+        if (!acc[job.program.toString()]) {
+            acc[job.program.toString()] = [];
         }
-        acc[job.program].push(job);
+        acc[job.program.toString()].push(job);
         return acc;
     }, {});
 

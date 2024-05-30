@@ -88,15 +88,12 @@ export function Jobs() {
     }
 
     return (
-        <VirtualScroller
-            items={jobList.get() as Job[]}
-            itemTemplate={(job: Job) => (
-                <JobRibbon key={job.url} job={job} />
-            )}
-            itemSize={75}
-            style={{ width: '100%', height: '75vh' }}
-        >
-        </VirtualScroller>
+      <VirtualScroller
+        items={jobList.get() as Job[]}
+        itemTemplate={(job: Job) => <JobRibbon key={job.url} job={job} />}
+        itemSize={70}
+        style={{ width: "100%", height: "65vh", overflowX: "hidden" }}
+      ></VirtualScroller>
     );
 }
 
