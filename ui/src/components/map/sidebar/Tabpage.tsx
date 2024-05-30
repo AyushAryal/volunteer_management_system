@@ -33,7 +33,7 @@ export function Tabpage() {
   const tabIncidentTemplate = (options: TabPanelHeaderTemplateOptions) => {
     return (
       <div
-        className={`${options.className} flex flex-column align-items-center text-sm`}
+        className={`${options.className} flex flex-column align-items-center text-sm  `}
         style={{ cursor: "pointer" }}
         onClick={options.onClick}
       >
@@ -46,7 +46,7 @@ export function Tabpage() {
   const tabJobTemplate = (options: TabPanelHeaderTemplateOptions) => {
     return (
       <div
-        className={`${options.className} flex flex-column align-items-center text-sm`}
+        className={`${options.className} flex flex-column align-items-center text-sm  `}
         style={{ cursor: "pointer" }}
         onClick={options.onClick}
       >
@@ -61,7 +61,7 @@ export function Tabpage() {
   ) => {
     return (
       <div
-        className={`${options.className} flex flex-column align-items-center text-sm`}
+        className={`${options.className} flex flex-column align-items-center text-sm  `}
         style={{ cursor: "pointer" }}
         onClick={options.onClick}
       >
@@ -75,7 +75,7 @@ export function Tabpage() {
 
   const notificationHeaderTemplate = (options: TabPanelHeaderTemplateOptions) => {
     return <div
-      className={`${options.className} flex flex-column align-items-center text-sm`}
+      className={`${options.className} flex flex-column align-items-center text-sm  `}
       style={{ cursor: "pointer" }}
       onClick={options.onClick}
     >
@@ -96,7 +96,7 @@ export function Tabpage() {
   ) => {
     return (
       <div
-        className={`${options.className} flex flex-column align-items-center text-sm`}
+        className={`${options.className} flex flex-column align-items-center text-sm `}
         style={{ cursor: "pointer" }}
         onClick={options.onClick}
       >

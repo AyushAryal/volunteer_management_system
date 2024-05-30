@@ -182,7 +182,7 @@ export function VolunteerLoginButton() {
         if (modalVisible) {
             return <VolunteerLoginModal visible={modalVisible} setVisible={setModalVisible} />;
         } else {
-            return <Button outlined size="small" className="mx-1 text-primary border-white hover:underline" label='Login' onClick={() => setModalVisible(true)} >
+            return <Button outlined size="small" className="mx-1 text-primary border-1 border-white hover:underline" label='Login' onClick={() => setModalVisible(true)}>
                 <FontAwesomeIcon className="ml-2" icon={faUser} />
             </Button>;
         }

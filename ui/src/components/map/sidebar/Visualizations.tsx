@@ -6,41 +6,55 @@ export function Visualizations() {
   return (
     <ScrollPanel className="w-full" style={{ height: "75vh" }}>
       <div className="flex flex-column">
-        <span className="">Volunteers By Categories</span>
-        <div className="p-1 my-3 w-30rem" style={{ height: "20rem" }}>
-          <VolunteerCategoryStats />
+        <div className="py-5">
+          <span className="">Volunteers By Categories</span>
+          <div className="p-1 my-3 w-30rem" style={{ height: "20rem" }}>
+            <VolunteerCategoryStats />
+          </div>
         </div>
-        <span className="">Volunteers By Gender</span>
-        <div className="p-1 my-3 w-30rem" style={{ width: "100%" }}>
-          <GenderStats />
+        <div className="py-5">
+          <span className="">Volunteers By Gender</span>
+          <div className="p-1 my-3 w-30rem" style={{ width: "100%" }}>
+            <GenderStats />
+          </div>
         </div>
-        <span className="">Volunteers By Training</span>
-        <div className="p-1 my-3 w-30rem" style={{ height: "20rem" }}>
-          <VolunteerTrainingStats />
+        <div className="py-5">
+          <span className="">Volunteers By Training</span>
+          <div className="p-1 my-3 w-30rem" style={{ height: "20rem" }}>
+            <VolunteerTrainingStats />
+          </div>
         </div>
-        <span className="">Volunteers By Academic Qualification</span>
-        <div className="p-1 my-3 w-30rem" style={{ height: "20rem" }}>
-          <AcademicQualificationStats />
+        <div className="py-5">
+          <span className="">Volunteers By Academic Qualification</span>
+          <div className="p-1 my-3 w-30rem" style={{ height: "20rem" }}>
+            <AcademicQualificationStats />
+          </div>
         </div>
-        <span className="">Volunteers By Blood Group</span>
-
-        <div className="p-1 my-3 w-30rem" style={{ height: "20rem" }}>
-          <BloodGroupStats />
+        <div className="py-5">
+          <span className="">Volunteers By Blood Group</span>
+          <div className="p-1 my-3 w-30rem" style={{ height: "20rem" }}>
+            <BloodGroupStats />
+          </div>
         </div>
-        <span className="">Jobs By Status</span>
-        <div className="p-1 my-3 w-30rem" style={{ height: "20rem" }}>
-          <JobStatusStats />
+        <div className="py-5">
+          <span className="">Jobs By Status</span>
+          <div className="p-1 my-3 w-30rem" style={{ height: "20rem" }}>
+            <JobStatusStats />
+          </div>
         </div>
-        <span className="">Incident by time range</span>
-        <div className="p-1 my-3 w-30rem" style={{ height: "20rem" }}>
-          <IncidentByTimeRangeStats />
+        <div className="py-5">
+          <span className="">Incidents By time range</span>
+          <div className="p-1 my-3 w-30rem" style={{ height: "20rem" }}>
+            <IncidentByTimeRangeStats />
+          </div>
         </div>
-        <span className="">Jobs by time range</span>
-        <div className="p-1 my-3 w-30rem" style={{ height: "20rem" }}>
-          <JobByTimeRangeStats />
+        <div className="py-5">
+          <span className="">Jobs By time range</span>
+          <div className="p-1 my-3 w-30rem" style={{ height: "20rem" }}>
+            <JobByTimeRangeStats />
+          </div>
         </div>
         <Divider />
-
       </div>
     </ScrollPanel>
   );

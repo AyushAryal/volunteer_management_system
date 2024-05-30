@@ -8,9 +8,7 @@ import { get_id } from "@api/utils";
 import { get_federal_body_detail } from "@api/federal";
 import { FederalBody } from "@models/federal";
 import { LatLngTuple } from "leaflet";
-import { Stats } from "@components/landing";
 import { ProgressSpinner } from "primereact/progressspinner";
-import { Divider } from "primereact/divider";
 
 
 export function SelectedFederalBodyPolygons() {
