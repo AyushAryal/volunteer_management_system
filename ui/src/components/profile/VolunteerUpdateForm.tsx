@@ -1,6 +1,7 @@
 import { Dialog } from 'primereact/dialog';
 import { useState } from 'react';
 import {
+    Training,
     Volunteer,
     VolunteerDeserializer,
 } from '@models/incident';
@@ -11,6 +12,7 @@ import { useHookstate } from '@hookstate/core';
 import { storeState } from '@models/store';
 import { VolunteerProfileWidget } from './VolunteerProfileWidget';
 import { IdentificationDocumentsWidget } from './IdentificationDocumentsWidget';
+import { TrainingWidget } from './TrainingWidget';
 
 async function perform_volunteer_update(volunteer: Volunteer): Promise<string | Volunteer> {
     let form = {
@@ -88,6 +90,8 @@ export function VolunteerUpdateForm(props: VolunteerUpdateFormProps) {
     const organizationPhoneNumberState = useState<string | undefined>(props.volunteer.volunteer.organization_phone_number);
     const organizationWebsiteState = useState<string | undefined>(props.volunteer.volunteer.organization_website);
 
+    const trainingsState = useState<Training[]>(props.volunteer.trainings ?? []);
+  
     const citizenshipIdState = useState(props.volunteer.citizenship?.id);
     const citizenshipRegistrationDateState = useState(props.volunteer.citizenship?.registration_date);
     const citizenshipDistrictState = useState(props.volunteer.citizenship?.registration_district);
@@ -132,6 +136,7 @@ export function VolunteerUpdateForm(props: VolunteerUpdateFormProps) {
     const [otherIdentificationDocumentName,] = otherIdentificationDocumentNameState;
     const [otherIdentificationDocumentImage,] = otherIdentificationDocumentImageState;
 
+    const [trainings,] = trainingsState;
 
     const onSubmit = async () => {
         let citizenship = citizenshipId && citizenshipRegistrationDate && citizenshipImage && citizenshipDistrict ? {
@@ -206,7 +211,7 @@ export function VolunteerUpdateForm(props: VolunteerUpdateFormProps) {
             national_id,
             other_identification_document,
             certificates: [],
-            trainings: [],
+            trainings: trainings ?? [],
         });
         if (typeof newProfile === "object") {
             volunteer.set(newProfile);
@@ -232,68 +237,79 @@ export function VolunteerUpdateForm(props: VolunteerUpdateFormProps) {
         </div >;
     }
 
-    return <Dialog
+    return (
+      <Dialog
+        className="flex flex-column"
         visible={props.visible}
-        style={{ width: '50vw' }}
-        onHide={() => { props.setVisible(false); }}>
-        <div className="flex flex-column gap-2">
-            <div className="flex gap-5 align-items-center mb-4">
-                <div className="flex flex-column justify-content-center align-items-center">
-                    <img
-                        onClick={() => { alert("Change image not implemented") }}
-                        className="shadow-4 mb-2"
-                        src={props.volunteer.volunteer.profile_image}
-                        style={{
-                            width: "8rem",
-                            height: "8rem",
-                            objectFit: "cover",
-                            borderRadius: "100%"
-                        }}
-                    />
-                </div>
-                <h1>{`${firstName} ${lastName}`}</h1>
+        style={{ width: "50vw" }}
+        onHide={() => {
+          props.setVisible(false);
+        }}
+      >
+        <div className="flex flex-column gap-2 w-9 mx-auto">
+          <div className="flex gap-5 mb-4">
+            <div className="flex flex-column justify-content-center">
+              <img
+                onClick={() => {
+                  alert("Change image not implemented");
+                }}
+                className="shadow-4 mb-2"
+                src={props.volunteer.volunteer.profile_image}
+                style={{
+                  width: "8rem",
+                  height: "8rem",
+                  objectFit: "cover",
+                  borderRadius: "100%",
+                }}
+              />
             </div>
+            <h1>{`${firstName} ${lastName}`}</h1>
+          </div>
 
-            <h2> Profile Information </h2>
-            <VolunteerProfileWidget
-                firstNameState={firstNameState}
-                lastNameState={lastNameState}
-                contactNumberState={contactNumberState}
-                dateOfBirthState={dateOfBirthState}
-                nationalityState={nationalityState}
-                volunteerTypeState={volunteerTypeState}
-                bloodGroupState={bloodGroupState}
-                academicQualificationState={academicQualificationState}
-                genderState={genderState}
-                temporaryWardState={temporaryWardState}
-                permanentWardState={permanentWardState}
-                organizationNameState={organizationNameState}
-                organizationPhoneNumberState={organizationPhoneNumberState}
-                organizationWebsiteState={organizationWebsiteState}
-            />
-            <h2> Identification </h2>
-            <IdentificationDocumentsWidget
-                citizenshipIdState={citizenshipIdState}
-                citizenshipRegistrationDateState={citizenshipRegistrationDateState}
-                citizenshipDistrictState={citizenshipDistrictState}
-                citizenshipImageState={citizenshipImageState}
-                nationalIdState={nationalIdState}
-                nationalIdRegistrationDateState={nationalIdRegistrationDateState}
-                nationalIdImageState={nationalIdImageState}
-                passportNumberState={passportNumberState}
-                passportIssueDateState={passportIssueDateState}
-                passportExpiryDateState={passportExpiryDateState}
-                passportImageState={passportImageState}
-                otherIdentificationDocumentNameState={otherIdentificationDocumentNameState}
-                otherIdentificationDocumentImageState={otherIdentificationDocumentImageState}
-            />
-            <div className="flex gap-4 align-self-end align-items-center mt-5">
-                {response}
-                <Button
-                    label="Save"
-                    onClick={onSubmit}
-                />
-            </div>
+          <h2> Profile Information </h2>
+          <VolunteerProfileWidget
+            firstNameState={firstNameState}
+            lastNameState={lastNameState}
+            contactNumberState={contactNumberState}
+            dateOfBirthState={dateOfBirthState}
+            nationalityState={nationalityState}
+            volunteerTypeState={volunteerTypeState}
+            bloodGroupState={bloodGroupState}
+            academicQualificationState={academicQualificationState}
+            genderState={genderState}
+            temporaryWardState={temporaryWardState}
+            permanentWardState={permanentWardState}
+            organizationNameState={organizationNameState}
+            organizationPhoneNumberState={organizationPhoneNumberState}
+            organizationWebsiteState={organizationWebsiteState}
+          />
+          <h2>Training Information</h2>
+          <TrainingWidget trainingsState={trainingsState}/>
+          <h2> Identification </h2>
+          <IdentificationDocumentsWidget
+            citizenshipIdState={citizenshipIdState}
+            citizenshipRegistrationDateState={citizenshipRegistrationDateState}
+            citizenshipDistrictState={citizenshipDistrictState}
+            citizenshipImageState={citizenshipImageState}
+            nationalIdState={nationalIdState}
+            nationalIdRegistrationDateState={nationalIdRegistrationDateState}
+            nationalIdImageState={nationalIdImageState}
+            passportNumberState={passportNumberState}
+            passportIssueDateState={passportIssueDateState}
+            passportExpiryDateState={passportExpiryDateState}
+            passportImageState={passportImageState}
+            otherIdentificationDocumentNameState={
+              otherIdentificationDocumentNameState
+            }
+            otherIdentificationDocumentImageState={
+              otherIdentificationDocumentImageState
+            }
+          />
+          <div className="flex gap-4 align-self-end align-items-center mt-5">
+            {response}
+            <Button label="Save" onClick={onSubmit} />
+          </div>
         </div>
-    </Dialog>;
+      </Dialog>
+    );
 }

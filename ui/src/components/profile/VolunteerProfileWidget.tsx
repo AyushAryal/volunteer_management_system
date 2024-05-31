@@ -137,183 +137,189 @@ export function VolunteerProfileBasicWidget(props: VolunteerProfileBasicWidgetPr
     ];
 
     return (
-        <div>
-            <div
-                className="flex flex-column w-full align-items-stretch"
-                style={{ gap: "2rem" }}
-            >
-                <span className="p-float-label">
-                    <InputText
-                        value={firstName}
-                        id="first-name"
-                        className="p-inputtext-sm w-full"
-                        onChange={(ev) => setFirstName(ev.target.value)}
-                    />
-                    <label htmlFor="first-name">
-                        First Name <span className="text-sm text-red-500">*</span>
-                    </label>
-                </span>
-                <span className="p-float-label">
-                    <InputText
-                        value={lastName}
-                        id="last-name"
-                        className="p-inputtext-sm w-full"
-                        onChange={(ev) => setLastName(ev.target.value)}
-                    />
-                    <label htmlFor="last-name">
-                        Last Name <span className="text-sm text-red-500">*</span>
-                    </label>
-                </span>
-                <FloatLabel>
-                    <InputMask
-                        value={contactNumber}
-                        id="contact-number"
-                        mask="(+999)-9999999999"
-                        className="p-inputtext-sm w-full"
-                        onChange={(ev) => setContactNumber(ev.target.value ?? "")}
-                    />
-                    <label htmlFor="contact-number">
-                        Contact Number (+977xxxxxxxxxx){" "}
-                        <span className="text-sm text-red-500">*</span>
-                    </label>
-                </FloatLabel>
-                <FloatLabel>
-                    <Calendar
-                        className="w-full"
-                        id="date-of-birth"
-                        value={dateOfBirth}
-                        onChange={(ev) => setDateOfBirth(ev.target.value ?? undefined)}
-                        dateFormat="yy-mm-dd"
-                        showIcon
-                        mask="9999-99-99"
-                    />
-                    <label htmlFor="date-of-birth">
-                        Date of birth (yyyy-mm-dd){" "}
-                        <span className="text-sm text-red-500">*</span>
-                    </label>
-                </FloatLabel>
-                <div className="flex flex-wrap gap-3">
-                    <div className="flex align-items-center">
-                        <RadioButton
-                            inputId="male"
-                            name="male"
-                            value="Male"
-                            checked={gender === "Male"}
-                            onChange={(e) => {
-                                setGender(e.value);
-                            }}
-                        />
-                        <label htmlFor="male" className="ml-2 text-gray-800">
-                            Male
-                        </label>
-                    </div>
-                    <div className="flex align-items-center">
-                        <RadioButton
-                            inputId="female"
-                            name="female"
-                            value="Female"
-                            checked={gender === "Female"}
-                            onChange={(e) => {
-                                setGender(e.value);
-                            }}
-                        />
-                        <label htmlFor="female" className="ml-2 text-gray-800">
-                            Female
-                        </label>
-                    </div>
-                    <div className="flex align-items-center">
-                        <RadioButton
-                            inputId="other"
-                            name="other"
-                            value="Other"
-                            checked={gender === "Other"}
-                            onChange={(e) => {
-                                setGender(e.value);
-                            }}
-                        />
-                        <label htmlFor="other" className="ml-2 text-gray-800">
-                            Other
-                        </label>
-                    </div>
-                </div>
-                <Dropdown
-                    value={bloodGroup}
-                    onChange={(ev) => {
-                        setBloodGroup(ev.value);
-                    }}
-                    options={bloodGroups}
-                    placeholder="Select a blood group"
-                    optionLabel="value"
-                />
-
-                <Dropdown
-                    value={academicQualification}
-                    onChange={(ev) => {
-                        setAcademicQualification(ev.value);
-                    }}
-                    options={academicQualifications}
-                    placeholder="Select a academic qualification"
-                    optionLabel="value"
-                />
-                <Dropdown
-                    value={nationality}
-                    onChange={(ev) => {
-                        setNationality(ev.value);
-                    }}
-                    options={nationalities}
-                    placeholder="Select a Nationality"
-                    optionLabel="value"
-                />
-                <Dropdown
-                    value={volunteerType}
-                    onChange={(ev) => {
-                        setVolunteerType(ev.value);
-                    }}
-                    options={volunteerCategories}
-                    placeholder="Select a category"
-                    optionLabel="value"
-                />
-
-                <div className="font-semibold"> Organization </div>
-                <span className="p-float-label">
-                    <InputText
-                        value={organizationName}
-                        id="organization-name"
-                        className="p-inputtext-sm w-full"
-                        onChange={(ev) => setOrganizationName(ev.target.value)}
-                    />
-                    <label htmlFor="organization-name">
-                        Organization Name <span className="text-xs">(optional)</span>
-                    </label>
-                </span>
-
-                <span className="p-float-label">
-                    <InputMask
-                        value={organizationPhoneNumber}
-                        id="organization-phone-number"
-                        className="p-inputtext-sm w-full"
-                        onChange={(ev) => setOrganizationPhoneNumber(ev.target.value ?? "")}
-                        mask="(+999)-9999999999"
-                    />
-                    <label htmlFor="organization-phone-number">
-                        Organization Phone Number{" "}
-                        <span className="text-xs">(optional)</span>
-                    </label>
-                </span>
-
-                <span className="p-float-label">
-                    <InputText
-                        value={organizationWebsite}
-                        id="organization-website"
-                        className="p-inputtext-sm w-full"
-                        onChange={(ev) => setOrganizationWebsite(ev.target.value)}
-                    />
-                    <label htmlFor="organization-website">
-                        Organization Website <span className="text-xs">(optional)</span>
-                    </label>
-                </span>
+      <div>
+        <div
+          className="flex flex-column w-full align-items-stretch"
+          style={{ gap: "2rem" }}
+        >
+          <span className="p-float-label">
+            <InputText
+              value={firstName}
+              id="first-name"
+              className="p-inputtext-sm w-full"
+              onChange={(ev) => setFirstName(ev.target.value)}
+            />
+            <label htmlFor="first-name">
+              First Name <span className="text-sm text-red-500">*</span>
+            </label>
+          </span>
+          <span className="p-float-label">
+            <InputText
+              value={lastName}
+              id="last-name"
+              className="p-inputtext-sm w-full"
+              onChange={(ev) => setLastName(ev.target.value)}
+            />
+            <label htmlFor="last-name">
+              Last Name <span className="text-sm text-red-500">*</span>
+            </label>
+          </span>
+          <FloatLabel>
+            <InputMask
+              value={contactNumber}
+              id="contact-number"
+              mask="(+999)-9999999999"
+              className="p-inputtext-sm w-full"
+              onChange={(ev) => setContactNumber(ev.target.value ?? "")}
+            />
+            <label htmlFor="contact-number">
+              Contact Number (+977xxxxxxxxxx){" "}
+              <span className="text-sm text-red-500">*</span>
+            </label>
+          </FloatLabel>
+          <FloatLabel>
+            <Calendar
+              className="w-full"
+              id="date-of-birth"
+              value={dateOfBirth}
+              onChange={(ev) => setDateOfBirth(ev.target.value ?? undefined)}
+              dateFormat="yy-mm-dd"
+              showIcon
+              mask="9999-99-99"
+            />
+            <label htmlFor="date-of-birth">
+              Date of birth (yyyy-mm-dd){" "}
+              <span className="text-sm text-red-500">*</span>
+            </label>
+          </FloatLabel>
+          <div className="flex flex-wrap gap-3">
+            <div className="flex align-items-center">
+              <RadioButton
+                inputId="male"
+                name="male"
+                value="Male"
+                checked={gender === "Male"}
+                onChange={(e) => {
+                  setGender(e.value);
+                }}
+              />
+              <label htmlFor="male" className="ml-2 text-gray-800">
+                Male
+              </label>
             </div>
+            <div className="flex align-items-center">
+              <RadioButton
+                inputId="female"
+                name="female"
+                value="Female"
+                checked={gender === "Female"}
+                onChange={(e) => {
+                  setGender(e.value);
+                }}
+              />
+              <label htmlFor="female" className="ml-2 text-gray-800">
+                Female
+              </label>
+            </div>
+            <div className="flex align-items-center">
+              <RadioButton
+                inputId="other"
+                name="other"
+                value="Other"
+                checked={gender === "Other"}
+                onChange={(e) => {
+                  setGender(e.value);
+                }}
+              />
+              <label htmlFor="other" className="ml-2 text-gray-800">
+                Other
+              </label>
+            </div>
+          </div>
+          <Dropdown
+            className="p-inputtext-sm"
+            value={bloodGroup}
+            onChange={(ev) => {
+              setBloodGroup(ev.value);
+            }}
+            options={bloodGroups}
+            placeholder="Select a blood group"
+            optionLabel="value"
+          />
+
+          <Dropdown
+            className="p-inputtext-sm"
+            value={academicQualification}
+            onChange={(ev) => {
+              setAcademicQualification(ev.value);
+            }}
+            options={academicQualifications}
+            placeholder="Select a academic qualification"
+            optionLabel="value"
+          />
+          <Dropdown
+            className="p-inputtext-sm"
+            value={nationality}
+            onChange={(ev) => {
+              setNationality(ev.value);
+            }}
+            options={nationalities}
+            placeholder="Select a Nationality"
+            optionLabel="value"
+          />
+          <Dropdown
+            className="p-inputtext-sm"
+            value={volunteerType}
+            onChange={(ev) => {
+              setVolunteerType(ev.value);
+            }}
+            options={volunteerCategories}
+            placeholder="Select a category"
+            optionLabel="value"
+          />
+
+          <div className="font-semibold"> Organization </div>
+          <span className="p-float-label">
+            <InputText
+              value={organizationName}
+              id="organization-name"
+              className="p-inputtext-sm w-full"
+              onChange={(ev) => setOrganizationName(ev.target.value)}
+            />
+            <label htmlFor="organization-name">
+              Organization Name <span className="text-xs">(optional)</span>
+            </label>
+          </span>
+
+          <span className="p-float-label">
+            <InputMask
+              value={organizationPhoneNumber}
+              id="organization-phone-number"
+              className="p-inputtext-sm w-full"
+              onChange={(ev) =>
+                setOrganizationPhoneNumber(ev.target.value ?? "")
+              }
+              mask="(+999)-9999999999"
+            />
+            <label htmlFor="organization-phone-number">
+              Organization Phone Number{" "}
+              <span className="text-xs">(optional)</span>
+            </label>
+          </span>
+
+          <span className="p-float-label">
+            <InputText
+              value={organizationWebsite}
+              id="organization-website"
+              className="p-inputtext-sm w-full"
+              onChange={(ev) => setOrganizationWebsite(ev.target.value)}
+            />
+            <label htmlFor="organization-website">
+              Organization Website <span className="text-xs">(optional)</span>
+            </label>
+          </span>
         </div>
+      </div>
     );
 }
 

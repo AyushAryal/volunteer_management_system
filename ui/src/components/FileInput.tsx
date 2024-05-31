@@ -51,10 +51,7 @@ export function FileInput(props: FileInputProps) {
                         uploadRef.current?.clear();
                         props.onChange(undefined);
                     }}
-                    style={{
-                        height: "2.5rem",
-                        width: "2.5rem",
-                    }}
+                    size="small"
                 >
                     <FontAwesomeIcon
                         icon={faClose}
