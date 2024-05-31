@@ -191,9 +191,8 @@ class Command(BaseCommand):
         return wards
 
     def create_volunteers(self, wards, n=1000):
-        volunteers = []
         first_names = [
-            "test",
+            "first",
             "ram",
             "shyam",
             "hari",
@@ -235,7 +234,7 @@ class Command(BaseCommand):
             incident.models.Gender.Female,
         ]
         last_names = [
-            "test",
+            "last",
             "sitaula",
             "sharma",
             "adhikari",
@@ -336,7 +335,6 @@ class Command(BaseCommand):
             )
             volunteer.save()
             self.stdout.write(self.style.SUCCESS(f"Created volunteer {email}"))
-        return volunteers
 
     def load_incidents(self):
         filepath = settings.BASE_DIR / "shared" / "incidents.json"
@@ -381,7 +379,6 @@ class Command(BaseCommand):
 
     def create_jobs(self, programs):
         jobs = []
-        incident.models.Job
         for program in programs:
             start_date = program.incident.date + timedelta(days=random.randint(1, 7))
             job = incident.models.Job(
@@ -395,6 +392,47 @@ class Command(BaseCommand):
             )
             jobs.append(job)
         return jobs
+
+    def create_job_applications(self, jobs, volunteers):
+        job_applications = []
+        for job in jobs:
+            applicants = random.sample(volunteers, min(4, job.vacancy))
+            for applicant in applicants:
+                job_application = incident.models.JobApplication(
+                    job=job,
+                    volunteer=applicant,
+                    status=random.choice(incident.models.JobApplicationStatus.values),
+                )
+                job_applications.append(job_application)
+        return job_applications
+
+    def create_job_reports(self, jobs):
+        job_reports = []
+        for job in jobs:
+            accepted_applications = job.applications.filter(
+                status=incident.models.JobApplicationStatus.Accepted
+            )
+            for application in accepted_applications:
+                job_report = incident.models.JobReport(
+                    volunteer=application.volunteer,
+                    job=application.job,
+                    report=f"Job Report description for {job} by {application.volunteer}",
+                )
+                job_reports.append(job_report)
+        return job_reports
+
+    def create_notifications(self, users):
+        notifications = []
+        for user in users:
+            for _ in range(3):
+                notification = incident.models.Notification(
+                    message="Sample notification",
+                    date=timezone.now(),
+                    viewed=random.random() > 0.5,
+                    user=user,
+                )
+                notifications.append(notification)
+        return notifications
 
     def create_site_contents(self):
         contents = [
@@ -470,10 +508,24 @@ class Command(BaseCommand):
         incident.models.Program.objects.bulk_create(programs)
 
         self.stdout.write(self.style.SUCCESS("Creating volunteers"))
-        _ = self.create_volunteers(wards)
+        self.create_volunteers(wards)
 
         self.stdout.write(self.style.SUCCESS("Creating jobs"))
         jobs = self.create_jobs(programs)
-        incident.models.Job.objects.bulk_create(jobs)
+        jobs = incident.models.Job.objects.bulk_create(jobs)
+
+        self.stdout.write(self.style.SUCCESS("Creating job applications"))
+        job_applications = self.create_job_applications(
+            jobs, list(incident.models.VolunteerProfile.objects.all())
+        )
+        incident.models.JobApplication.objects.bulk_create(job_applications)
+
+        self.stdout.write(self.style.SUCCESS("Creating job reports"))
+        job_reports = self.create_job_reports(jobs)
+        incident.models.JobReport.objects.bulk_create(job_reports)
+
+        self.stdout.write(self.style.SUCCESS("Creating notifications"))
+        notifications = self.create_notifications(list(get_user_model().objects.all()))
+        incident.models.Notification.objects.bulk_create(notifications)
 
         _ = self.create_site_contents()

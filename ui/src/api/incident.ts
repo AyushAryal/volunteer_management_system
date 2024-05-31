@@ -3,6 +3,7 @@ import {
     Job, JobDeserializer,
     Notification, NotificationDeserializer,
     Program, SiteContent,
+    Report,
     Statistics,
     StatisticsDeserializer,
     Volunteer, VolunteerDeserializer,
@@ -36,11 +37,16 @@ export interface JobFilter extends FederalFilter {
     end_date_before?: string,
 }
 
+export interface ReportFilter {
+    job?: number,
+}
+
 export interface StatisticsFilter extends IncidentFilter { }
 
 export let get_incident_list = get_filtered_list<Incident, IncidentFilter>(endpoints.incident, IncidentDeserializer);
 export let get_program_list = get_filtered_list<Program, ProgramFilter>(endpoints.program);
 export let get_job_list = get_filtered_list<Job, JobFilter>(endpoints.job, JobDeserializer);
+export let get_report_list = get_filtered_list<Report, ReportFilter>(endpoints.report);
 export let get_site_content_list = get_filtered_list<SiteContent, {}>(endpoints.site_content);
 export let get_notification_list = get_filtered_list<Notification, {}>(endpoints.notification, NotificationDeserializer);
 
@@ -98,6 +104,22 @@ export async function job_withdraw(job: string) {
     return token_aware_fetch(`${job}/withdraw`, {
         "headers": { "Content-Type": "application/json" },
         "method": "POST",
+    });
+}
+
+export async function create_job_report(body: BodyInit) {
+    return token_aware_fetch(endpoints.report, {
+        "headers": { "Content-Type": "application/json" },
+        "method": "POST",
+        "body": body
+    });
+}
+
+export async function update_job_report(url: string, body: BodyInit) {
+    return token_aware_fetch(`${endpoints.report}/${get_id(url)}`, {
+        "headers": { "Content-Type": "application/json" },
+        "method": "PUT",
+        "body": body
     });
 }
 

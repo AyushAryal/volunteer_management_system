@@ -9,6 +9,7 @@ export const endpoints = {
     incident: `${server}/api/incident`,
     program: `${server}/api/program`,
     job: `${server}/api/job`,
+    report: `${server}/api/job_report`,
     province: `${server}/api/province`,
     district: `${server}/api/district`,
     municipality: `${server}/api/municipality`,

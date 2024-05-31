@@ -50,12 +50,6 @@ class VolunteerProfileFilter(django_filters.FilterSet):
         choices=incident.models.VolunteerCategory.choices,
     )
 
-    training_type = django_filters.ChoiceFilter(
-        label="Training Type",
-        field_name="training_type",
-        choices=incident.models.TrainingType.choices,
-    )
-
     class Meta:
         model = incident.models.VolunteerProfile
         fields = []

@@ -1,7 +1,6 @@
 import { Dialog } from 'primereact/dialog';
 import { useState } from 'react';
 import {
-    TrainingType,
     Volunteer,
     VolunteerDeserializer,
 } from '@models/incident';
@@ -30,9 +29,6 @@ async function perform_volunteer_update(volunteer: Volunteer): Promise<string | 
             "organization_name": volunteer.volunteer.organization_name,
             "organization_phone_number": volunteer.volunteer.organization_phone_number,
             "organization_website": volunteer.volunteer.organization_website,
-            "training_name": volunteer.volunteer.training_name,
-            "training_subject": volunteer.volunteer.training_subject,
-            "training_type": volunteer.volunteer.training_type,
         },
         "citizenship": {
             "id": volunteer.citizenship?.id,
@@ -91,9 +87,6 @@ export function VolunteerUpdateForm(props: VolunteerUpdateFormProps) {
     const organizationNameState = useState<string | undefined>(props.volunteer.volunteer.organization_website);
     const organizationPhoneNumberState = useState<string | undefined>(props.volunteer.volunteer.organization_phone_number);
     const organizationWebsiteState = useState<string | undefined>(props.volunteer.volunteer.organization_website);
-    const trainingNameState = useState<string | undefined>(props.volunteer.volunteer.training_name);
-    const trainingSubjectState = useState<string | undefined>(props.volunteer.volunteer.training_subject);
-    const trainingTypeState = useState<TrainingType | undefined>(props.volunteer.volunteer.training_type);
 
     const citizenshipIdState = useState(props.volunteer.citizenship?.id);
     const citizenshipRegistrationDateState = useState(props.volunteer.citizenship?.registration_date);
@@ -123,9 +116,6 @@ export function VolunteerUpdateForm(props: VolunteerUpdateFormProps) {
     const [organizationName,] = organizationNameState;
     const [organizationPhoneNumber,] = organizationPhoneNumberState;
     const [organizationWebsite,] = organizationWebsiteState;
-    const [trainingName,] = trainingNameState;
-    const [trainingSubject,] = trainingSubjectState;
-    const [trainingType,] = trainingTypeState;
     const [formErrors, setFormErrors] = useState<string | boolean>(false);
 
     const [citizenshipId,] = citizenshipIdState;
@@ -210,15 +200,13 @@ export function VolunteerUpdateForm(props: VolunteerUpdateFormProps) {
                 organization_name: organizationName,
                 organization_phone_number: organizationPhoneNumber,
                 organization_website: organizationWebsite,
-                training_name: trainingName,
-                training_subject: trainingSubject,
-                training_type: trainingType,
             },
             citizenship,
             passport,
             national_id,
             other_identification_document,
-            certificates: []
+            certificates: [],
+            trainings: [],
         });
         if (typeof newProfile === "object") {
             volunteer.set(newProfile);
@@ -282,9 +270,6 @@ export function VolunteerUpdateForm(props: VolunteerUpdateFormProps) {
                 organizationNameState={organizationNameState}
                 organizationPhoneNumberState={organizationPhoneNumberState}
                 organizationWebsiteState={organizationWebsiteState}
-                trainingNameState={trainingNameState}
-                trainingSubjectState={trainingSubjectState}
-                trainingTypeState={trainingTypeState}
             />
             <h2> Identification </h2>
             <IdentificationDocumentsWidget

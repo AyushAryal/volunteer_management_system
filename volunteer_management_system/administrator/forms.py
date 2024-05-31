@@ -1,6 +1,13 @@
 from django import forms
 from django_select2.forms import ModelSelect2Widget
-from incident.models import Program, Incident, Job, JobApplication, VolunteerProfile
+from incident.models import (
+    Program,
+    Incident,
+    Job,
+    JobApplication,
+    VolunteerProfile,
+    JobReport,
+)
 from federal.models import Ward
 
 
@@ -84,6 +91,41 @@ class JobApplicationForm(forms.ModelForm):
             "volunteer",
             "job",
             "status",
+        ]
+        widgets = {
+            "volunteer": ModelSelect2Widget(
+                model=VolunteerProfile,
+                search_fields=[
+                    "user__email__icontains",
+                    "first_name__icontains",
+                    "last_name__icontains",
+                    "contact_number__icontains",
+                ],
+                attrs={
+                    "data-placeholder": "Search for a Volunteer",
+                    "data-allow-clear": "true",
+                    "data-ajax--delay": 250,  # Delay in milliseconds
+                },
+            ),
+            "job": ModelSelect2Widget(
+                model=Job,
+                search_fields=["name__icontains"],
+                attrs={
+                    "data-placeholder": "Search for a Job",
+                    "data-allow-clear": "true",
+                    "data-ajax--delay": 250,  # Delay in milliseconds
+                },
+            ),
+        }
+
+
+class JobReportForm(forms.ModelForm):
+    class Meta:
+        model = JobReport
+        fields = [
+            "volunteer",
+            "job",
+            "report",
         ]
         widgets = {
             "volunteer": ModelSelect2Widget(

@@ -1,14 +1,17 @@
 import { Dialog } from 'primereact/dialog';
 import { useEffect, useState } from "react";
-import { Job } from '@models/incident';
-import { get_job_detail } from '@api/incident';
+import { Job, Report } from '@models/incident';
+import { create_job_report, get_job_detail, get_report_list } from '@api/incident';
 import { get_id } from '@api/utils';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { JobActionWidget } from './JobActionWidget';
-import { faCalendarDay, faPeopleGroup } from '@fortawesome/free-solid-svg-icons';
+import { faCalendarDay, faPen, faPeopleGroup } from '@fortawesome/free-solid-svg-icons';
 import { storeState } from '@models/store';
 import { useHookstate } from '@hookstate/core';
+import { ReportActionWidget, ReportViewWidget } from '@components/map/sidebar/ReportWidget';
+import { Fieldset } from 'primereact/fieldset';
+import { Button } from 'primereact/button';
 
 type JobDetailModalProps = {
     job: string,
@@ -23,6 +26,7 @@ export function JobDetailModal(props: JobDetailModalProps) {
 
     const id = get_id(props.job);
     let [job, setJob] = useState<Job>();
+    let [reports, setReports] = useState<Report[]>([]);
 
     useEffect(() => {
         let networkRequest = async () => {
@@ -30,6 +34,68 @@ export function JobDetailModal(props: JobDetailModalProps) {
         }
         networkRequest();
     }, []);
+
+    useEffect(() => {
+        let networkRequest = async () => {
+            if (job) {
+                setReports(await get_report_list({ job: get_id(job.url) }));
+            }
+        }
+        networkRequest();
+    }, [job]);
+
+    let owned_reports = reports.filter((report) => report.volunteer.url == volunteer?.volunteer.url);
+    let other_reports = reports.filter((report) => report.volunteer.url !== volunteer?.volunteer.url);
+
+    const reportOwnedBuilder = () => {
+        return owned_reports.map((report) => <div
+            key={report.url}
+            className='flex flex-column flex-initial p-2 m-1 align-items-start justify-content-between gap-2 text-sm'
+        >
+            <ReportActionWidget report={report} />
+        </div>);
+    };
+
+    const createReport = <Button
+        label="Create Report"
+        onClick={async () => {
+            let response = await create_job_report(JSON.stringify({
+                job: props.job,
+                report: "",
+            }));
+
+            if (response.status == 201) {
+                console.log(response);
+                setJob(await get_job_detail(id));
+            } else {
+            }
+        }}
+    />
+
+    const reportOtherBuilder = () => {
+        return other_reports.map((report) => <div
+            key={report.url}
+            className='flex flex-column flex-initial p-2 m-1 align-items-start justify-content-between gap-2 text-sm'
+        >
+            <Fieldset
+                legend={
+                    <div className="flex align-items-center surface-100 gap-2 p-2 border-round">
+                        <img src={report.volunteer.profile_image}
+                            style={{
+                                width: "2.8rem",
+                                height: "2.8rem",
+                                objectFit: "cover",
+                                borderRadius: "50%"
+                            }} />
+                        {`${report.volunteer.first_name} ${report.volunteer.last_name}`}
+                    </div>
+                }
+                toggleable>
+                <ReportViewWidget report={report} />
+            </Fieldset>
+
+        </div>);
+    };
 
     if (!job) {
         return <ProgressSpinner style={{ width: '50px', height: '50px' }} />;
@@ -77,12 +143,33 @@ export function JobDetailModal(props: JobDetailModalProps) {
         <div className="flex justify-content-end p-2">
             {(volunteer === null) ?
                 <span className=" font-italic text-xs border-1 border-primary border-round p-1">Login to apply</span> :
-                <JobActionWidget
-                    job={job}
-                    onChange={() => {
-                        get_job_detail(id).then((job) => setJob(job));
-                    }}
-                />}
+                <div>
+                    <JobActionWidget
+                        job={job}
+                        onChange={() => {
+                            get_job_detail(id).then((job) => setJob(job));
+                        }}
+                    />
+                </div>
+            }
+        </div>
+        {
+            job.application_status !== "Accepted" ? null :
+                <div className='flex flex-column'>
+                    <span className="flex align-items-center gap-2 p-2">
+                        <FontAwesomeIcon icon={faPen} />
+                        <h4>Your Report</h4>
+                    </span>
+                    {owned_reports.length === 0 ? createReport : reportOwnedBuilder()}
+                </div>
+        }
+
+        <div className='flex flex-column'>
+            <span className="flex align-items-center gap-2 p-2">
+                <FontAwesomeIcon icon={faPen} />
+                <h4>Reports from other volunteers</h4>
+            </span>
+            {reportOtherBuilder()}
         </div>
     </Dialog>;
 };

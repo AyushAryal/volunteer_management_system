@@ -48,21 +48,6 @@ export const VolunteerCategoryStats = () => {
   />;
 }
 
-export const VolunteerTrainingStats = () => {
-  let statistics = useHookstate(storeState.statistics).get();
-  if (!statistics) return <ProgressSpinner />;
-
-  return <Chart
-    className="h-full w-full"
-    type="radar"
-    data={make_dataset("Volunteer Training", statistics.volunteers.training_type)}
-    options={{
-      indexAxis: "y",
-      maintainAspectRatio: false,
-    }}
-  />;
-}
-
 export const BloodGroupStats = () => {
   let statistics = useHookstate(storeState.statistics).get();
   if (!statistics) return <ProgressSpinner />;
@@ -166,9 +151,6 @@ const Stats = () => {
       <div className="flex flex-row flex-wrap justify-content-around gap-7 mb-7">
         <div className="bg-indigo-100 border-round p-3 shadow-4 w-5 min-w-max h-24rem">
           <VolunteerCategoryStats />
-        </div>
-        <div className="bg-indigo-100 border-round p-3 shadow-4 w-5 min-w-max h-24rem">
-          <VolunteerTrainingStats />
         </div>
       </div>
     </section>

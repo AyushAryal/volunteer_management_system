@@ -1,6 +1,6 @@
 from types import DynamicClassAttribute
 
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user, get_user_model
 from django.contrib.gis.db import models as gis_models
 from django.db import models
 from django.utils.html import mark_safe
@@ -51,12 +51,11 @@ class JobStatus(models.IntegerChoices):
         }.get(label, _("None"))
 
 
-class TrainingType(models.IntegerChoices):
+class TrainingCategory(models.IntegerChoices):
     (
         Rescue,
         ReliefDistribution,
         Evacuation,
-        Other,
         HealthAndSafety,
         Logistics,
         SoftSkills,
@@ -67,6 +66,7 @@ class TrainingType(models.IntegerChoices):
         Humanitarian,
         FamilyReunification,
         MotorVehicleOperator,
+        Other,
     ) = range(14)
 
     @DynamicClassAttribute
@@ -396,21 +396,6 @@ class VolunteerProfile(models.Model):
         blank=True, max_length=100, verbose_name=_("organization website")
     )
 
-    training_name = models.CharField(
-        blank=True, max_length=100, verbose_name=_("training name")
-    )
-
-    training_subject = models.CharField(
-        blank=True, max_length=100, verbose_name=_("training subject")
-    )
-
-    training_type = models.SmallIntegerField(
-        blank=True,
-        null=True,
-        choices=TrainingType.choices,
-        verbose_name=_("training type"),
-    )
-
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
 
@@ -435,6 +420,34 @@ class VolunteerProfile(models.Model):
                 />
             """
         )
+
+
+class Training(models.Model):
+    class Meta:
+        verbose_name = _("Volunteer Training")
+        verbose_name_plural = _("Volunteer Trainings")
+        ordering = ("-pk",)
+
+    user = models.ForeignKey(
+        get_user_model(),
+        on_delete=models.CASCADE,
+        related_name="trainings",
+        verbose_name=_("user"),
+    )
+
+    name = models.CharField(max_length=100, verbose_name=_("name"))
+
+    subject = models.CharField(max_length=100, verbose_name=_("subject"))
+
+    category = models.SmallIntegerField(
+        choices=TrainingCategory.choices,
+        verbose_name=_("category"),
+    )
+
+    image = models.ImageField(
+        upload_to="uploads/images/trainings/",
+        verbose_name=_("image"),
+    )
 
 
 class IncidentSeverity(models.IntegerChoices):
@@ -615,6 +628,37 @@ class JobApplication(models.Model):
                 message=f"Your application for {self.job} is {status.label}",
             )
         return super().save(*args, **kwargs)
+
+
+class JobReport(models.Model):
+    class Meta:
+        verbose_name = _("Job Report")
+        verbose_name_plural = _("Job Reports")
+        ordering = ("-pk",)
+        constraints = [
+            models.UniqueConstraint(
+                fields=["volunteer", "job"], name="unique_volunteer_job_report"
+            )
+        ]
+
+    volunteer = models.ForeignKey(
+        VolunteerProfile,
+        on_delete=models.CASCADE,
+        verbose_name=_("volunteer"),
+        related_name="job_reports",
+    )
+
+    job = models.ForeignKey(
+        Job,
+        on_delete=models.CASCADE,
+        verbose_name=_("Job"),
+        related_name="reports",
+    )
+
+    report = CKEditor5Field("Report", config_name="extends")
+
+    def __str__(self):
+        return f"Report on {self.job} by {self.volunteer}"
 
 
 class Notification(models.Model):

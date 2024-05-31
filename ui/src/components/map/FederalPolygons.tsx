@@ -8,9 +8,7 @@ import { get_id } from "@api/utils";
 import { get_federal_body_detail } from "@api/federal";
 import { FederalBody } from "@models/federal";
 import { LatLngTuple } from "leaflet";
-import { Stats } from "@components/landing";
 import { ProgressSpinner } from "primereact/progressspinner";
-import { Divider } from "primereact/divider";
 
 
 export function SelectedFederalBodyPolygons() {
@@ -40,8 +38,17 @@ export function SelectedFederalBodyPolygons() {
 
     if (federalBody) {
         let points = federalBody.shape.coordinates as LatLngTuple[][];
-        return <Polygon key={federalBody.url} positions={points} color="blue" weight={1}>
-            <Tooltip className="bg-primary-100 border-round-lg" sticky>
+        return <Polygon
+            key={federalBody.url}
+            positions={points}
+            color="blue"
+            weight={1}
+            pane="overlayPane"
+        >
+            <Tooltip
+                className="bg-primary-100 border-round-lg"
+                sticky
+            >
                 <div className="text-xs surface-primary flex flex-column p-2">
                     <span className="text-2xl font-semibold ">{federalBody.name}</span>
                     <span>
@@ -67,6 +74,9 @@ export function AllFederalBodyPolygons() {
     const mapControls = useHookstate(storeState.mapControls);
     const mapRef = useMap();
     let L_ = window.L as any;
+    useEffect(() => {
+        (window as any)["leaflet"] = mapRef;
+    }, [mapRef]);
 
     useEffect(() => {
         let styles = {
@@ -85,7 +95,7 @@ export function AllFederalBodyPolygons() {
                 color: mapControls.showMunicipalityBorders.get() ? "#095409ff" : "#00000000",
                 weight: 0.2,
             },
-            ward: function (_: any, zoomLevel: number) {
+            ward: function(_: any, zoomLevel: number) {
                 return {
                     color: mapControls.showWardBorders.get() && zoomLevel > 7 ? "#ff0000ff" : "#00000000",
                     weight: 0.1,
@@ -99,7 +109,7 @@ export function AllFederalBodyPolygons() {
         newFederalTileLayer._vms_federal_polygon_layer = true;
 
         let polygonLayer: any = undefined;
-        mapRef.eachLayer(function (layer: any) {
+        mapRef.eachLayer(function(layer: any) {
             if (layer._vms_federal_polygon_layer) {
                 polygonLayer = layer;
             }
@@ -109,7 +119,7 @@ export function AllFederalBodyPolygons() {
             mapRef.removeLayer(polygonLayer);
         }
         newFederalTileLayer.addTo(mapRef);
-        newFederalTileLayer.setZIndex(2);
+        newFederalTileLayer.setZIndex(401);
     }, [
         mapControls.showProvinceBorders,
         mapControls.showDistrictBorders,

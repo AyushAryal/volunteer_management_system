@@ -3,7 +3,7 @@ import { InputMask } from 'primereact/inputmask';
 import { RadioButton } from 'primereact/radiobutton';
 import { Dropdown } from 'primereact/dropdown';
 import { StateTuple } from '@models/generics';
-import { AcademicQualification, BloodGroup, Gender, Nationality, TrainingType, VolunteerCategory } from '@models/incident';
+import { AcademicQualification, BloodGroup, Gender, Nationality, VolunteerCategory } from '@models/incident';
 import { LocationSelector } from '@components/LocationSelector';
 import { useState } from 'react';
 import { Calendar } from 'primereact/calendar';
@@ -69,9 +69,6 @@ type VolunteerProfileBasicWidgetProps = {
     organizationNameState: StateTuple<string | undefined>,
     organizationPhoneNumberState: StateTuple<string | undefined>,
     organizationWebsiteState: StateTuple<string | undefined>,
-    trainingNameState: StateTuple<string | undefined>,
-    trainingSubjectState: StateTuple<string | undefined>,
-    trainingTypeState: StateTuple<TrainingType | undefined>,
 };
 
 export function VolunteerProfileBasicWidget(props: VolunteerProfileBasicWidgetProps) {
@@ -87,9 +84,6 @@ export function VolunteerProfileBasicWidget(props: VolunteerProfileBasicWidgetPr
         organizationNameState,
         organizationPhoneNumberState,
         organizationWebsiteState,
-        trainingNameState,
-        trainingSubjectState,
-        trainingTypeState,
     } = props;
 
     const [firstName, setFirstName] = firstNameState;
@@ -104,9 +98,6 @@ export function VolunteerProfileBasicWidget(props: VolunteerProfileBasicWidgetPr
     const [organizationName, setOrganizationName] = organizationNameState;
     const [organizationPhoneNumber, setOrganizationPhoneNumber] = organizationPhoneNumberState;
     const [organizationWebsite, setOrganizationWebsite] = organizationWebsiteState;
-    const [trainingName, setTrainingName] = trainingNameState;
-    const [trainingSubject, setTrainingSubject] = trainingSubjectState;
-    const [trainingType, setTrainingType] = trainingTypeState;
 
     const bloodGroups = [
         { value: "O Negative" },
@@ -143,23 +134,6 @@ export function VolunteerProfileBasicWidget(props: VolunteerProfileBasicWidgetPr
         { value: "Senior Citizen" },
         { value: "Community" },
         { value: "General" },
-    ];
-
-    const trainingTypes = [
-        { value: "Rescue" },
-        { value: "Relief Distribution" },
-        { value: "Evacuation" },
-        { value: "Other" },
-        { value: "Health And Safety" },
-        { value: "Logistics" },
-        { value: "Soft Skills" },
-        { value: "Leadership" },
-        { value: "Team Training" },
-        { value: "Management" },
-        { value: "Quality Training" },
-        { value: "Humanitarian" },
-        { value: "Family Reunification" },
-        { value: "Motor Vehicle Operator" },
     ];
 
     return (
@@ -338,41 +312,6 @@ export function VolunteerProfileBasicWidget(props: VolunteerProfileBasicWidgetPr
                         Organization Website <span className="text-xs">(optional)</span>
                     </label>
                 </span>
-
-                <div className="font-semibold"> Training </div>
-                <span className="p-float-label">
-                    <InputText
-                        value={trainingName}
-                        id="training-name"
-                        className="p-inputtext-sm w-full"
-                        onChange={(ev) => setTrainingName(ev.target.value)}
-                    />
-                    <label htmlFor="training-name">
-                        Training Name <span className="text-xs">(optional)</span>
-                    </label>
-                </span>
-
-                <span className="p-float-label">
-                    <InputText
-                        value={trainingSubject}
-                        id="training-subject"
-                        className="p-inputtext-sm w-full"
-                        onChange={(ev) => setTrainingSubject(ev.target.value)}
-                    />
-                    <label htmlFor="training-subject">
-                        Training Subject <span className="text-xs">(optional)</span>
-                    </label>
-                </span>
-
-                <Dropdown
-                    value={trainingType}
-                    onChange={(ev) => {
-                        setTrainingType(ev.value);
-                    }}
-                    options={trainingTypes}
-                    placeholder="Select training type (optional)"
-                    optionLabel="value"
-                />
             </div>
         </div>
     );
@@ -393,9 +332,6 @@ type VolunteerProfileWidgetProps = {
     organizationNameState: StateTuple<string | undefined>,
     organizationPhoneNumberState: StateTuple<string | undefined>,
     organizationWebsiteState: StateTuple<string | undefined>,
-    trainingNameState: StateTuple<string | undefined>,
-    trainingSubjectState: StateTuple<string | undefined>,
-    trainingTypeState: StateTuple<TrainingType | undefined>,
 };
 
 export function VolunteerProfileWidget(props: VolunteerProfileWidgetProps) {
@@ -413,9 +349,6 @@ export function VolunteerProfileWidget(props: VolunteerProfileWidgetProps) {
         organizationNameState,
         organizationPhoneNumberState,
         organizationWebsiteState,
-        trainingNameState,
-        trainingSubjectState,
-        trainingTypeState,
     } = props;
 
     return (
@@ -433,9 +366,6 @@ export function VolunteerProfileWidget(props: VolunteerProfileWidgetProps) {
                 organizationNameState={organizationNameState}
                 organizationPhoneNumberState={organizationPhoneNumberState}
                 organizationWebsiteState={organizationWebsiteState}
-                trainingNameState={trainingNameState}
-                trainingSubjectState={trainingSubjectState}
-                trainingTypeState={trainingTypeState}
             />
 
             <h2> Address Information </h2>

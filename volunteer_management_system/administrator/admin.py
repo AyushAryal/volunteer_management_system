@@ -11,6 +11,7 @@ from django.http import HttpResponse
 from leaflet.admin import LeafletGeoAdmin
 from django.urls import path
 from administrator.forms import (
+    JobReportForm,
     ProgramForm,
     JobForm,
     JobApplicationForm,
@@ -88,6 +89,12 @@ admin_site.register(Site)
 
 class CertificateInline(admin.StackedInline):
     model = incident.models.Certificate
+    can_delete = True
+    extra = 0
+
+
+class TrainingInline(admin.StackedInline):
+    model = incident.models.Training
     can_delete = True
     extra = 0
 
@@ -226,6 +233,29 @@ class JobApplicationAdmin(admin.ModelAdmin):
         return self.model.objects.filter(job__program__incident__ward__in=wards)
 
 
+class JobReportAdmin(admin.ModelAdmin):
+    model = incident.models.JobReport
+    list_display = (
+        "job",
+        "author",
+        "leader_",
+    )
+    search_fields = (
+        "job__name",
+        "volunteer__first_name",
+        "volunteer__last_name",
+    )
+    form = JobReportForm
+
+    def author(self, report):
+        return report.volunteer.profile_image_preview_small()
+
+    def leader_(self, report):
+        if report.job.leader:
+            return report.job.leader.profile_image_preview_small()
+        return "-"
+
+
 class NotificationAdmin(admin.ModelAdmin):
     model = incident.models.Notification
     list_display = ("__str__", "user", "date", "viewed")
@@ -271,6 +301,7 @@ class UserAdmin(BaseUserAdmin):
         PassportInline,
         NationalIdInline,
         OtherIdentificationDocumentInline,
+        TrainingInline,
         CertificateInline,
     )
     list_display = ("email", "email_verified")
@@ -338,6 +369,7 @@ admin_site.register(incident.models.Incident, IncidentAdmin)
 admin_site.register(incident.models.Program, ProgramAdmin)
 admin_site.register(incident.models.JobApplication, JobApplicationAdmin)
 admin_site.register(incident.models.Job, JobAdmin)
+admin_site.register(incident.models.JobReport, JobReportAdmin)
 admin_site.register(incident.models.Notification, NotificationAdmin)
 
 admin_site.register(get_user_model(), UserAdmin)

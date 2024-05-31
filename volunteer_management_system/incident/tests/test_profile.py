@@ -53,6 +53,25 @@ class VolunteerProfileTest(TestCase):
             shape=Polygon([(0, 0), (0, 1), (1, 1), (1, 0), (0, 0)]),
         )
 
+    def create_volunteer(self, email, ward):
+        volunteer = get_user_model().objects.create(email=email)
+        volunteer.set_password(VolunteerProfileTest.PASSWORD)
+        volunteer.save()
+        profile = incident.models.VolunteerProfile.objects.create(
+            user=volunteer,
+            first_name="Name",
+            last_name="Name",
+            date_of_birth="2022-01-01",
+            gender=incident.models.Gender.Male,
+            nationality=incident.models.Nationality.National,
+            blood_group=incident.models.BloodGroup.O_Positive,
+            temporary_ward=ward,
+            permanent_ward=ward,
+            academic_qualification=incident.models.AcademicQualification.Doctorate,
+            category=incident.models.VolunteerCategory.Community,
+        )
+        return volunteer, profile
+
     def setUp(self):
         self.email = "shark@example.com"
         self.volunteer_email = "volunteer@example.com"
@@ -63,21 +82,9 @@ class VolunteerProfileTest(TestCase):
         self.user.is_superuser = True
         self.user.save()
 
-        self.volunteer = get_user_model().objects.create(email=self.volunteer_email)
-        self.volunteer.set_password(VolunteerProfileTest.PASSWORD)
-        self.volunteer.save()
-
         self.setup_geo()
-        self.volunteer_profile = incident.models.VolunteerProfile.objects.create(
-            user=self.volunteer,
-            first_name="Name",
-            last_name="Name",
-            date_of_birth="2022-01-01",
-            gender=incident.models.Gender.Male,
-            nationality=incident.models.Nationality.National,
-            blood_group=incident.models.BloodGroup.O_Positive,
-            temporary_ward=self.ward,
-            permanent_ward=self.ward,
+        self.volunteer, self.volunteer_profile = self.create_volunteer(
+            self.volunteer_email, self.ward
         )
 
     def test_get_token(self):
@@ -148,7 +155,6 @@ class VolunteerProfileTest(TestCase):
                 "date_of_birth": "2005-01-01",
                 "gender": "Male",
                 "nationality": "National",
-                "academics": "High School",
                 "blood_group": "O Positive",
                 "category": "General",
                 "temporary_ward": reverse(
@@ -161,6 +167,7 @@ class VolunteerProfileTest(TestCase):
                     args=[self.ward.pk],
                     request=request,
                 ),
+                "academic_qualification": "High School",
             },
             "citizenship": {
                 "id": "123",
@@ -195,6 +202,20 @@ class VolunteerProfileTest(TestCase):
             "certificates": [
                 {"name": "1", "image": self.image},
                 {"name": "2", "image": self.image},
+            ],
+            "trainings": [
+                {
+                    "name": "name",
+                    "subject": "subject",
+                    "category": "Rescue",
+                    "image": self.image,
+                },
+                {
+                    "name": "name2",
+                    "subject": "subject2",
+                    "category": "Other",
+                    "image": self.image,
+                },
             ],
         }
 
@@ -283,6 +304,13 @@ class VolunteerProfileTest(TestCase):
         response = view(request)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
+        # Training image not present
+        invalid_data = deepcopy(data)
+        invalid_data["trainings"][0]["image"] = None
+        request = factory.post("/volunteer/", data=invalid_data, format="json")
+        response = view(request)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
         # Valid data
         request = factory.post("/volunteer/", data=data, format="json")
         response = view(request)
@@ -320,12 +348,10 @@ class VolunteerProfileTest(TestCase):
                     args=[self.ward.pk],
                     request=request,
                 ),
+                "academic_qualification": "High School",
                 "organization_name": "organization_name",
                 "organization_phone_number": "+9779840424000",
                 "organization_website": "organization_website",
-                "training_name": "training_name",
-                "training_subject": "training_subject",
-                "training_type": "Other",
             },
             "citizenship": {
                 "id": "000",
@@ -358,6 +384,20 @@ class VolunteerProfileTest(TestCase):
                 {"name": "0", "image": self.image},
                 {"name": "1", "image": self.image},
             ],
+            "trainings": [
+                {
+                    "name": "name",
+                    "subject": "subject",
+                    "category": "Rescue",
+                    "image": self.image,
+                },
+                {
+                    "name": "name2",
+                    "subject": "subject2",
+                    "category": "Other",
+                    "image": self.image,
+                },
+            ],
         }
 
         modified_data = {
@@ -381,12 +421,10 @@ class VolunteerProfileTest(TestCase):
                     args=[self.ward.pk],
                     request=request,
                 ),
+                "academic_qualification": "Doctorate",
                 "organization_name": "_organization_name",
                 "organization_phone_number": "+9779840424001",
                 "organization_website": "_organization_website",
-                "training_name": "_training_name",
-                "training_subject": "_training_subject",
-                "training_type": "Rescue",
             },
             "citizenship": {
                 "id": "001",
@@ -418,6 +456,20 @@ class VolunteerProfileTest(TestCase):
             "certificates": [
                 {"name": "1", "image": self.image},
                 {"name": "2", "image": self.image},
+            ],
+            "trainings": [
+                {
+                    "name": "_name",
+                    "subject": "_subject",
+                    "category": "Other",
+                    "image": self.image,
+                },
+                {
+                    "name": "_name2",
+                    "subject": "_subject2",
+                    "category": "Rescue",
+                    "image": self.image,
+                },
             ],
         }
 
@@ -457,6 +509,24 @@ class VolunteerProfileTest(TestCase):
             pk=self.volunteer.pk
         )
         self.assertEqual(hasattr(modified_volunteer.user, "citizenship"), False)
+
+        # Authenticated and deleted training
+        modified_data_ = deepcopy(modified_data)
+        modified_data_.pop("trainings")
+        request = factory.put(
+            f"/volunteer/{self.volunteer.pk}/", data=modified_data_, format="json"
+        )
+        force_authenticate(request, self.volunteer)
+        response = view(request, pk=self.volunteer.pk)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        modified_volunteer = incident.models.VolunteerProfile.objects.get(
+            pk=self.volunteer.pk
+        )
+        self.assertEqual(
+            hasattr(modified_volunteer.user, "trainings")
+            and modified_volunteer.user.trainings.count(),
+            0,
+        )
 
         # Authenticated and valid modified data
         request = factory.put(

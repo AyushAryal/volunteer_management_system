@@ -1,5 +1,4 @@
 import datetime
-from functools import reduce
 import django_filters
 import federal.models
 from authentication import utils
@@ -525,9 +524,6 @@ class StatisticsViewSet(
                     "category": self.count_by_criteria(
                         "category", models.VolunteerCategory, volunteer_qs
                     ),
-                    "training_type": self.count_by_criteria(
-                        "training_type", models.TrainingType, volunteer_qs
-                    ),
                 },
                 "jobs": {
                     "total": job_qs.count(),
@@ -554,6 +550,56 @@ class StatisticsViewSet(
                 },
             }
         )
+
+
+class JobReportFilter(django_filters.FilterSet):
+    job = django_filters.ModelChoiceFilter(
+        label="Job",
+        field_name="job",
+        queryset=models.Job.objects.all(),
+    )
+
+    class Meta:
+        model = models.JobReport
+        fields = []
+
+
+class JobReportViewSet(
+    viewsets.GenericViewSet,
+    viewsets.mixins.ListModelMixin,
+    viewsets.mixins.RetrieveModelMixin,
+    viewsets.mixins.CreateModelMixin,
+    viewsets.mixins.UpdateModelMixin,
+):
+    queryset = models.JobReport.objects.all()
+    serializer_class = serializers.JobReportSerializer
+    filterset_class = JobReportFilter
+    pagination_class = None
+
+    def get_serializer_class(self):
+        return {
+            "create": serializers.JobReportCreateSerializer,
+            "update": serializers.JobReportCreateSerializer,
+        }.get(self.action, super().get_serializer_class())
+
+    def get_permissions(self):
+        permissions_classes = {
+            "list": [permissions.IsAuthenticated],
+            "retrieve": [incident_permissions.IsOwner],
+            "create": [incident_permissions.IsVolunteer],
+            "update": [incident_permissions.IsOwner],
+        }.get(self.action, [permissions.AllowAny])
+        return (permission() for permission in permissions_classes)
+
+    def get_queryset(self):
+        if self.request.user.is_superuser:
+            return super().get_queryset()
+        if hasattr(self.request.user, "volunteer"):
+            return super().get_queryset().filter(
+                volunteer=self.request.user.volunteer
+            ) | super().get_queryset().filter(job__leader=self.request.user.volunteer)
+
+        return super().get_queryset().none()
 
 
 class NotificationViewSet(

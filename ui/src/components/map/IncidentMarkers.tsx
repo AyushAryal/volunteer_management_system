@@ -27,9 +27,11 @@ export function IncidentMarkers() {
             key={incident.url}
             center={incident.point}
             radius={5}
+            pane="markerPane"
             eventHandlers={{
                 click: () => setIncidentModalUrl(incident.url),
-            }}>
+            }}
+        >
             <Tooltip opacity={0.8} className="bg-primary-50 border-round-lg">
                 <div className="flex flex-column">
                     <div className="font-semibold text-base">{incident.name}</div>

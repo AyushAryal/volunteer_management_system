@@ -4,7 +4,7 @@ import {
     MunicipalityBrief,
     WardBrief,
 } from '@models/federal';
-import { Incident, Job, Program, Volunteer, Notification, Statistics } from '@models/incident';
+import { Incident, Job, Program, Volunteer, Report, Notification, Statistics } from '@models/incident';
 
 import { hookstate } from '@hookstate/core';
 
@@ -36,6 +36,7 @@ export interface Store {
     wardList: WardBrief[],
     incidentList: Incident[],
     jobList: Job[],
+    reportList: Report[],
     programList: Program[],
     notificationList: Notification[],
     statistics: Statistics | null,
@@ -72,6 +73,7 @@ export const storeState = hookstate<Store>({
     wardList: [],
     incidentList: [],
     jobList: [],
+    reportList: [],
     programList: [],
     notificationList: [],
     statistics: null,

@@ -44,7 +44,6 @@ class VolunteerProfileSerializer(serializers.HyperlinkedModelSerializer):
     nationality = ChoiceField(models.Nationality.choices)
     academic_qualification = ChoiceField(models.AcademicQualification.choices)
     category = ChoiceField(models.VolunteerCategory.choices)
-    training_type = ChoiceField(models.TrainingType.choices, required=False)
 
     class Meta:
         model = models.VolunteerProfile
@@ -74,27 +73,14 @@ class VolunteerProfileSerializer(serializers.HyperlinkedModelSerializer):
             "organization_phone_number",
             "organization_website",
         ]
-        training_fields = [
-            "training_name",
-            "training_subject",
-            "training_type",
-        ]
 
         organization_present = any(data.get(field) for field in organization_fields)
-        training_present = any(data.get(field) for field in training_fields)
 
         if organization_present and not all(
             data.get(field) is not None for field in organization_fields
         ):
             raise serializers.ValidationError(
                 "If one of the organization fields is present, all must be present."
-            )
-
-        if training_present and not all(
-            data.get(field) is not None for field in training_fields
-        ):
-            raise serializers.ValidationError(
-                "If one of the training fields is present, all must be present."
             )
 
         return data
@@ -202,6 +188,20 @@ class OtherIdentificationDocumentSerializer(serializers.ModelSerializer):
         )
 
 
+class TrainingSerializer(serializers.ModelSerializer):
+    image = Base64ImageFieldWithUrl(represent_in_base64=True)
+    category = ChoiceField(models.TrainingCategory.choices)
+
+    def validate_image(self, image):
+        if not image:
+            raise serializers.ValidationError("Image is required")
+        return image
+
+    class Meta:
+        model = models.Training
+        fields = ("name", "subject", "category", "image")
+
+
 class CertificateSerializer(serializers.ModelSerializer):
     image = Base64ImageFieldWithUrl(represent_in_base64=True)
 
@@ -223,6 +223,7 @@ class VolunteerSerializer(serializers.ModelSerializer):
     other_identification_document = OtherIdentificationDocumentSerializer(
         required=False
     )
+    trainings = TrainingSerializer(many=True, required=False)
     certificates = CertificateSerializer(many=True, required=False)
 
     class Meta:
@@ -235,6 +236,7 @@ class VolunteerSerializer(serializers.ModelSerializer):
             "passport",
             "national_id",
             "other_identification_document",
+            "trainings",
             "certificates",
         )
         extra_kwargs = {"password": {"write_only": True, "required": False}}
@@ -275,6 +277,7 @@ class VolunteerSerializer(serializers.ModelSerializer):
         other_identification_document = validated_data.pop(
             "other_identification_document", None
         )
+        trainings = validated_data.pop("trainings", None)
         certificates = validated_data.pop("certificates", None)
 
         with transaction.atomic():
@@ -296,6 +299,11 @@ class VolunteerSerializer(serializers.ModelSerializer):
                     user=user, **other_identification_document
                 )
 
+            if trainings:
+                models.Training.objects.bulk_create(
+                    [models.Training(user=user, **training) for training in trainings]
+                )
+
             if certificates:
                 models.Certificate.objects.bulk_create(
                     [models.Certificate(user=user, **cert) for cert in certificates]
@@ -313,11 +321,13 @@ class VolunteerSerializer(serializers.ModelSerializer):
         passport_data                      = validated_data.pop("passport", None)
         national_id_data                   = validated_data.pop("national_id", None)
         other_identification_document_data = validated_data.pop("other_identification_document", None)
+        trainings_data                     = validated_data.pop("trainings", [])
         certificates_data                  = validated_data.pop("certificates", [])
 
         volunteer                          = instance.volunteer
 
         certificates                       = getattr(instance, "certificates", None)
+        trainings                          = getattr(instance, "trainings", None)
         # fmt: on
 
         # fmt: off
@@ -336,10 +346,6 @@ class VolunteerSerializer(serializers.ModelSerializer):
         volunteer.organization_name         = volunteer_data.get("organization_name", volunteer.organization_name)
         volunteer.organization_phone_number = volunteer_data.get("organization_phone_number", volunteer.organization_phone_number)
         volunteer.organization_website      = volunteer_data.get("organization_website", volunteer.organization_website)
-        volunteer.training_name             = volunteer_data.get("training_name", volunteer.training_name)
-        volunteer.training_subject          = volunteer_data.get("training_subject", volunteer.training_subject)
-        volunteer.training_type             = volunteer_data.get("training_type", volunteer.training_type)
-
         # fmt: on
 
         volunteer.save()
@@ -429,14 +435,19 @@ class VolunteerSerializer(serializers.ModelSerializer):
             instance.other_identification_document = None
             instance.save()
 
+        if trainings is not None:
+            trainings.all().delete()
+
+        models.Training.objects.bulk_create(
+            [models.Training(**training, user=instance) for training in trainings_data]
+        )
+
         if certificates is not None:
             certificates.all().delete()
-            models.Certificate.objects.bulk_create(
-                [
-                    models.Certificate(**cert, user=instance)
-                    for cert in certificates_data
-                ]
-            )
+
+        models.Certificate.objects.bulk_create(
+            [models.Certificate(**cert, user=instance) for cert in certificates_data]
+        )
 
         return instance
 
@@ -516,6 +527,89 @@ class JobSerializer(serializers.HyperlinkedModelSerializer):
             "program": {"view_name": "api:program-detail"},
             "leader": {"view_name": "api:volunteer-detail"},
         }
+
+
+class JobReportVolunteerSerializer(serializers.HyperlinkedModelSerializer):
+    profile_image = Base64ImageFieldWithUrl(represent_in_base64=True, required=False)
+
+    class Meta:
+        model = models.VolunteerProfile
+        fields = ("url", "first_name", "last_name", "profile_image")
+        extra_kwargs = {
+            "url": {"view_name": "api:volunteer-detail"},
+        }
+
+
+class JobReportJobSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = models.Job
+        fields = ("url", "name", "start_date", "end_date")
+        extra_kwargs = {
+            "url": {"view_name": "api:job-detail"},
+        }
+
+
+class JobReportSerializer(serializers.HyperlinkedModelSerializer):
+    volunteer = JobReportVolunteerSerializer()
+    job = JobReportJobSerializer()
+
+    class Meta:
+        model = models.JobReport
+        fields = ("url", "volunteer", "report", "job")
+        extra_kwargs = {
+            "url": {"view_name": "api:job_report-detail"},
+            "job": {"view_name": "api:job-detail"},
+        }
+
+
+class JobReportCreateSerializer(serializers.HyperlinkedModelSerializer):
+    def validate(self, data):
+        if "job" not in data:
+            raise serializers.ValidationError("No job provided")
+        if "report" not in data:
+            raise serializers.ValidationError("No report provided")
+        return data
+
+    class Meta:
+        model = models.JobReport
+        fields = ("job", "report")
+        read_only_fields = ("volunteer",)
+        extra_kwargs = {
+            "job": {"view_name": "api:job-detail"},
+            "volunteer": {"view_name": "api:volunteer-detail"},
+        }
+
+    def create(self, validated_data):
+        request = self.context.get("request", None)
+        if not request:
+            raise serializers.ValidationError(
+                "Internal error no request context found."
+            )
+
+        if not hasattr(request.user, "volunteer"):
+            raise serializers.ValidationError("Only volunteers can write reports")
+        validated_data["volunteer"] = request.user.volunteer
+        return super().create(validated_data)
+
+    def update(self, instance, validated_data):
+        request = self.context.get("request", None)
+        if not request:
+            raise serializers.ValidationError(
+                "Internal error no request context found."
+            )
+
+        if not hasattr(request.user, "volunteer"):
+            raise serializers.ValidationError("Only volunteers can write reports")
+
+        if request.user.volunteer != instance.volunteer:
+            raise serializers.ValidationError("You can only modify your own reports")
+
+        job = validated_data.pop("job")
+        report = validated_data.pop("report")
+        instance.job = job
+        instance.report = report
+        instance.save()
+        return instance
 
 
 class NotificationSerializer(serializers.HyperlinkedModelSerializer):

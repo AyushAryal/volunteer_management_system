@@ -25,7 +25,7 @@ export type AcademicQualification = "Secondarylevel" |
     "Doctorate" |
     "Postdoc";
 
-export type TrainingType = "Rescue" | "Reliefdistribution" | "Evacuation" | "Other" |
+export type TrainingCategory = "Rescue" | "Reliefdistribution" | "Evacuation" | "Other" |
     "Healthandsafety" | "Logistics" | "Softskills" | "Leadership" |
     "Teamtraining" | "Management" | "Qualitytraining" | "Humanitarian" |
     "Familyreunification" | "Motorvehicleoperator";
@@ -86,6 +86,34 @@ export const JobDeserializer: IDeserializer<Job> = (json: any) => {
     return json as Job;
 }
 
+export interface Report {
+    url: string,
+    volunteer: ReportVolunteer,
+    report: string,
+    job: ReportJob,
+}
+
+export interface ReportVolunteer {
+    url: string,
+    first_name: string,
+    last_name: string,
+    profile_image: string,
+}
+
+export interface ReportJob {
+    url: string,
+    name: string,
+    start_date: Date,
+    end_date: Date,
+}
+
+export const ReportJobDeserializer: IDeserializer<ReportJob> = (json: any) => {
+    json.start_date = new Date(json.start_date)
+    json.end_date = new Date(json.end_date)
+    return json as ReportJob
+
+}
+
 export interface VolunteerProfile {
     url: string,
     user: string,
@@ -104,9 +132,6 @@ export interface VolunteerProfile {
     organization_name?: string,
     organization_phone_number?: string,
     organization_website?: string,
-    training_name?: string,
-    training_subject?: string,
-    training_type?: TrainingType,
 }
 
 export const VolunteerProfileDeserializer: IDeserializer<VolunteerProfile> = (json: any) => {
@@ -156,6 +181,13 @@ export interface OtherIdentificationDocument {
     image: string,
 }
 
+export interface Training {
+    name: string,
+    subject: string,
+    category: TrainingCategory,
+    image: string,
+}
+
 export interface Certificate {
     image: string,
 }
@@ -169,6 +201,7 @@ export interface Volunteer {
     national_id?: NationalId,
     other_identification_document?: OtherIdentificationDocument,
     certificates: Certificate[],
+    trainings: Training[],
 }
 
 export const VolunteerDeserializer: IDeserializer<Volunteer> = (json: any) => {
@@ -192,7 +225,6 @@ export interface Statistics {
         blood_group: { [key: string]: number },
         academic_qualification: { [key: string]: number },
         category: { [key: string]: number },
-        training_type: { [key: string]: number },
     }
     jobs: {
         total: number,

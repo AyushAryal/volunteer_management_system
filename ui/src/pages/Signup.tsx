@@ -10,7 +10,7 @@ import { SignupBasicInformation } from '@components/signup/SignupBasicInformatio
 
 import { signup } from '@api/incident';
 import { describe_api_errors } from '@api/utils';
-import { AcademicQualification, BloodGroup, Gender, Nationality, TrainingType, Volunteer, VolunteerCategory } from '@models/incident';
+import { AcademicQualification, BloodGroup, Gender, Nationality, Volunteer, VolunteerCategory } from '@models/incident';
 import { FormState } from '@api/form.tsx';
 import { VolunteerProfileAddressWidget, VolunteerProfileBasicWidget } from '@components/profile/VolunteerProfileWidget';
 import { IdentificationDocumentsWidget } from '@components/profile/IdentificationDocumentsWidget';
@@ -28,7 +28,7 @@ async function perform_signup(form: Volunteer): Promise<FormState> {
             "blood_group": form.volunteer.blood_group,
             "gender": form.volunteer.gender,
             "nationality": form.volunteer.nationality,
-            "academicQualification": form.volunteer.academic_qualification,
+            "academic_qualification": form.volunteer.academic_qualification,
             "category": form.volunteer.category,
             "temporary_ward": form.volunteer.temporary_ward,
             "permanent_ward": form.volunteer.permanent_ward,
@@ -112,9 +112,6 @@ export function Signup() {
     const organizationNameState = useState<string | undefined>();
     const organizationPhoneNumberState = useState<string | undefined>();
     const organizationWebsiteState = useState<string | undefined>();
-    const trainingNameState = useState<string | undefined>();
-    const trainingSubjectState = useState<string | undefined>();
-    const trainingTypeState = useState<TrainingType | undefined>();
     const temporaryWardState = useState<string | null>(null);
     const permanentWardState = useState<string | null>(null);
 
@@ -154,9 +151,6 @@ export function Signup() {
         const [organizationName,] = organizationNameState;
         const [organizationPhoneNumber,] = organizationPhoneNumberState;
         const [organizationWebsite,] = organizationWebsiteState;
-        const [trainingName,] = trainingNameState;
-        const [trainingSubject,] = trainingSubjectState;
-        const [trainingType,] = trainingTypeState;
 
         const [citizenshipId,] = citizenshipIdState
         const [citizenshipRegistrationDate,] = citizenshipRegistrationDateState
@@ -246,15 +240,13 @@ export function Signup() {
                 organization_name: organizationName,
                 organization_phone_number: organizationPhoneNumber,
                 organization_website: organizationWebsite,
-                training_name: trainingName,
-                training_subject: trainingSubject,
-                training_type: trainingType,
             },
             citizenship,
             passport,
             national_id,
             other_identification_document,
-            certificates: []
+            certificates: [],
+            trainings: [],
         }));
     };
 
@@ -337,9 +329,6 @@ export function Signup() {
             organizationNameState={organizationNameState}
             organizationPhoneNumberState={organizationPhoneNumberState}
             organizationWebsiteState={organizationWebsiteState}
-            trainingNameState={trainingNameState}
-            trainingSubjectState={trainingSubjectState}
-            trainingTypeState={trainingTypeState}
         />,
         <VolunteerProfileAddressWidget
             temporaryWardState={temporaryWardState}
