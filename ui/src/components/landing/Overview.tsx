@@ -24,13 +24,13 @@ const CountsComponent = () => {
 
   const counts = {
     "Total Volunteers": stats.volunteers.total,
-    "Male Volunteers": stats.volunteers.gender.Male,
-    "Female Volunteers": stats.volunteers.gender.Female,
     "National Volunteers": stats.volunteers.nationality.National,
     "International Volunteers": stats.volunteers.nationality.International,
     "Total Incidents": stats.incidents.total,
     "Total Programs": stats.programs.total,
     "Total Jobs": stats.jobs.total,
+    "Completed Jobs": stats.jobs.status["Completed"],
+    "In Progress Jobs": stats.jobs.status["In Progress"],
   };
 
   return (
@@ -44,7 +44,7 @@ const CountsComponent = () => {
       {Object.entries(counts).map(([label, count]) => (
         <div
           key={label}
-          className="flex flex-column justify-content-center align-items-center text-center border-round-sm bg-primary p-5"
+          className="flex flex-column justify-content-center align-items-center text-center border-round-sm bg-primary p-4"
         >
           <div className="font-bold text-2xl text-cyan-100">{count}</div>
           <div className="font-semibold">{label}</div>
@@ -58,19 +58,20 @@ const CountsComponent = () => {
 const Overview = () => {
   return (
     <section className="flex flex-wrap flex-row gap-5 align-items-center justify-content-center bg-indigo-100 p-3">
-      <div
-        className="flex-1"
-        style={{ minWidth: "20rem" }}
-      >
+      <div className="flex-1" style={{ minWidth: "20rem" }}>
         <CountsComponent />
       </div>
       <div className="flex-1">
         <h2 className="text-4xl">Overview</h2>
-        <p className="text-lg">
+        <p className="text-xl">
           The National Volunteer Bureau formation and Mobilization Platform is a
           robust platform that houses records of all volunteers based on age,
           skills, preferences, and availability along with the functionality to
-          manage them.
+          manage them. It is built upon the concept of creating a national
+          portal embedded with independent platforms for national, provincial,
+          district, and municipal governments with a bottom-up approach of
+          disaster data partnership focusing on the principle of user centric
+          design.
         </p>
       </div>
     </section>

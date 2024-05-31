@@ -26,7 +26,9 @@ const Navbar = () => {
 
   return (
     <div className="w-full bg-indigo-900 flex flex-row flex-wrap align-items-center justify-content-between px-3 py-2 overflow-hidden">
-      <img src={logo} alt="logo" className="h-3rem" />
+      <a href="https://bipad.gov.np/np/" target="_blank">
+        <img src={logo} alt="logo" className="h-3rem" style={{width: "100%"}} />
+      </a>
       <div className="flex flex-row justify-content-end">
         <div className="flex flex-wrap">{signupButton}</div>
         <VolunteerLoginButton />
