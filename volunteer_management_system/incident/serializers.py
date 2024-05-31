@@ -341,6 +341,7 @@ class VolunteerSerializer(serializers.ModelSerializer):
         volunteer.nationality               = volunteer_data.get("nationality", volunteer.nationality)
         volunteer.permanent_ward            = volunteer_data.get("permanent_ward", volunteer.permanent_ward)
         volunteer.temporary_ward            = volunteer_data.get("temporary_ward", volunteer.temporary_ward)
+        volunteer.point                     = volunteer_data.get("point", volunteer.point)
         volunteer.academic_qualification    = volunteer_data.get("academic_qualification", volunteer.academic_qualification)
         volunteer.category                  = volunteer_data.get("category", volunteer.category)
         volunteer.organization_name         = volunteer_data.get("organization_name", volunteer.organization_name)

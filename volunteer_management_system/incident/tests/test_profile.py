@@ -167,6 +167,10 @@ class VolunteerProfileTest(TestCase):
                     args=[self.ward.pk],
                     request=request,
                 ),
+                "point": {
+                    "type": "Point",
+                    "coordinates": [87.55723114, 26.57529106],
+                },
                 "academic_qualification": "High School",
             },
             "citizenship": {
@@ -348,6 +352,10 @@ class VolunteerProfileTest(TestCase):
                     args=[self.ward.pk],
                     request=request,
                 ),
+                "point": {
+                    "type": "Point",
+                    "coordinates": [87.55723114, 26.57529106],
+                },
                 "academic_qualification": "High School",
                 "organization_name": "organization_name",
                 "organization_phone_number": "+9779840424000",
@@ -421,6 +429,10 @@ class VolunteerProfileTest(TestCase):
                     args=[self.ward.pk],
                     request=request,
                 ),
+                "point": {
+                    "type": "Point",
+                    "coordinates": [26.57529106, 87.55723114],
+                },
                 "academic_qualification": "Doctorate",
                 "organization_name": "_organization_name",
                 "organization_phone_number": "+9779840424001",
@@ -526,6 +538,26 @@ class VolunteerProfileTest(TestCase):
             hasattr(modified_volunteer.user, "trainings")
             and modified_volunteer.user.trainings.count(),
             0,
+        )
+
+        # Authenticated and modified point
+        modified_data_ = deepcopy(modified_data)
+        request = factory.put(
+            f"/volunteer/{self.volunteer.pk}/", data=modified_data_, format="json"
+        )
+        force_authenticate(request, self.volunteer)
+        response = view(request, pk=self.volunteer.pk)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        modified_volunteer = incident.models.VolunteerProfile.objects.get(
+            pk=self.volunteer.pk
+        )
+        self.assertEqual(
+            modified_volunteer.point.x,
+            modified_data_["volunteer"]["point"]["coordinates"][0],
+        )
+        self.assertEqual(
+            modified_volunteer.point.y,
+            modified_data_["volunteer"]["point"]["coordinates"][1],
         )
 
         # Authenticated and valid modified data

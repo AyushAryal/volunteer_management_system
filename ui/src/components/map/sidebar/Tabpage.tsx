@@ -9,7 +9,7 @@ import { Incidents } from '@components/map/sidebar/Incidents';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useHookstate } from "@hookstate/core";
 import { storeState } from "@models/store";
-import { faBell } from "@fortawesome/free-solid-svg-icons";
+import { faBell, faHelmetSafety } from "@fortawesome/free-solid-svg-icons";
 import { Badge } from "primereact/badge";
 import { Notifications } from "./Notifications";
 import { Profile } from "./Profile";
@@ -64,7 +64,7 @@ export function Tabpage() {
         onClick={options.onClick}
       >
         <div className="text-xl">
-          <FontAwesomeIcon icon="chart-simple" />
+          <FontAwesomeIcon icon={faHelmetSafety} />
         </div>
         <span className="white-space-nowrap">{options.titleElement}</span>
       </div>
@@ -137,17 +137,17 @@ export function Tabpage() {
         <Visualizations />
       </TabPanel>
       {(volunteer.get() === null) ? <></> :
+        <TabPanel header="Your Jobs" headerTemplate={yourJobsHeaderTemplate}>
+          <YourJobs />
+        </TabPanel>
+      }
+      {(volunteer.get() === null) ? <></> :
         <TabPanel header="Notifications" headerTemplate={notificationHeaderTemplate}>
           <Notifications />
         </TabPanel>}
       {(volunteer.get() === null) ? <></> :
         <TabPanel header="Profile" headerTemplate={profileHeaderTemplate}>
           <Profile />
-        </TabPanel>
-      }
-      {(volunteer.get() === null) ? <></> :
-        <TabPanel header="Your Jobs" headerTemplate={yourJobsHeaderTemplate}>
-          <YourJobs />
         </TabPanel>
       }
     </TabView>

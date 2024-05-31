@@ -375,8 +375,15 @@ class VolunteerProfile(models.Model):
         related_name="transient_volunteers",
     )
 
+    point = gis_models.PointField(
+        null=True,
+        blank=True,
+        verbose_name=_("point"),
+    )
+
     academic_qualification = models.PositiveSmallIntegerField(
-        choices=AcademicQualification.choices, verbose_name=_("academic qualification")
+        choices=AcademicQualification.choices,
+        verbose_name=_("academic qualification"),
     )
 
     category = models.SmallIntegerField(
@@ -542,10 +549,16 @@ class Job(models.Model):
     leader = models.ForeignKey(
         VolunteerProfile,
         on_delete=models.CASCADE,
-        blank=True,
         null=True,
+        blank=True,
         verbose_name=_("leader"),
         related_name="leading_jobs",  # Hard to name correctly
+    )
+
+    age_limit = models.SmallIntegerField(
+        null=True,
+        blank=True,
+        verbose_name=_("age_limit"),
     )
 
     def filled(self):

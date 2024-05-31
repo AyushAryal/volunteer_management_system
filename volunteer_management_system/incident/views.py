@@ -418,13 +418,23 @@ class JobViewSet(
             )
             if job.end_date < timezone.now():
                 return Response(
-                    {"detail": {"Job has ended."}}, status=status.HTTP_400_BAD_REQUEST
+                    {"detail": {"Job has ended."}},
+                    status=status.HTTP_400_BAD_REQUEST,
                 )
 
             if empty_positions <= 0:
                 return Response(
-                    {"detail": _("No vacancy")}, status=status.HTTP_400_BAD_REQUEST
+                    {"detail": _("No vacancy")},
+                    status=status.HTTP_400_BAD_REQUEST,
                 )
+
+            dob = request.user.volunteer.date_of_birth
+            if job.age_limit is not None:
+                if dob.replace(year=dob.year + job.age_limit) < timezone.now():
+                    return Response(
+                        {"detail": _("Ineligible due to age limit")},
+                        status=status.HTTP_400_BAD_REQUEST,
+                    )
 
             application = models.JobApplication(
                 job=job,

@@ -12,6 +12,7 @@ import { useHookstate } from '@hookstate/core';
 import { ReportActionWidget, ReportViewWidget } from '@components/map/sidebar/ReportWidget';
 import { Fieldset } from 'primereact/fieldset';
 import { Button } from 'primereact/button';
+import { Divider } from 'primereact/divider';
 
 type JobDetailModalProps = {
     job: string,
@@ -93,7 +94,7 @@ export function JobDetailModal(props: JobDetailModalProps) {
                 toggleable>
                 <ReportViewWidget report={report} />
             </Fieldset>
-
+            <Divider />
         </div>);
     };
 
@@ -163,13 +164,14 @@ export function JobDetailModal(props: JobDetailModalProps) {
                     {owned_reports.length === 0 ? createReport : reportOwnedBuilder()}
                 </div>
         }
-
         <div className='flex flex-column'>
             <span className="flex align-items-center gap-2 p-2">
                 <FontAwesomeIcon icon={faPen} />
                 <h4>Reports from other volunteers</h4>
             </span>
-            {reportOtherBuilder()}
+            <div className="surface-50">
+                {reportOtherBuilder()}
+            </div>
         </div>
     </Dialog>;
 };

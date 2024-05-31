@@ -12,7 +12,7 @@ type ReportViewWidgetProps = {
 }
 
 export function ReportViewWidget({ report }: ReportViewWidgetProps) {
-    return <Editor value={report.report} readOnly />
+    return <Editor style={{ width: "850px" }} value={report.report} readOnly />
 }
 
 export type ReportActionWidgetProps = {
@@ -37,11 +37,11 @@ export function ReportActionWidget({ report }: ReportActionWidgetProps) {
         }
     };
 
-    return <div className="card flex flex-column gap-2">
+    return <div className="card flex flex-column justify-content-around gap-2">
         <Editor
             value={content}
             onTextChange={(e) => { setContent(e.htmlValue ?? "") }}
-            style={{ height: '320px' }}
+            style={{ height: '320px', width: "900px" }}
         />
 
         <Button outlined

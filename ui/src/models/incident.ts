@@ -129,6 +129,7 @@ export interface VolunteerProfile {
     nationality?: Nationality,
     temporary_ward: string,
     permanent_ward: string,
+    point?: LatLngTuple,
     organization_name?: string,
     organization_phone_number?: string,
     organization_website?: string,
@@ -136,6 +137,10 @@ export interface VolunteerProfile {
 
 export const VolunteerProfileDeserializer: IDeserializer<VolunteerProfile> = (json: any) => {
     json.date_of_birth = new Date(json.date_of_birth);
+    if (json.point !== null) {
+        flip_point(json.point.coordinates);
+        json.point = json.point.coordinates;
+    }
     return json as VolunteerProfile;
 }
 
