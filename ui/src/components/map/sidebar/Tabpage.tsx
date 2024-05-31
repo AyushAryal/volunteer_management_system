@@ -4,7 +4,7 @@ import {
   TabPanelHeaderTemplateOptions,
 } from "primereact/tabview";
 import { Visualizations } from '@components/map/sidebar/Visualizations';
-import { Jobs } from '@components/map/sidebar/Jobs';
+import { Jobs, YourJobs } from '@components/map/sidebar/Jobs';
 import { Incidents } from '@components/map/sidebar/Incidents';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useHookstate } from "@hookstate/core";
@@ -51,6 +51,21 @@ export function Tabpage() {
         onClick={options.onClick}
       >
         <div className="text-xl">{counts.jobs}</div>
+        <span className="white-space-nowrap">{options.titleElement}</span>
+      </div>
+    );
+  };
+
+  const yourJobsHeaderTemplate = (options: TabPanelHeaderTemplateOptions) => {
+    return (
+      <div
+        className={`${options.className} flex flex-column align-items-center text-sm`}
+        style={{ cursor: "pointer" }}
+        onClick={options.onClick}
+      >
+        <div className="text-xl">
+          <FontAwesomeIcon icon="chart-simple" />
+        </div>
         <span className="white-space-nowrap">{options.titleElement}</span>
       </div>
     );
@@ -128,6 +143,11 @@ export function Tabpage() {
       {(volunteer.get() === null) ? <></> :
         <TabPanel header="Profile" headerTemplate={profileHeaderTemplate}>
           <Profile />
+        </TabPanel>
+      }
+      {(volunteer.get() === null) ? <></> :
+        <TabPanel header="Your Jobs" headerTemplate={yourJobsHeaderTemplate}>
+          <YourJobs />
         </TabPanel>
       }
     </TabView>

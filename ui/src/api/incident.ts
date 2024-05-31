@@ -7,6 +7,7 @@ import {
     Statistics,
     StatisticsDeserializer,
     Volunteer, VolunteerDeserializer,
+    JobApplicationStatus,
 } from "@models/incident";
 import { get_detail, get_filtered_endpoint, get_filtered_list, get_id } from "@api/utils";
 import { endpoints } from "@api/api";

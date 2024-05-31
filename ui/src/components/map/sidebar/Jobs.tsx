@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useHookstate } from "@hookstate/core";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -11,6 +11,8 @@ import { Job } from "@models/incident";
 import { storeState } from "@models/store";
 import { ListSkeleton } from "@components/map/sidebar/ListSkeleton";
 import { JobDetailModal } from "@components/map/sidebar/JobDetailModal";
+import { get_job_list } from "@api/incident";
+import { get_id } from "@api/utils";
 
 
 export type JobRibbonProps = { job: Job }
@@ -88,13 +90,35 @@ export function Jobs() {
     }
 
     return (
-      <VirtualScroller
-        items={jobList.get() as Job[]}
-        itemTemplate={(job: Job) => <JobRibbon key={job.url} job={job} />}
-        itemSize={70}
-        style={{ width: "100%", height: "65vh", overflowX: "hidden" }}
-      ></VirtualScroller>
+        <VirtualScroller
+            items={jobList.get() as Job[]}
+            itemTemplate={(job: Job) => <JobRibbon key={job.url} job={job} />}
+            itemSize={70}
+            style={{ width: "100%", height: "65vh", overflowX: "hidden" }}
+        ></VirtualScroller>
     );
 }
+
+
+export function YourJobs() {
+    const jobList = useHookstate(storeState.jobList);
+    const loadedJobList = useHookstate(storeState.loaded.jobList);
+
+    if (!loadedJobList.get()) {
+        return <ListSkeleton />
+    }
+
+    const filteredJobList = [...jobList.get().filter((job) => job.application_status !== "Not applied")];
+
+    return (
+        <VirtualScroller
+            items={filteredJobList}
+            itemTemplate={(job: Job) => <JobRibbon key={job.url} job={job} />}
+            itemSize={70}
+            style={{ width: "100%", height: "65vh", overflowX: "hidden" }}
+        ></VirtualScroller>
+    );
+}
+
 
 
