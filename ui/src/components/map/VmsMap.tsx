@@ -5,7 +5,7 @@ import { TileLayer, MapContainer } from 'react-leaflet';
 import { useHookstate } from '@hookstate/core';
 
 import { TimePeriod, storeState } from '@models/store.ts';
-import { IncidentFilter, JobFilter, ProgramFilter, StatisticsFilter, get_incident_list, get_job_list, get_program_list, get_statistics } from '@api/incident.ts';
+import { IncidentFilter, JobFilter, ProgramFilter, StatisticsFilter, VolunteerGeotagFilter, get_incident_list, get_job_list, get_program_list, get_statistics, get_volunteer_geotag_list } from '@api/incident.ts';
 
 import { FederalBodyPolygons } from '@components/map/FederalPolygons.tsx';
 import { Sidebar } from '@components/map/sidebar/Sidebar';
@@ -14,25 +14,28 @@ import { get_id } from '@api/utils';
 import { IncidentMarkers } from './IncidentMarkers';
 import { BoundingBox } from '@models/geojson';
 import { MapControls } from '@components/map/MapControls';
+import { VolunteerMarkers } from './VolunteerMarkers';
 
 
 export function VmsMap() {
     let mapControls = useHookstate(storeState.mapControls);
-
-    let statistics = useHookstate(storeState.statistics);
-    let incidentList = useHookstate(storeState.incidentList);
-    let programList = useHookstate(storeState.programList);
-    let jobList = useHookstate(storeState.jobList);
 
     let provinceList = useHookstate(storeState.provinceList);
     let districtList = useHookstate(storeState.districtList);
     let municipalityList = useHookstate(storeState.municipalityList);
     let wardList = useHookstate(storeState.wardList);
 
-    let statisticsLoaded = useHookstate(storeState.loaded.statistics);
+    let incidentList = useHookstate(storeState.incidentList);
+    let programList = useHookstate(storeState.programList);
+    let jobList = useHookstate(storeState.jobList);
+    let statistics = useHookstate(storeState.statistics);
+    let volunteersGeotagList = useHookstate(storeState.volunteersGeotagList);
+
     let incidentListLoaded = useHookstate(storeState.loaded.incidentList);
     let programListLoaded = useHookstate(storeState.loaded.programList);
     let jobListLoaded = useHookstate(storeState.loaded.jobList);
+    let statisticsLoaded = useHookstate(storeState.loaded.statistics);
+    let volunttersGeotagListLoaded = useHookstate(storeState.loaded.volunteersGeotagList);
 
     const mapRef = useRef<LeafletMap>(null);
 
@@ -60,6 +63,7 @@ export function VmsMap() {
             let district = selectedDistrict ? get_id(selectedDistrict) : undefined;
             let municipality = selectedMunicipality ? get_id(selectedMunicipality) : undefined;
             let ward = selectedWard ? get_id(selectedWard) : undefined;
+
             let incident_query: IncidentFilter = {
                 province, district, municipality, ward,
                 date_before: endDateRepr,
@@ -76,7 +80,6 @@ export function VmsMap() {
                 date_before: endDateRepr,
                 date_after: startDateRepr,
             };
-
             programListLoaded.set(false);
             get_program_list(program_query).then((list) => {
                 programList.set(list);
@@ -92,6 +95,15 @@ export function VmsMap() {
             get_job_list(job_query).then((list) => {
                 jobList.set(list);
                 jobListLoaded.set(true);
+            });
+
+            let volunteer_geotag_query: VolunteerGeotagFilter = {
+                province, district, municipality, ward,
+            };
+            volunttersGeotagListLoaded.set(false);
+            get_volunteer_geotag_list(volunteer_geotag_query).then((list) => {
+                volunteersGeotagList.set(list);
+                volunttersGeotagListLoaded.set(true);
             });
 
             let statistics_query: StatisticsFilter = {
@@ -157,6 +169,7 @@ export function VmsMap() {
                     />
                     <FederalBodyPolygons />
                     <IncidentMarkers />
+                    <VolunteerMarkers />
                     <div style={{ position: "absolute", right: "0.5rem", top: "0.5rem" }}>
                         <div className="leaflet-control flex flex-row align-items-start" style={{ gap: "1rem" }}>
                             <MapControls />

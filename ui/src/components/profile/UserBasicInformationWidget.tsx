@@ -4,7 +4,7 @@ import { Password } from 'primereact/password';
 import { VolunteerFormContext } from '@forms/volunteer';
 import { useContext } from 'react';
 
-export function UserBasicInformation() {
+export function UserBasicInformationWidget() {
     let { form, setForm } = useContext(VolunteerFormContext);
 
     return <div className="flex flex-column w-full align-items-stretch" style={{ gap: "2rem" }}>

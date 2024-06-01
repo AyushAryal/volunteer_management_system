@@ -144,6 +144,16 @@ export const VolunteerProfileDeserializer: IDeserializer<VolunteerProfile> = (js
     return json as VolunteerProfile;
 }
 
+export interface VolunteerGeotag {
+    point: LatLngTuple
+}
+
+export const VolunteerGeotagDeserializer: IDeserializer<VolunteerGeotag> = (json: any) => {
+    flip_point(json.point.coordinates);
+    json.point = json.point.coordinates;
+    return json as VolunteerGeotag;
+}
+
 export interface Citizenship {
     id: string,
     registration_date: Date,

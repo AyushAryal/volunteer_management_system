@@ -22,7 +22,7 @@ class VolunteerProfileTest(TestCase):
         self.province = federal.models.Province.objects.create(
             name="Province",
             admin=self.province_admin,
-            shape=Polygon([(0, 0), (0, 1), (1, 1), (1, 0), (0, 0)]),
+            shape=Polygon([(-1, -1), (-1, 1), (1, 1), (1, -1), (-1, -1)]),
         )
 
         self.district_admin = get_user_model().objects.create(
@@ -33,7 +33,7 @@ class VolunteerProfileTest(TestCase):
             name="District",
             province=self.province,
             admin=self.district_admin,
-            shape=Polygon([(0, 0), (0, 1), (1, 1), (1, 0), (0, 0)]),
+            shape=Polygon([(-1, -1), (-1, 1), (1, 1), (1, -1), (-1, -1)]),
         )
 
         self.municipality_admin = get_user_model().objects.create(
@@ -44,13 +44,13 @@ class VolunteerProfileTest(TestCase):
             name="Municipality",
             district=self.district,
             admin=self.municipality_admin,
-            shape=Polygon([(0, 0), (0, 1), (1, 1), (1, 0), (0, 0)]),
+            shape=Polygon([(-1, -1), (-1, 1), (1, 1), (1, -1), (-1, -1)]),
         )
 
         self.ward = federal.models.Ward.objects.create(
             name=1,
             municipality=self.municipality,
-            shape=Polygon([(0, 0), (0, 1), (1, 1), (1, 0), (0, 0)]),
+            shape=Polygon([(-1, -1), (-1, 1), (1, 1), (1, -1), (-1, -1)]),
         )
 
     def create_volunteer(self, email, ward):
@@ -169,7 +169,7 @@ class VolunteerProfileTest(TestCase):
                 ),
                 "point": {
                     "type": "Point",
-                    "coordinates": [87.55723114, 26.57529106],
+                    "coordinates": [0, 0],
                 },
                 "academic_qualification": "High School",
             },
@@ -315,6 +315,13 @@ class VolunteerProfileTest(TestCase):
         response = view(request)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
+        # Point not in polygon
+        invalid_data = deepcopy(data)
+        invalid_data["volunteer"]["point"]["coordinates"] = [-1.1, -1.1]
+        request = factory.post("/volunteer/", data=invalid_data, format="json")
+        response = view(request)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
         # Valid data
         request = factory.post("/volunteer/", data=data, format="json")
         response = view(request)
@@ -354,7 +361,7 @@ class VolunteerProfileTest(TestCase):
                 ),
                 "point": {
                     "type": "Point",
-                    "coordinates": [87.55723114, 26.57529106],
+                    "coordinates": [0, 0.5],
                 },
                 "academic_qualification": "High School",
                 "organization_name": "organization_name",
@@ -431,7 +438,7 @@ class VolunteerProfileTest(TestCase):
                 ),
                 "point": {
                     "type": "Point",
-                    "coordinates": [26.57529106, 87.55723114],
+                    "coordinates": [0.5, 0],
                 },
                 "academic_qualification": "Doctorate",
                 "organization_name": "_organization_name",

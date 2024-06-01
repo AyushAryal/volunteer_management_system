@@ -65,6 +65,7 @@ class JobForm(forms.ModelForm):
             "start_date",
             "end_date",
             "vacancy",
+            "age_limit",
             "status",
             "leader",
         ]

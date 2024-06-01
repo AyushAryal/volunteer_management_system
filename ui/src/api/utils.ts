@@ -61,8 +61,16 @@ export function describe_api_errors(json: object): string {
     return Array.from(deepFlatten(json))
         .map(([k, v], i) => {
             if (Array.isArray(v)) {
-                let combined = v.join(" ");
+                let combined = v.map((v_) => {
+                    if (typeof v_ === "object") {
+                        return describe_api_errors(v_);
+                    } else {
+                        return v_;
+                    }
+                }).join(" ");
                 return `${i + 1}. ${k}: ${combined}`;
+            } else if (typeof v == "object") {
+                return `${i + 1}. ${k}: ${describe_api_errors(v)}`;
             } else {
                 return `${i + 1}. ${k}: ${v}`;
             }

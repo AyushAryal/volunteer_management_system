@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Steps } from 'primereact/steps';
 import { faUserPlus, faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 
-import { UserBasicInformation } from '@components/profile/UserBasicInformation';
+import { UserBasicInformationWidget } from '@components/profile/UserBasicInformationWidget';
 
 import { FormState } from '@api/form.tsx';
 import { VolunteerProfileAddressWidget, VolunteerProfileRequiredWidget } from '@components/profile/VolunteerProfileWidget';
@@ -139,7 +139,7 @@ export function Signup() {
         <VolunteerProfileAddressWidget />,
         <IdentificationDocumentsWidget />,
         <>
-            <UserBasicInformation />
+            <UserBasicInformationWidget />
             {submitAndFormErrors}
         </>
     ].map(PaginationWrapper);

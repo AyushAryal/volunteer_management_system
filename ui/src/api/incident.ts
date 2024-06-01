@@ -7,7 +7,7 @@ import {
     Statistics,
     StatisticsDeserializer,
     Volunteer, VolunteerDeserializer,
-    JobApplicationStatus,
+    VolunteerGeotag, VolunteerGeotagDeserializer,
 } from "@models/incident";
 import { get_detail, get_filtered_endpoint, get_filtered_list, get_id } from "@api/utils";
 import { endpoints } from "@api/api";
@@ -43,6 +43,7 @@ export interface ReportFilter {
 }
 
 export interface StatisticsFilter extends IncidentFilter { }
+export interface VolunteerGeotagFilter extends FederalFilter { }
 
 export let get_incident_list = get_filtered_list<Incident, IncidentFilter>(endpoints.incident, IncidentDeserializer);
 export let get_program_list = get_filtered_list<Program, ProgramFilter>(endpoints.program);
@@ -50,6 +51,7 @@ export let get_job_list = get_filtered_list<Job, JobFilter>(endpoints.job, JobDe
 export let get_report_list = get_filtered_list<Report, ReportFilter>(endpoints.report);
 export let get_site_content_list = get_filtered_list<SiteContent, {}>(endpoints.site_content);
 export let get_notification_list = get_filtered_list<Notification, {}>(endpoints.notification, NotificationDeserializer);
+export let get_volunteer_geotag_list = get_filtered_list<VolunteerGeotag, VolunteerGeotagFilter>(endpoints.volunteer_geotag, VolunteerGeotagDeserializer);
 
 export let get_incident_detail = get_detail<Incident, number>(endpoints.incident, IncidentDeserializer);
 export let get_program_detail = get_detail<Program, number>(endpoints.program);

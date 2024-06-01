@@ -3,10 +3,93 @@ import { InputMask } from 'primereact/inputmask';
 import { RadioButton } from 'primereact/radiobutton';
 import { Dropdown } from 'primereact/dropdown';
 import { LocationSelector } from '@components/LocationSelector';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Calendar } from 'primereact/calendar';
 import { FloatLabel } from 'primereact/floatlabel';
 import { VolunteerFormContext } from '@forms/volunteer';
+import L, { LatLngBounds, LatLngTuple } from 'leaflet';
+import { MapContainer } from 'react-leaflet/MapContainer';
+import { TileLayer } from 'react-leaflet/TileLayer';
+import { Ward } from '@models/federal';
+import { get_ward_detail } from '@api/federal';
+import { get_id } from '@api/utils';
+import { Polygon } from 'react-leaflet/Polygon';
+import { useMap, useMapEvents } from 'react-leaflet/hooks';
+import { Marker } from 'react-leaflet/Marker';
+import { Tooltip } from 'react-leaflet/Tooltip';
+
+type PointPickerProps = {
+    label: string,
+    value: LatLngTuple | undefined,
+    onChange: (point: LatLngTuple | undefined) => void
+}
+
+function PointPicker(props: PointPickerProps) {
+    let [point, setPoint] = useState<LatLngTuple | undefined>(props.value);
+
+    useMapEvents({
+        click: (event) => {
+            let point: LatLngTuple;
+            if (Array.isArray(event.latlng)) {
+                point = [event.latlng[0], event.latlng[1]];
+            } else {
+                point = [event.latlng.lat, event.latlng.lng];
+            }
+            setPoint(point);
+            props.onChange(point);
+        }
+    });
+
+    if (point) {
+        return <Marker
+            position={point}
+            eventHandlers={{
+                click: () => {
+                    setPoint(undefined);
+                    props.onChange(undefined);
+                }
+            }}
+        >
+            <Tooltip sticky>
+                {props.label}
+            </Tooltip>
+        </Marker>
+    }
+    return null;
+}
+
+type SelectedWardMapPolygonProps = {
+    ward: string | null,
+}
+
+function SelectedWardMapPolygon(props: SelectedWardMapPolygonProps) {
+    const mapRef = useMap();
+    let [ward, setWard] = useState<Ward>();
+    useEffect(() => {
+        let network_request = async () => {
+            let bbox = [26, 80, 31, 89];
+            if (props.ward) {
+                let ward_ = await get_ward_detail(get_id(props.ward));
+                setWard(ward_);
+                bbox = ward_.shape.bbox;
+            } else {
+                setWard(undefined);
+            }
+            let bounds = new LatLngBounds([[bbox[0], bbox[1]], [bbox[2], bbox[3]]]);
+            mapRef.flyToBounds(bounds, { duration: 0.5 });
+        }
+        network_request();
+    }, [props.ward]);
+    if (ward) {
+        return <Polygon
+            positions={ward.shape.coordinates}
+            color="blue"
+            weight={1}
+            pane="overlayPane"
+        />;
+    }
+    return null;
+}
 
 export function VolunteerProfileAddressWidget() {
     let { form, setForm } = useContext(VolunteerFormContext);
@@ -52,15 +135,42 @@ export function VolunteerProfileAddressWidget() {
         })}
     />;
 
+    const map = <MapContainer
+        bounds={new LatLngBounds([[26, 80], [31, 89]])}
+        style={{ width: "100%", height: "300px" }}
+        preferCanvas={true}
+        renderer={L.canvas()}
+    >
+        <TileLayer
+            url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        />
+        <SelectedWardMapPolygon ward={form.volunteer.temporary_ward} />
+        <PointPicker label="Your location (click to remove)" value={form.volunteer.point} onChange={(latlng) => {
+            setForm({
+                ...form,
+                volunteer: {
+                    ...form.volunteer,
+                    point: latlng,
+                }
+            })
+        }} />
+    </MapContainer>
+
     return <div className="flex flex-column w-full" style={{ gap: "1rem" }}>
-        <div className="font-semibold">
-            Temporary Address <span className="text-red-500">*</span>
-        </div>
-        {temporaryLocationSelector}
         <div className="font-semibold">
             Permanent Address <span className="text-red-500">*</span>
         </div>
         {permanentLocationSelector}
+        <div className="font-semibold">
+            Temporary Address <span className="text-red-500">*</span>
+        </div>
+        {temporaryLocationSelector}
+        <span className="font-semibold">Geolocation</span>
+        <span className="text-sm font-semibold text-red-700">
+            DISCLAIMER: This is an OPTIONAL field. Your location may be shared with other people anonymously.
+        </span>
+        {map}
     </div>;
 
 }

@@ -17,6 +17,7 @@ export function LoadingDisplay() {
         ["programList", "Loading Programs..."],
         ["wardList", "Loading Wards..."],
         ["notificationList", "Loading Notifications..."],
+        ["volunteersGeotagList", "Loading volunteer locations..."],
     ]);
 
     let messages = Object.entries(loaded)

@@ -8,7 +8,7 @@ import {
     get_province_brief_list,
     get_ward_brief_list
 } from "@api/federal";
-import { get_notification_list, get_volunteer } from "@api/incident";
+import { get_notification_list, get_volunteer, get_volunteer_geotag_list } from "@api/incident";
 
 export function GlobalEffects() {
     const store = useHookstate(storeState);
@@ -49,6 +49,16 @@ export function GlobalEffects() {
             let wardList = await get_ward_brief_list()
             storeState.wardList.set(wardList);
             storeState.loaded.wardList.set(true);
+        }
+        network_request();
+    }, []);
+
+    useEffect(() => {
+        let network_request = async () => {
+            storeState.loaded.volunteersGeotagList.set(false);
+            let volunteersGeotagList = await get_volunteer_geotag_list();
+            storeState.volunteersGeotagList.set(volunteersGeotagList);
+            storeState.loaded.volunteersGeotagList.set(true);
         }
         network_request();
     }, []);

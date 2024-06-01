@@ -6,6 +6,7 @@ export const endpoints = {
     token: `${server}/api/token`,
     site_content: `${server}/api/site_content`,
     volunteer: `${server}/api/volunteer`,
+    volunteer_geotag: `${server}/api/volunteer/geotag`,
     incident: `${server}/api/incident`,
     program: `${server}/api/program`,
     job: `${server}/api/job`,

@@ -30,10 +30,6 @@ class SiteContentViewSet(
 
 
 class VolunteerProfileFilter(django_filters.FilterSet):
-    date = django_filters.DateFromToRangeFilter(
-        field_name="user__date_joined", lookup_expr="range"
-    )
-
     province = django_filters.ModelChoiceFilter(
         label="Province",
         field_name="temporary_ward__municipality__district__province",
@@ -142,9 +138,16 @@ class VolunteerProfileViewSet(
     serializer_class = serializers.VolunteerSerializer
 
     def get_queryset(self):
-        return {"create": get_user_model().objects.all()}.get(
-            self.action, super().get_queryset()
-        )
+        return {
+            "create": get_user_model().objects.all(),
+        }.get(self.action, super().get_queryset())
+
+    def get_serializer_class(self):
+        return {
+            "create": serializers.JobReportCreateSerializer,
+            "update": serializers.JobReportCreateSerializer,
+            "geotag": serializers.VolunteerLocationSerializer,  # This is used for geotag
+        }.get(self.action, super().get_serializer_class())
 
     def get_permissions(self):
         permissions_classes = {
@@ -153,9 +156,16 @@ class VolunteerProfileViewSet(
             "create": [permissions.AllowAny],
             "update": [authentication_permissions.IsOwner],
             "partial_update": [authentication_permissions.IsOwner],
-            "count": [permissions.AllowAny],
+            "geotag": [permissions.AllowAny],
         }.get(self.action, [permissions.AllowAny])
         return (permission() for permission in permissions_classes)
+
+    @action(detail=False, methods=["get"])
+    def geotag(self, request, *args, **kwargs):
+        queryset = models.VolunteerProfile.objects.filter(point__isnull=False)
+        queryset = VolunteerProfileFilter(request.GET, queryset).qs
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
 
     def list(self, request, *args, **kwargs):
         serializer_class = self.get_serializer_class()

@@ -1,9 +1,19 @@
 import { FormState } from '@api/form';
 import { signup, update_volunteer_profile } from '@api/incident';
 import { describe_api_errors } from '@api/utils';
-import { AcademicQualification, BloodGroup, Gender, Nationality, VolunteerCategory } from '@models/incident';
+import { AcademicQualification, BloodGroup, Certificate, Gender, Nationality, Training, VolunteerCategory } from '@models/incident';
 import { LatLngTuple } from 'leaflet';
 import { createContext } from 'react';
+
+function serialize_point(point: LatLngTuple | undefined) {
+    if (point) {
+        return {
+            "type": "Point",
+            "coordinates": [point[1], point[0]],
+        }
+    }
+    return null;
+}
 
 function all_values_logically_present(object: object) {
     return Object.entries(object).reduce((acc, [_, value]) => {
@@ -37,6 +47,7 @@ export async function perform_signup(form: VolunteerForm): Promise<FormState> {
             "category": form.volunteer.category,
             "temporary_ward": form.volunteer.temporary_ward,
             "permanent_ward": form.volunteer.permanent_ward,
+            "point": serialize_point(form.volunteer.point),
         },
         "citizenship": {
             "id": form.citizenship?.id,
@@ -97,6 +108,7 @@ export async function perform_volunteer_update(form: VolunteerForm): Promise<For
             "category": form.volunteer.category,
             "temporary_ward": form.volunteer.temporary_ward,
             "permanent_ward": form.volunteer.permanent_ward,
+            "point": serialize_point(form.volunteer.point),
         },
         "citizenship": {
             "id": form.citizenship?.id,
@@ -119,7 +131,8 @@ export async function perform_volunteer_update(form: VolunteerForm): Promise<For
             "name": form.other_identification_document?.name,
             "image": form.other_identification_document?.image,
         },
-        "certificates": []
+        "certificates": [],
+        "trainings": form.trainings,
     };
 
     // If all fields is not present we don't send the entire object.
@@ -185,8 +198,8 @@ export type VolunteerForm = {
         name?: string,
         image?: string,
     },
-    certificates: [],
-    trainings: [],
+    certificates: Certificate[],
+    trainings: Training[],
 }
 
 export type VolunteerFormState = {

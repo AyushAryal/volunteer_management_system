@@ -4,7 +4,7 @@ import {
     MunicipalityBrief,
     WardBrief,
 } from '@models/federal';
-import { Incident, Job, Program, Volunteer, Report, Notification, Statistics } from '@models/incident';
+import { Incident, Job, Program, Volunteer, Report, Notification, Statistics, VolunteerGeotagDeserializer, VolunteerGeotag } from '@models/incident';
 
 import { hookstate } from '@hookstate/core';
 
@@ -49,6 +49,7 @@ export interface Store {
     reportList: Report[],
     programList: Program[],
     notificationList: Notification[],
+    volunteersGeotagList: VolunteerGeotag[],
     statistics: Statistics | null,
     loaded: {
         provinceList: boolean,
@@ -59,6 +60,7 @@ export interface Store {
         jobList: boolean,
         programList: boolean,
         notificationList: boolean,
+        volunteersGeotagList: boolean,
         statistics: boolean,
     },
     mapControls: MapControls
@@ -86,6 +88,7 @@ export const storeState = hookstate<Store>({
     reportList: [],
     programList: [],
     notificationList: [],
+    volunteersGeotagList: [],
     statistics: null,
     loaded: {
         provinceList: false,
@@ -95,7 +98,8 @@ export const storeState = hookstate<Store>({
         incidentList: false,
         jobList: false,
         programList: false,
-        notificationList: true,
+        notificationList: true, // For unauthenticated users
+        volunteersGeotagList: false,
         statistics: false,
     },
     mapControls: {

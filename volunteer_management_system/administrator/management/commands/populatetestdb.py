@@ -13,6 +13,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group, Permission
 from django.contrib.gis.geos import Point
 from django.contrib.gis.geos import Polygon
+from django.contrib.gis.db.models import Extent
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
@@ -190,6 +191,19 @@ class Command(BaseCommand):
                 wards.append(ward)
         return wards
 
+    def uniformly_sample_point(self, qs):
+        x1, y1, x2, y2 = qs.aggregate(Extent("shape"))["shape__extent"]
+        max_tries = 100
+        tries = 0
+        while tries < max_tries:
+            x = random.uniform(x1, x2)
+            y = random.uniform(y1, y2)
+            point = Point(x=x, y=y)
+            if qs.filter(shape__contains=point):
+                return point
+            tries += 1
+        raise RuntimeError("Too many attempts to generate random point")
+
     def create_volunteers(self, wards, n=1000):
         first_names = [
             "first",
@@ -279,7 +293,7 @@ class Command(BaseCommand):
 
         details = set()
         details.add((0, 0, 0, 2))
-        while len(details) != 1000:
+        while len(details) != n:
             first_name = random.randint(0, len(first_names) - 1)
             last_name = random.randint(0, len(last_names) - 1)
             domain = random.randint(0, len(domains) - 1)
@@ -317,6 +331,9 @@ class Command(BaseCommand):
             citizenship.save()
 
             ward = random.choice(wards)
+            point = self.uniformly_sample_point(
+                federal.models.Ward.objects.filter(pk=ward.pk)
+            )
 
             volunteer = incident.models.VolunteerProfile(
                 user=user,
@@ -328,6 +345,7 @@ class Command(BaseCommand):
                 date_of_birth=date_of_birth,
                 temporary_ward=ward,
                 permanent_ward=ward,
+                point=point,
                 academic_qualification=random.choice(
                     incident.models.AcademicQualification.values
                 ),

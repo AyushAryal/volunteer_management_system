@@ -23,10 +23,10 @@ export function IncidentMarkers() {
         return <CircleMarker
             fill={true}
             fillOpacity={0.6}
-            color='#5472d4'
+            color='#d42224'
             key={incident.url}
             center={incident.point}
-            radius={5}
+            radius={4}
             pane="markerPane"
             eventHandlers={{
                 click: () => setIncidentModalUrl(incident.url),

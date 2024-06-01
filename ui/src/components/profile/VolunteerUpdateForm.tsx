@@ -12,6 +12,7 @@ import { VolunteerForm, VolunteerFormContext, perform_volunteer_update } from '@
 import { useState } from 'react';
 import { FormState } from '@api/form';
 import { ProfileImageUpload } from './ProfileImageUpload';
+import { TrainingListWidget } from './TrainingWidget';
 
 
 type VolunteerUpdateFormProps = {
@@ -72,7 +73,7 @@ export function VolunteerUpdateForm(props: VolunteerUpdateFormProps) {
             image: volunteer.other_identification_document?.image,
         },
         certificates: [],
-        trainings: [],
+        trainings: volunteer.trainings,
     });
 
 
@@ -115,6 +116,8 @@ export function VolunteerUpdateForm(props: VolunteerUpdateFormProps) {
             <VolunteerProfileWidget />
             <h2> Identification </h2>
             <IdentificationDocumentsWidget />
+            <h2> Training </h2>
+            <TrainingListWidget />
             <div className="flex gap-4 align-self-end align-items-center mt-5">
                 {response}
                 <Button

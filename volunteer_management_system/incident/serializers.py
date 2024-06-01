@@ -7,6 +7,7 @@ from rest_framework import serializers
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework.fields import SerializerMethodField
 
+import federal.models
 from . import models
 
 
@@ -37,6 +38,12 @@ class ChoiceField(serializers.ChoiceField):
             if val == data:
                 return key
         self.fail("invalid_choice", input=data)
+
+
+class VolunteerLocationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.VolunteerProfile
+        fields = ("point",)
 
 
 class VolunteerProfileSerializer(serializers.HyperlinkedModelSerializer):
@@ -84,6 +91,17 @@ class VolunteerProfileSerializer(serializers.HyperlinkedModelSerializer):
             raise serializers.ValidationError(
                 "If one of the organization fields is present, all must be present."
             )
+
+        point = data.get("point")
+        temporary_ward = data.get("temporary_ward")
+        if point:
+            ward = federal.models.Ward.objects.filter(
+                shape__contains=point, pk=temporary_ward.pk
+            )
+            if not ward:
+                raise serializers.ValidationError(
+                    "Point must lie within selected temporary ward"
+                )
 
         return data
 
