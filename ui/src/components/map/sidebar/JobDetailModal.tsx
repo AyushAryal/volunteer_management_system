@@ -13,6 +13,7 @@ import { ReportActionWidget, ReportViewWidget } from '@components/map/sidebar/Re
 import { Fieldset } from 'primereact/fieldset';
 import { Button } from 'primereact/button';
 import { Divider } from 'primereact/divider';
+import default_profile_image from "@assets/default_profile_image.png";
 
 type JobDetailModalProps = {
     job: string,
@@ -66,7 +67,6 @@ export function JobDetailModal(props: JobDetailModalProps) {
             }));
 
             if (response.status == 201) {
-                console.log(response);
                 setJob(await get_job_detail(id));
             } else {
             }
@@ -81,7 +81,12 @@ export function JobDetailModal(props: JobDetailModalProps) {
             <Fieldset
                 legend={
                     <div className="flex align-items-center surface-100 gap-2 p-2 border-round">
-                        <img src={report.volunteer.profile_image}
+                        <img src={
+                            report.volunteer.profile_image == "" ?
+                                default_profile_image
+                                :
+                                report.volunteer.profile_image
+                        }
                             style={{
                                 width: "2.8rem",
                                 height: "2.8rem",

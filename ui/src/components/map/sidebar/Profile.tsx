@@ -6,6 +6,7 @@ import { useHookstate } from "@hookstate/core";
 import { storeState } from "@models/store";
 import { Divider } from "primereact/divider";
 import { ScrollPanel } from "primereact/scrollpanel";
+import default_profile_image from "@assets/default_profile_image.png";
 
 
 
@@ -76,7 +77,11 @@ export function Profile() {
                 <div>
                     <img
                         className="shadow-4 mb-2"
-                        src={volunteer.volunteer.profile_image}
+                        src={volunteer.volunteer.profile_image == "" ?
+                            default_profile_image
+                            :
+                            volunteer.volunteer.profile_image
+                        }
                         style={{
                             width: "8rem",
                             height: "8rem",

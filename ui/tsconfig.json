@@ -10,6 +10,7 @@
       "@models/*": ["models/*"],
       "@components/*": ["components/*"],
       "@api/*": ["api/*"],
+      "@forms/*": ["forms/*"],
       "@styles/*": ["styles/*"],
       "@assets/*": ["assets/*"],
     },

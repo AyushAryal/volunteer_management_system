@@ -12,6 +12,8 @@ from . import models
 
 class Base64ImageFieldWithUrl(Base64ImageField):
     def to_representation(self, file):
+        if not file:
+            return ""
         return "data:image/*;base64," + super().to_representation(file)
 
 

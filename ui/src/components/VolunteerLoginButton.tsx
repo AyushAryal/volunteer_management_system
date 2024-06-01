@@ -17,7 +17,7 @@ import { VolunteerUpdateForm } from '@components/profile/VolunteerUpdateForm';
 import { get_volunteer } from '@api/incident.ts';
 import { describe_api_errors } from '@api/utils';
 import { FormState } from '@api/form.tsx';
-import { Volunteer } from '@models/incident';
+import default_profile_image from "@assets/default_profile_image.png";
 
 export function VolunteerProfileMenu() {
     const token = useHookstate(storeState.token);
@@ -57,11 +57,14 @@ export function VolunteerProfileMenu() {
         </Button>;
     }
 
+    let profile_image = volunteer.get()?.volunteer?.profile_image ?? "";
+
+
     return <div className="flex flex-row">
         <img
             onClick={(event) => menu?.current?.toggle(event)}
             className="mb-2 border-2 border-red-600"
-            src={volunteer.get()?.volunteer?.profile_image}
+            src={profile_image == "" ? default_profile_image : profile_image}
             style={{
                 width: "3.1rem",
                 height: "3.1rem",
@@ -73,7 +76,6 @@ export function VolunteerProfileMenu() {
         {
             volunteerProfileEditVisible &&
             <VolunteerUpdateForm
-                volunteer={volunteer.get() as Volunteer}
                 visible={volunteerProfileEditVisible}
                 setVisible={setVolunteerProfileEditVisible}
             />

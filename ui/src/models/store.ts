@@ -8,6 +8,15 @@ import { Incident, Job, Program, Volunteer, Report, Notification, Statistics } f
 
 import { hookstate } from '@hookstate/core';
 
+export enum TimePeriod {
+    Week,
+    Month,
+    SixMonths,
+    ThreeMonths,
+    Year,
+    Custom,
+}
+
 interface MapControls {
     selectedProvince: string | null,
     selectedDistrict: string | null,
@@ -17,6 +26,7 @@ interface MapControls {
     showDistrictBorders: boolean,
     showMunicipalityBorders: boolean,
     showWardBorders: boolean,
+    timePeriod: TimePeriod,
     startDate: Date | null,
     endDate: Date | null,
 }
@@ -97,6 +107,7 @@ export const storeState = hookstate<Store>({
         showDistrictBorders: true,
         showMunicipalityBorders: false,
         showWardBorders: false,
+        timePeriod: TimePeriod.Week,
         startDate: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
         endDate: new Date(),
     }

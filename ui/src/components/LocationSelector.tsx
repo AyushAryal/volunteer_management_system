@@ -1,4 +1,3 @@
-
 import { useHookstate } from '@hookstate/core';
 import { storeState } from '@models/store';
 import { ProgressSpinner } from 'primereact/progressspinner';
@@ -11,7 +10,6 @@ import {
     WardBrief,
     FederalBodyBrief
 } from '@models/federal';
-import { StateTuple } from '@models/generics';
 
 type Tree = Map<string, Tree | null>;
 
@@ -50,14 +48,18 @@ function getDescendents(tree: Tree, url: string): string[] {
     return descendants;
 }
 
-export function ProvinceSelector({ selectedProvinceState }: { selectedProvinceState: StateTuple<string | undefined> }) {
+type FederalSelectorProps = {
+    value: string | undefined,
+    onChange: (value: string | undefined) => void,
+}
+
+export function ProvinceSelector({ value, onChange }: FederalSelectorProps) {
     const provinceList = useHookstate(storeState.provinceList);
-    const [selectedProvince, setProvince] = selectedProvinceState;
 
     const progressSpinner = <ProgressSpinner style={{ width: '50px', height: '50px' }} />;
     return <Dropdown
-        value={provinceList.get().find((province) => selectedProvince == province.url)}
-        onChange={(ev) => setProvince(ev.value?.url ?? undefined)}
+        value={provinceList.get().find((province) => value == province.url)}
+        onChange={(ev) => onChange(ev.value?.url ?? null)}
         options={provinceList.get() as ProvinceBrief[]}
         emptyMessage={provinceList.get().length == 0 ? progressSpinner : null}
         optionLabel="name"
@@ -66,33 +68,31 @@ export function ProvinceSelector({ selectedProvinceState }: { selectedProvinceSt
         placeholder="Select a province" />;
 }
 
-export function DistrictSelector({ label, districtState }: { label: string, districtState: StateTuple<string | undefined> }) {
+export function DistrictSelector({ value, onChange }: FederalSelectorProps) {
     const districtList = useHookstate(storeState.districtList);
-    const [district, setDistrict] = districtState;
     const progressSpinner = <ProgressSpinner style={{ width: '50px', height: '50px' }} />;
 
     return <div className="flex flex-column justify-content-center align-content-center">
         <Dropdown
-            value={districtList.get().find((d) => district == d.url)}
-            onChange={(ev) => { setDistrict(ev.value?.url ?? undefined); }}
+            value={districtList.get().find((d) => value == d.url)}
+            onChange={(ev) => { onChange(ev.value?.url ?? null); }}
             options={districtList.get() as DistrictBrief[]}
             emptyMessage={districtList.get().length == 0 ? progressSpinner : null}
             optionLabel="name"
             showClear
             filter
-            placeholder={label} />
+            placeholder="Select a district" />
     </div>;
 }
 
-export function MunicipalitySelector({ municipalityState }: { municipalityState: StateTuple<string | undefined> }) {
+export function MunicipalitySelector({ value, onChange }: FederalSelectorProps) {
     const municipalityList = useHookstate(storeState.municipalityList);
-    const [municipality, setMunicipality] = municipalityState;
     const progressSpinner = <ProgressSpinner style={{ width: '50px', height: '50px' }} />;
 
     return <div className="flex flex-column justify-content-center align-content-center">
         <Dropdown
-            value={municipalityList.get().find((m) => municipality == m.url)}
-            onChange={(ev) => { setMunicipality(ev.value?.url ?? undefined); }}
+            value={municipalityList.get().find((m) => value == m.url)}
+            onChange={(ev) => { onChange(ev.value?.url ?? null); }}
             options={municipalityList.get() as MunicipalityBrief[]}
             emptyMessage={municipalityList.get().length == 0 ? progressSpinner : null}
             optionLabel="name"
@@ -103,15 +103,14 @@ export function MunicipalitySelector({ municipalityState }: { municipalityState:
 }
 
 
-export function WardSelector({ wardState }: { wardState: StateTuple<string | null> }) {
+export function WardSelector({ value, onChange }: FederalSelectorProps) {
     const wardList = useHookstate(storeState.wardList);
-    const [ward, setWard] = wardState;
     const progressSpinner = <ProgressSpinner style={{ width: '50px', height: '50px' }} />;
 
     return <div className="flex flex-column justify-content-center align-content-center">
         <Dropdown
-            value={wardList.get().find((w) => ward == w.url)}
-            onChange={(ev) => { setWard(ev.value?.url ?? null); }}
+            value={wardList.get().find((w) => value == w.url)}
+            onChange={(ev) => { onChange(ev.value?.url ?? null); }}
             options={wardList.get() as WardBrief[]}
             emptyMessage={wardList.get().length == 0 ? progressSpinner : null}
             optionLabel="name"
@@ -122,70 +121,64 @@ export function WardSelector({ wardState }: { wardState: StateTuple<string | nul
 }
 
 type LocationSelectorProps = {
-    selectedProvinceState: StateTuple<string | null>,
-    selectedDistrictState: StateTuple<string | null>,
-    selectedMunicipalityState: StateTuple<string | null>,
-    selectedWardState: StateTuple<string | null>,
+    selectedProvince: string | null,
+    onChangeSelectedProvince: (province: string | null) => void,
+
+    selectedDistrict: string | null,
+    onChangeSelectedDistrict: (district: string | null) => void,
+
+    selectedMunicipality: string | null,
+    onChangeSelectedMunicipality: (municipality: string | null) => void,
+
+    selectedWard: string | null,
+    onChangeSelectedWard: (ward: string | null) => void,
 };
 
 export function LocationSelector(props: LocationSelectorProps) {
     const store = useHookstate(storeState);
-
 
     let provinceList = storeState.provinceList.get() as ProvinceBrief[];
     let districtList = storeState.districtList.get() as DistrictBrief[];
     let municipalityList = storeState.municipalityList.get() as MunicipalityBrief[];
     let wardList = storeState.wardList.get() as WardBrief[];
 
-    const {
-        selectedProvinceState,
-        selectedDistrictState,
-        selectedMunicipalityState,
-        selectedWardState,
-    } = props;
-
-    const [selectedProvince, setProvince] = selectedProvinceState;
-    const [selectedDistrict, setDistrict] = selectedDistrictState;
-    const [selectedMunicipality, setMunicipality] = selectedMunicipalityState;
-    const [selectedWard, setWard] = selectedWardState;
-
     const updateProvince = (province: ProvinceBrief | undefined) => {
-        setWard(null);
-        setMunicipality(null);
-        setDistrict(null);
-        setProvince(province?.url ?? null);
+        props.onChangeSelectedWard(null);
+        props.onChangeSelectedMunicipality(null);
+        props.onChangeSelectedDistrict(null);
+        props.onChangeSelectedProvince(province?.url ?? null);
     };
 
     const updateDistrict = (district: DistrictBrief | undefined) => {
-        setWard(null);
-        setMunicipality(null);
-        setDistrict(district?.url ?? null);
+        props.onChangeSelectedWard(null);
+        props.onChangeSelectedMunicipality(null);
+        props.onChangeSelectedDistrict(district?.url ?? null);
         let province = provinceList.find((province) => province.url === district?.province);
         if (province !== undefined) {
-            setProvince(province?.url ?? null);
+            props.onChangeSelectedProvince(province?.url ?? null);
         }
     };
 
     const updateMunicipality = (municipality: MunicipalityBrief | undefined) => {
-        setWard(null);
-        setMunicipality(municipality?.url ?? null);
+        props.onChangeSelectedWard(null);
+        props.onChangeSelectedMunicipality(municipality?.url ?? null);
         let district = districtList.find((district) => district.url === municipality?.district);
         if (district !== undefined) {
-            setDistrict(district?.url ?? null);
+            props.onChangeSelectedDistrict(district?.url ?? null);
             let province = provinceList.find((province) => province.url === district?.province);
-            setProvince(province?.url ?? null);
+            props.onChangeSelectedProvince(province?.url ?? null);
         }
     };
 
     const updateWard = (ward: WardBrief | undefined) => {
-        setWard(ward?.url ?? null);
+        props.onChangeSelectedWard(ward?.url ?? null);
         let municipality = municipalityList.find((municipality) => municipality.url === ward?.municipality);
         if (municipality !== undefined) {
-            setMunicipality(municipality?.url ?? null);
+            props.onChangeSelectedMunicipality(municipality?.url ?? null);
             let district = districtList.find((district) => district.url === municipality?.district);
-            setDistrict(district?.url ?? null);
+            props.onChangeSelectedDistrict(district?.url ?? null);
             let province = provinceList.find((province) => province.url === district?.province);
-            setProvince(province?.url ?? null);
+            props.onChangeSelectedProvince(province?.url ?? null);
         }
     };
 
@@ -208,15 +201,15 @@ export function LocationSelector(props: LocationSelectorProps) {
     }
 
     let provinceOptions = calculateOptions(null, provinceList);
-    let districtOptions = calculateOptions(selectedProvince, districtList);
-    let municipalityOptions = calculateOptions(selectedDistrict || selectedProvince, municipalityList);
-    let wardOptions = calculateOptions(selectedMunicipality || selectedDistrict || selectedProvince, wardList);
+    let districtOptions = calculateOptions(props.selectedProvince, districtList);
+    let municipalityOptions = calculateOptions(props.selectedDistrict || props.selectedProvince, municipalityList);
+    let wardOptions = calculateOptions(props.selectedMunicipality || props.selectedDistrict || props.selectedProvince, wardList);
     return (
         <div className="flex flex-column justify-content-center align-content-center">
             <Dropdown
                 value={store.provinceList
                     .get()
-                    .find((province) => selectedProvince == province.url)}
+                    .find((province) => props.selectedProvince == province.url)}
                 onChange={(ev) => {
                     updateProvince(ev.value);
                 }}
@@ -231,7 +224,7 @@ export function LocationSelector(props: LocationSelectorProps) {
             <Dropdown
                 value={store.districtList
                     .get()
-                    .find((district) => selectedDistrict == district.url)}
+                    .find((district) => props.selectedDistrict == district.url)}
                 onChange={(ev) => {
                     updateDistrict(ev.value);
                 }}
@@ -248,7 +241,7 @@ export function LocationSelector(props: LocationSelectorProps) {
             <Dropdown
                 value={store.municipalityList
                     .get()
-                    .find((municipality) => selectedMunicipality == municipality.url)}
+                    .find((municipality) => props.selectedMunicipality == municipality.url)}
                 onChange={(ev) => {
                     updateMunicipality(ev.value);
                 }}
@@ -265,7 +258,7 @@ export function LocationSelector(props: LocationSelectorProps) {
             <Dropdown
                 value={store.wardList
                     .get()
-                    .find((ward) => selectedWard == ward.url)}
+                    .find((ward) => props.selectedWard == ward.url)}
                 onChange={(ev) => {
                     updateWard(ev.value);
                 }}

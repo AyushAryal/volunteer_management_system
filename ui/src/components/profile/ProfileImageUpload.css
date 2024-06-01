@@ -1,0 +1,8 @@
+.profile-image-button-container {
+    opacity: 0%;
+    transition: opacity 0.2s ease-in;
+}
+
+.profile-image-button-container:hover {
+    opacity: 50%;
+}

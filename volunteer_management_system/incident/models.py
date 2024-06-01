@@ -1,6 +1,7 @@
 from types import DynamicClassAttribute
 
 from django.contrib.auth import get_user, get_user_model
+from django.templatetags.static import static
 from django.contrib.gis.db import models as gis_models
 from django.db import models
 from django.utils.html import mark_safe
@@ -340,8 +341,8 @@ class VolunteerProfile(models.Model):
     profile_image = models.ImageField(
         upload_to="uploads/images/profile_images/",
         blank=True,
+        null=True,
         verbose_name=_("profile image"),
-        default="default_profile_image.png",
     )
 
     date_of_birth = models.DateField(verbose_name=_("date of birth"))
@@ -407,12 +408,17 @@ class VolunteerProfile(models.Model):
         return f"{self.first_name} {self.last_name}"
 
     def profile_image_preview_small(self):
+        default_image = "shared/default_profile_image.png"
+        profile_image_url = (
+            self.profile_image.url if self.profile_image else static(default_image)
+        )
+
         return mark_safe(
             f"""
             <div class="d-flex flex-row gap-3 align-items-center">
                 <img 
                     class="rounded-circle border border-primary flex-shrink-0" 
-                    src="{self.profile_image.url}" 
+                    src="{profile_image_url}" 
                     style="height: 30px; width: 30px;"/>
                 <span class="flex-shrink-0"> {self} </span>
             </div>
@@ -420,9 +426,14 @@ class VolunteerProfile(models.Model):
         )
 
     def profile_image_preview(self):
+        default_image = "shared/default_profile_image.png"
+        profile_image_url = (
+            self.profile_image.url if self.profile_image else static(default_image)
+        )
+
         return mark_safe(
             f"""<img 
-                    src="{self.profile_image.url}"
+                    src="{profile_image_url}"
                     style="height: 200px; width: 200px;"
                 />
             """

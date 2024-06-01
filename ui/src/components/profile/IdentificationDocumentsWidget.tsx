@@ -1,56 +1,13 @@
-import { StateTuple } from '@models/generics';
 import { InputText } from 'primereact/inputtext';
 import { DistrictSelector } from '@components/LocationSelector';
 import { FileInput } from '@components/FileInput';
 import { Calendar } from 'primereact/calendar';
 import { TabPanel, TabView } from 'primereact/tabview';
+import { VolunteerFormContext } from '@forms/volunteer';
+import { useContext } from 'react';
 
-type IdentificationDocumentsWidgetProps = {
-    citizenshipIdState: StateTuple<string | undefined>,
-    citizenshipRegistrationDateState: StateTuple<Date | undefined>,
-    citizenshipDistrictState: StateTuple<string | undefined>,
-    citizenshipImageState: StateTuple<string | undefined>,
-    nationalIdState: StateTuple<string | undefined>,
-    nationalIdRegistrationDateState: StateTuple<Date | undefined>,
-    nationalIdImageState: StateTuple<string | undefined>,
-    passportNumberState: StateTuple<string | undefined>,
-    passportIssueDateState: StateTuple<Date | undefined>,
-    passportExpiryDateState: StateTuple<Date | undefined>,
-    passportImageState: StateTuple<string | undefined>,
-    otherIdentificationDocumentNameState: StateTuple<string | undefined>,
-    otherIdentificationDocumentImageState: StateTuple<string | undefined>,
-};
-
-export function IdentificationDocumentsWidget(props: IdentificationDocumentsWidgetProps) {
-    const {
-        citizenshipIdState,
-        citizenshipRegistrationDateState,
-        citizenshipDistrictState,
-        citizenshipImageState,
-        nationalIdState,
-        nationalIdRegistrationDateState,
-        nationalIdImageState: nationalIdImageState,
-        passportNumberState,
-        passportIssueDateState,
-        passportExpiryDateState,
-        passportImageState: passportImageState,
-        otherIdentificationDocumentNameState,
-        otherIdentificationDocumentImageState: otherIdentificationDocumentImageState,
-    } = props;
-
-
-    const [citizenshipId, setCitizenshipId] = citizenshipIdState;
-    const [citizenshipRegistrationDate, setCitizenshipRegistrationDate] = citizenshipRegistrationDateState;
-    const [citizenshipImage, setCitizenshipImage] = citizenshipImageState;
-    const [nationalId, setNationalId] = nationalIdState;
-    const [nationalIdRegistrationDate, setNationalIdRegistrationDate] = nationalIdRegistrationDateState;
-    const [nationalIdImage, setnationalIdImage] = nationalIdImageState;
-    const [passportNumber, setPassportNumber] = passportNumberState;
-    const [passportIssueDate, setPassportIssueDate] = passportIssueDateState;
-    const [passportExpiryDate, setPassportExpiryDate] = passportExpiryDateState;
-    const [passportImage, setpassportImage] = passportImageState;
-    const [otherIdentificationDocumentName, setOtherIdentificationDocumentName] = otherIdentificationDocumentNameState;
-    const [otherIdentificationDocumentImage, setOtherIdentificationDocumentImage] = otherIdentificationDocumentImageState;
+export function IdentificationDocumentsWidget() {
+    let { form, setForm } = useContext(VolunteerFormContext);
 
     let citizenshipWidget = <div
         className="flex flex-column w-full align-items-stretch pt-3"
@@ -58,10 +15,16 @@ export function IdentificationDocumentsWidget(props: IdentificationDocumentsWidg
     >
         <span className="p-float-label">
             <InputText
-                value={citizenshipId}
+                value={form.citizenship.id}
                 id="citizenship-id"
                 className="p-inputtext-sm w-full"
-                onChange={(ev) => setCitizenshipId(ev.target.value)}
+                onChange={(ev) => setForm({
+                    ...form,
+                    citizenship: {
+                        ...form.citizenship,
+                        id: ev.target.value
+                    }
+                })}
             />
             <label htmlFor="first-name">Citizenship Number</label>
         </span>
@@ -70,12 +33,16 @@ export function IdentificationDocumentsWidget(props: IdentificationDocumentsWidg
             <Calendar
                 className="w-full"
                 id="citizenship-registration-date"
-                value={citizenshipRegistrationDate}
-                onChange={(ev) =>
-                    setCitizenshipRegistrationDate(ev.target.value ?? undefined)
-                }
+                value={form.citizenship.registration_date}
+                onChange={(ev) => setForm({
+                    ...form,
+                    citizenship: {
+                        ...form.citizenship,
+                        registration_date: ev.target.value ?? undefined,
+                    }
+                })}
                 dateFormat="yy-mm-dd"
-                mask = "9999-99-99"
+                mask="9999-99-99"
                 showIcon
             />
             <label htmlFor="citizenship-registration-date">
@@ -84,101 +51,152 @@ export function IdentificationDocumentsWidget(props: IdentificationDocumentsWidg
         </span>
 
         <DistrictSelector
-            label="Citizenship Issue District"
-            districtState={citizenshipDistrictState}
+            value={form.citizenship.registration_district}
+            onChange={(value) => setForm({
+                ...form,
+                citizenship: {
+                    ...form.citizenship,
+                    registration_district: value
+                }
+            })}
         />
 
-        <FileInput file={citizenshipImage} onChange={(file) => setCitizenshipImage(file)} />
+        <FileInput
+            file={form.citizenship.image}
+            onChange={(file) => setForm({
+                ...form,
+                citizenship: {
+                    ...form.citizenship,
+                    image: file,
+                }
+            })}
+        />
     </div>;
 
     let passportWidget = (
-      <div
-        className="flex flex-column w-full align-items-stretch pt-3"
-        style={{ gap: "2rem" }}
-      >
-        <span className="p-float-label">
-          <InputText
-            value={passportNumber}
-            id="passport-number"
-            className="p-inputtext-sm w-full"
-            onChange={(ev) => setPassportNumber(ev.target.value)}
-          />
-          <label htmlFor="passport-number">Passport Number</label>
-        </span>
+        <div
+            className="flex flex-column w-full align-items-stretch pt-3"
+            style={{ gap: "2rem" }}
+        >
+            <span className="p-float-label">
+                <InputText
+                    value={form.passport.id}
+                    id="passport-number"
+                    className="p-inputtext-sm w-full"
+                    onChange={(ev) => setForm({
+                        ...form,
+                        passport: {
+                            ...form.passport,
+                            id: ev.target.value,
+                        }
+                    })}
+                />
+                <label htmlFor="passport-number">Passport Number</label>
+            </span>
 
-        <span className="p-float-label">
-          <Calendar
-            className="w-full"
-            id="passport-issue-date"
-            value={passportIssueDate}
-            onChange={(ev) =>
-              setPassportIssueDate(ev.target.value ?? undefined)
-            }
-            dateFormat="yy-mm-dd"
-            mask="9999-99-99"
-            showIcon
-          />
-          <label htmlFor="passport-issue-date">Passport Issue Date</label>
-        </span>
-        <span className="p-float-label">
-          <Calendar
-            className="w-full"
-            id="passport-expiry-date"
-            value={passportExpiryDate}
-            onChange={(ev) =>
-              setPassportExpiryDate(ev.target.value ?? undefined)
-            }
-            dateFormat="yy-mm-dd"
-            mask="9999-99-99"
-            showIcon
-          />
-          <label htmlFor="passport-expiry-date">Passport Expiry Date</label>
-        </span>
+            <span className="p-float-label">
+                <Calendar
+                    className="w-full"
+                    id="passport-issue-date"
+                    value={form.passport.issue_date}
+                    onChange={(ev) => setForm({
+                        ...form,
+                        passport: {
+                            ...form.passport,
+                            issue_date: ev.target.value ?? undefined,
+                        }
+                    })}
+                    dateFormat="yy-mm-dd"
+                    mask="9999-99-99"
+                    showIcon
+                />
+                <label htmlFor="passport-issue-date">Passport Issue Date</label>
+            </span>
+            <span className="p-float-label">
+                <Calendar
+                    className="w-full"
+                    id="passport-expiry-date"
+                    value={form.passport.expiry_date}
+                    onChange={(ev) => setForm({
+                        ...form,
+                        passport: {
+                            ...form.passport,
+                            expiry_date: ev.target.value ?? undefined,
+                        }
+                    })}
+                    dateFormat="yy-mm-dd"
+                    mask="9999-99-99"
+                    showIcon
+                />
+                <label htmlFor="passport-expiry-date">Passport Expiry Date</label>
+            </span>
 
-        <FileInput
-          file={passportImage}
-          onChange={(file) => setpassportImage(file)}
-        />
-      </div>
+            <FileInput
+                file={form.passport.image}
+                onChange={(file) => setForm({
+                    ...form,
+                    passport: {
+                        ...form.passport,
+                        image: file,
+                    }
+                })}
+            />
+        </div>
     );
 
     let nationalIdWidget = (
-      <div
-        className="flex flex-column w-full align-items-stretch pt-3"
-        style={{ gap: "2rem" }}
-      >
-        <span className="p-float-label">
-          <InputText
-            value={nationalId}
-            id="national-id"
-            className="p-inputtext-sm w-full"
-            onChange={(ev) => setNationalId(ev.target.value)}
-          />
-          <label htmlFor="national-id">National Id Number</label>
-        </span>
+        <div
+            className="flex flex-column w-full align-items-stretch pt-3"
+            style={{ gap: "2rem" }}
+        >
+            <span className="p-float-label">
+                <InputText
+                    value={form.national_id.id}
+                    id="national-id"
+                    className="p-inputtext-sm w-full"
+                    onChange={(ev) => setForm({
+                        ...form,
+                        national_id: {
+                            ...form.national_id,
+                            id: ev.target.value,
+                        }
+                    })}
+                />
+                <label htmlFor="national-id">National Id Number</label>
+            </span>
 
-        <span className="p-float-label">
-          <Calendar
-            className="w-full"
-            id="national-id-registration-date"
-            value={nationalIdRegistrationDate}
-            onChange={(ev) =>
-              setNationalIdRegistrationDate(ev.target.value ?? undefined)
-            }
-            dateFormat="yy-mm-dd"
-            mask = "9999-99-99"
-            showIcon
-          />
-          <label htmlFor="national-id-registration-date">
-            National Id Registration Date
-          </label>
-        </span>
+            <span className="p-float-label">
+                <Calendar
+                    className="w-full"
+                    id="national-id-registration-date"
+                    value={form.national_id.registration_date}
+                    onChange={(ev) => setForm({
+                        ...form,
+                        national_id: {
+                            ...form.national_id,
+                            registration_date: ev.target.value ?? undefined,
+                        }
+                    })}
+                    dateFormat="yy-mm-dd"
+                    mask="9999-99-99"
+                    showIcon
+                />
+                <label htmlFor="national-id-registration-date">
+                    National Id Registration Date
+                </label>
+            </span>
 
-        <FileInput
-          file={nationalIdImage}
-          onChange={(file) => setnationalIdImage(file)}
-        />
-      </div>
+            <FileInput
+                file={form.national_id.image}
+                onChange={(file) => setForm({
+                    ...form,
+                    national_id: {
+                        ...form.national_id,
+                        image: file,
+                    }
+                })}
+            />
+        </div>
     );
 
     let otherIdentificationDocumentWidget = <div
@@ -188,15 +206,31 @@ export function IdentificationDocumentsWidget(props: IdentificationDocumentsWidg
 
         <span className="p-float-label">
             <InputText
-                value={otherIdentificationDocumentName}
+                value={form.other_identification_document.name}
                 id="other-id-name"
                 className="p-inputtext-sm w-full"
-                onChange={(ev) => setOtherIdentificationDocumentName(ev.target.value)}
+                onChange={(ev) => setForm({
+                    ...form,
+                    other_identification_document: {
+                        ...form.other_identification_document,
+                        name: ev.target.value,
+                    }
+                })}
             />
             <label htmlFor="other-id-name">Other ID Name</label>
         </span>
 
-        <FileInput file={otherIdentificationDocumentImage} onChange={(file) => setOtherIdentificationDocumentImage(file)} />
+        <FileInput
+            file={form.other_identification_document.image}
+            onChange={(file) => setForm({
+                ...form,
+                other_identification_document: {
+                    ...form.other_identification_document,
+                    image: file,
+                }
+            })}
+
+        />
     </div>;
 
     return (<>
