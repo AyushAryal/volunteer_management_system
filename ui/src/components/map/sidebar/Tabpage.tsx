@@ -9,7 +9,7 @@ import { Incidents } from '@components/map/sidebar/Incidents';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useHookstate } from "@hookstate/core";
 import { storeState } from "@models/store";
-import { faBell, faHelmetSafety } from "@fortawesome/free-solid-svg-icons";
+import { faBell, faPeopleCarryBox, faPersonWalkingLuggage } from "@fortawesome/free-solid-svg-icons";
 import { Badge } from "primereact/badge";
 import { Notifications } from "./Notifications";
 import { Profile } from "./Profile";
@@ -64,7 +64,7 @@ export function Tabpage() {
         onClick={options.onClick}
       >
         <div className="text-xl">
-          <FontAwesomeIcon icon={faHelmetSafety} />
+          <FontAwesomeIcon icon={faPersonWalkingLuggage} />
         </div>
         <span className="white-space-nowrap">{options.titleElement}</span>
       </div>
@@ -81,7 +81,7 @@ export function Tabpage() {
         onClick={options.onClick}
       >
         <div className="text-xl">
-          <FontAwesomeIcon icon="chart-simple" />
+          <FontAwesomeIcon icon={faPeopleCarryBox} />
         </div>
         <span className="white-space-nowrap">{options.titleElement}</span>
       </div>
@@ -133,7 +133,7 @@ export function Tabpage() {
       <TabPanel header="Jobs" headerTemplate={tabJobTemplate}>
         <Jobs />
       </TabPanel>
-      <TabPanel header="Visualizations" headerTemplate={tabVisualizationTemplate}>
+      <TabPanel header="Volunteers" headerTemplate={tabVisualizationTemplate}>
         <Visualizations />
       </TabPanel>
       {(volunteer.get() === null) ? <></> :

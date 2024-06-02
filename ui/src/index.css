@@ -4,3 +4,8 @@ body {
 path.leaflet-interactive:focus {
     outline: none;
 }
+
+.p-tabview-nav-link {
+    font-size: 12px;
+    font-weight: "100px";
+}

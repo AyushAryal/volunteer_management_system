@@ -8,7 +8,8 @@ import { useHookstate } from "@hookstate/core";
 import { storeState } from "@models/store";
 import { IncidentDetailModal } from "@components/map/sidebar/IncidentDetailModal";
 import { ListSkeleton } from "@components/map/sidebar/ListSkeleton";
-import { faLocation } from "@fortawesome/free-solid-svg-icons";
+import { faChartLine, faList, faLocation } from "@fortawesome/free-solid-svg-icons";
+import { IncidentByTimeRangeStats } from "@components/landing/Stats";
 
 type IncidentRibbonProps = { incident: Incident }
 
@@ -60,21 +61,35 @@ function IncidentRibbon({ incident }: IncidentRibbonProps) {
 export function Incidents() {
     const incidentList = useHookstate(storeState.incidentList);
     const loadedIncidentList = useHookstate(storeState.loaded.incidentList);
-
+    const [showChart, setShowChart] = useState(false)
+    const icon = showChart ? faList : faChartLine;
     if (!loadedIncidentList.get()) {
         return <ListSkeleton />;
     }
 
     return (
-        <div>
-            <VirtualScroller
-                style={{ width: "100%", height: "65vh", overflowX: "hidden" }}
-                items={incidentList.get() as Incident[]}
-                itemSize={70}
-                itemTemplate={(incident: Incident) => (
-                    <IncidentRibbon key={incident.url} incident={incident} />
-                )}
-            ></VirtualScroller>
+      <div>
+        <div className="flex justify-content-end">
+          <FontAwesomeIcon
+            icon={icon}
+            onClick={() => setShowChart(!showChart)}
+          />
         </div>
+        {showChart && (
+          <div className=" w-30rem" style={{ height: "20rem" }}>
+            <IncidentByTimeRangeStats />
+          </div>
+        )}
+        {!showChart && (
+          <VirtualScroller
+            style={{ width: "100%", height: "65vh", overflowX: "hidden" }}
+            items={incidentList.get() as Incident[]}
+            itemSize={70}
+            itemTemplate={(incident: Incident) => (
+              <IncidentRibbon key={incident.url} incident={incident} />
+            )}
+          ></VirtualScroller>
+        )}
+      </div>
     );
 }

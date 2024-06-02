@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useHookstate } from "@hookstate/core";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClock } from '@fortawesome/free-regular-svg-icons/faClock';
-import { faAngleRight, faPeopleGroup } from "@fortawesome/free-solid-svg-icons";
+import { faAngleRight, faChartLine, faList, faPeopleGroup } from "@fortawesome/free-solid-svg-icons";
 import { VirtualScroller } from "primereact/virtualscroller";
 import { Divider } from "primereact/divider";
 
@@ -11,8 +11,8 @@ import { Job } from "@models/incident";
 import { storeState } from "@models/store";
 import { ListSkeleton } from "@components/map/sidebar/ListSkeleton";
 import { JobDetailModal } from "@components/map/sidebar/JobDetailModal";
-import { get_job_list } from "@api/incident";
-import { get_id } from "@api/utils";
+import { JobByTimeRangeStats } from "@components/landing/Stats";
+
 
 
 export type JobRibbonProps = { job: Job }
@@ -44,6 +44,7 @@ export function JobRibbon({ job }: JobRibbonProps) {
     let volunteer = store.volunteer.get();
 
     return <div>
+
         <div className="flex flex-column flex-wrap p-2 w-full">
             <div className="m-1"> {job.name}</div>
             <div className="flex justify-content-between">
@@ -84,18 +85,31 @@ export function JobRibbon({ job }: JobRibbonProps) {
 export function Jobs() {
     const jobList = useHookstate(storeState.jobList);
     const loadedJobList = useHookstate(storeState.loaded.jobList);
-
+    const [showChart, setShowChart] = useState(false)
+    const icon = showChart ? faList : faChartLine
     if (!loadedJobList.get()) {
         return <ListSkeleton />
     }
 
     return (
-        <VirtualScroller
+      <div>
+        <div className="flex justify-content-end"><FontAwesomeIcon icon={icon} onClick={() => setShowChart(!showChart)} /></div>
+        {showChart && (
+          <div>
+            <div className=" w-30rem" style={{ height: "20rem" }}>
+              <JobByTimeRangeStats />
+            </div>
+          </div>
+        )}
+        {!showChart && (
+          <VirtualScroller
             items={jobList.get() as Job[]}
             itemTemplate={(job: Job) => <JobRibbon key={job.url} job={job} />}
             itemSize={70}
             style={{ width: "100%", height: "65vh", overflowX: "hidden" }}
-        ></VirtualScroller>
+          ></VirtualScroller>
+        )}
+      </div>
     );
 }
 
