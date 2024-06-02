@@ -207,7 +207,7 @@ const Stats = () => {
             Visualizations <FontAwesomeIcon icon="chart-simple" />
           </h1>
           <div className="sticky top-0">
-            <GlobalLocationSelector />
+            <GlobalLocationSelector className="flex-row"/>
           </div>
         </div>
 

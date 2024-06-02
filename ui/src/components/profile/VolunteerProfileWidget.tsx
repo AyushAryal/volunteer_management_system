@@ -33,6 +33,7 @@ export function VolunteerProfileAddressWidget() {
                 temporary_ward: ward
             }
         })}
+        className="flex-column"
     />;
 
     const permanentLocationSelector = <LocationSelector
@@ -50,6 +51,7 @@ export function VolunteerProfileAddressWidget() {
                 permanent_ward: ward
             }
         })}
+        className="flex-column"
     />;
 
     return <div className="flex flex-column w-full" style={{ gap: "1rem" }}>

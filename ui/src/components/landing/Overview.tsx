@@ -33,14 +33,14 @@ const CountsComponent = () => {
     "Jobs In Progress": stats.jobs.status["In Progress"],
   };
   const colors = [
-    "text-teal-300",
-    "text-teal-300",
-    "text-teal-300",
-    "text-teal-300",
-    "text-teal-300",
-    "text-teal-300",
-    "text-teal-300",
-    "text-teal-300",
+    "text-orange-300",
+    "text-orange-300",
+    "text-orange-300",
+    "text-orange-300",
+    "text-orange-300",
+    "text-orange-300",
+    "text-orange-300",
+    "text-orange-300",
   ];
   return (
     <div

@@ -132,6 +132,8 @@ type LocationSelectorProps = {
 
     selectedWard: string | null,
     onChangeSelectedWard: (ward: string | null) => void,
+
+    className: string,
 };
 
 export function LocationSelector(props: LocationSelectorProps) {
@@ -204,75 +206,78 @@ export function LocationSelector(props: LocationSelectorProps) {
     let districtOptions = calculateOptions(props.selectedProvince, districtList);
     let municipalityOptions = calculateOptions(props.selectedDistrict || props.selectedProvince, municipalityList);
     let wardOptions = calculateOptions(props.selectedMunicipality || props.selectedDistrict || props.selectedProvince, wardList);
+    
     return (
-        <div className="flex flex-column justify-content-center align-content-center">
-            <Dropdown
-                value={store.provinceList
-                    .get()
-                    .find((province) => props.selectedProvince == province.url)}
-                onChange={(ev) => {
-                    updateProvince(ev.value);
-                }}
-                options={provinceOptions}
-                emptyMessage={
-                    store.provinceList.get().length == 0 ? progressSpinner : null
-                }
-                optionLabel="name"
-                showClear
-                placeholder="Select a province"
-            />
-            <Dropdown
-                value={store.districtList
-                    .get()
-                    .find((district) => props.selectedDistrict == district.url)}
-                onChange={(ev) => {
-                    updateDistrict(ev.value);
-                }}
-                options={districtOptions}
-                emptyMessage={
-                    store.districtList.get().length == 0 ? progressSpinner : null
-                }
-                optionLabel="name"
-                showClear
-                filter
-                filterInputAutoFocus
-                placeholder="Select a district"
-            />
-            <Dropdown
-                value={store.municipalityList
-                    .get()
-                    .find((municipality) => props.selectedMunicipality == municipality.url)}
-                onChange={(ev) => {
-                    updateMunicipality(ev.value);
-                }}
-                options={municipalityOptions}
-                emptyMessage={
-                    store.municipalityList.get().length == 0 ? progressSpinner : null
-                }
-                optionLabel="name"
-                showClear
-                filter
-                filterInputAutoFocus
-                placeholder="Select a municipality"
-            />
-            <Dropdown
-                value={store.wardList
-                    .get()
-                    .find((ward) => props.selectedWard == ward.url)}
-                onChange={(ev) => {
-                    updateWard(ev.value);
-                }}
-                options={wardOptions}
-                emptyMessage={
-                    store.wardList.get().length == 0 ? progressSpinner : null
-                }
-                optionLabel="name"
-                showClear
-                filter
-                filterInputAutoFocus
-                virtualScrollerOptions={{ itemSize: 38 }}
-                placeholder="Select a ward"
-            />
-        </div>
+      <div className={`flex ${props.className}  justify-content-center align-content-center`}>
+        <Dropdown
+          value={store.provinceList
+            .get()
+            .find((province) => props.selectedProvince == province.url)}
+          onChange={(ev) => {
+            updateProvince(ev.value);
+          }}
+          options={provinceOptions}
+          emptyMessage={
+            store.provinceList.get().length == 0 ? progressSpinner : null
+          }
+          optionLabel="name"
+          showClear
+          placeholder="Select a province"
+        />
+        <Dropdown
+          value={store.districtList
+            .get()
+            .find((district) => props.selectedDistrict == district.url)}
+          onChange={(ev) => {
+            updateDistrict(ev.value);
+          }}
+          options={districtOptions}
+          emptyMessage={
+            store.districtList.get().length == 0 ? progressSpinner : null
+          }
+          optionLabel="name"
+          showClear
+          filter
+          filterInputAutoFocus
+          placeholder="Select a district"
+        />
+        <Dropdown
+          value={store.municipalityList
+            .get()
+            .find(
+              (municipality) => props.selectedMunicipality == municipality.url
+            )}
+          onChange={(ev) => {
+            updateMunicipality(ev.value);
+          }}
+          options={municipalityOptions}
+          emptyMessage={
+            store.municipalityList.get().length == 0 ? progressSpinner : null
+          }
+          optionLabel="name"
+          showClear
+          filter
+          filterInputAutoFocus
+          placeholder="Select a municipality"
+        />
+        <Dropdown
+          value={store.wardList
+            .get()
+            .find((ward) => props.selectedWard == ward.url)}
+          onChange={(ev) => {
+            updateWard(ev.value);
+          }}
+          options={wardOptions}
+          emptyMessage={
+            store.wardList.get().length == 0 ? progressSpinner : null
+          }
+          optionLabel="name"
+          showClear
+          filter
+          filterInputAutoFocus
+          virtualScrollerOptions={{ itemSize: 38 }}
+          placeholder="Select a ward"
+        />
+      </div>
     );
 }

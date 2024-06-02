@@ -4,7 +4,7 @@ import { storeState } from '@models/store';
 
 import { LocationSelector } from '@components/LocationSelector';
 
-export function GlobalLocationSelector() {
+export function GlobalLocationSelector({className}:{className: string}) {
   const mapControlsSelectedProvince = useHookstate(
     storeState.mapControls.selectedProvince
   );
@@ -34,6 +34,8 @@ export function GlobalLocationSelector() {
       }
       selectedWard={mapControlsSelectedWard.get()}
       onChangeSelectedWard={(value) => mapControlsSelectedWard.set(value)}
+
+      className={className}
     />
   );
 }

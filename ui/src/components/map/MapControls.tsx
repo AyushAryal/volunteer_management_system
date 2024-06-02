@@ -70,7 +70,7 @@ export function MapControls() {
     let control = null;
 
     if (currentItem === "location") {
-        control = <GlobalLocationSelector />;
+        control = <GlobalLocationSelector className="flex-column"/>;
     } else if (currentItem === "time") {
         control = <TimeFilter />;
     } else if (currentItem === "vector_layers") {
