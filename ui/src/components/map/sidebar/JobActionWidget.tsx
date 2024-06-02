@@ -1,6 +1,9 @@
 import { Job, JobApplicationStatus } from '@models/incident';
 import { job_apply, job_cancel, job_withdraw } from '@api/incident';
 import { Button } from "primereact/button";
+import { useState } from 'react';
+import { FormState } from '@api/form';
+import { describe_api_errors } from '@api/utils';
 
 export type JobActionWidgetProps = {
     job: Job,
@@ -9,8 +12,12 @@ export type JobActionWidgetProps = {
 
 export function JobActionWidget({ job, onChange }: JobActionWidgetProps) {
     let today = new Date(Date.now());
+    let [formErrors, setFormErrors] = useState<string>();
+
+    let button: JSX.Element;
+
     if (job.application_status == "Not applied" && job.vacancy - job.filled_positions > 0 && job.end_date > today) {
-        return <Button
+        button = <Button
             outlined
             className="flex-shrink-0"
             size="small"
@@ -19,13 +26,15 @@ export function JobActionWidget({ job, onChange }: JobActionWidgetProps) {
                 let response = await job_apply(job.url);
                 if (response.status == 200) {
                     onChange && onChange();
+                } else if (response.status == 400) {
+                    setFormErrors(describe_api_errors(await response.json()));
                 }
             }} />;
     } else if (job.application_status == "Accepted") {
         // once the application is accpted user can CANCEL it.
         // once Cancelled the user CANNOT apply to the same job
         if (job.end_date > today) {
-            return <div className="flex gap-3 align-items-center">
+            button = <div className="flex gap-3 align-items-center">
                 <span className="font-italic text-green-400">{job.application_status}</span>
                 <Button
                     outlined
@@ -36,6 +45,8 @@ export function JobActionWidget({ job, onChange }: JobActionWidgetProps) {
                         let response = await job_cancel(job.url);
                         if (response.status == 200) {
                             onChange && onChange();
+                        } else if (response.status == 400) {
+                            setFormErrors(describe_api_errors(await response.json()));
                         }
                     }}
                 />
@@ -46,7 +57,7 @@ export function JobActionWidget({ job, onChange }: JobActionWidgetProps) {
         }
     } else if (job.application_status == "Pending") {
         if (job.end_date > today) {
-            return <div className="flex gap-3 align-items-center">
+            button = <div className="flex gap-3 align-items-center">
                 <span className="font-italic text-yellow-600">{job.application_status}</span>
                 <Button
                     outlined
@@ -57,6 +68,8 @@ export function JobActionWidget({ job, onChange }: JobActionWidgetProps) {
                         let response = await job_withdraw(job.url);
                         if (response.status == 200) {
                             onChange && onChange();
+                        } else if (response.status == 400) {
+                            setFormErrors(describe_api_errors(await response.json()));
                         }
                     }} />
             </div>
@@ -66,8 +79,13 @@ export function JobActionWidget({ job, onChange }: JobActionWidgetProps) {
         }
     } else if (job.application_status == "Cancelled") {
         return <span className="font-italic text-red-600">{job.application_status}</span>;
+    } else {
+        // job application: rejected state
+        return <span className="font-italic text-red-500">{job.application_status}</span>
     }
-    // job application: rejected state
-    return <span className="font-italic text-red-500">{job.application_status}</span>
 
+    return <div className="flex align-items-center gap-2">
+        <span className="font-semibold text-red-600">{formErrors}</span>
+        {button}
+    </div>
 }

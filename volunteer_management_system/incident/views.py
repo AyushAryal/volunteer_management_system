@@ -439,10 +439,11 @@ class JobViewSet(
                 )
 
             dob = request.user.volunteer.date_of_birth
+
             if job.age_limit is not None:
-                if dob.replace(year=dob.year + job.age_limit) < timezone.now():
+                if (dob.replace(year=dob.year - job.age_limit)) < timezone.now().date():
                     return Response(
-                        {"detail": _("Ineligible due to age limit")},
+                        {"detail": _("Ineligible due to age limit.")},
                         status=status.HTTP_400_BAD_REQUEST,
                     )
 

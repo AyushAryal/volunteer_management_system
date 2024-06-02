@@ -1,7 +1,5 @@
-- fix date fill
-complete signup & edit profile
-job apply (easy)
-notification (medium)
-visualizations (easy)
-admin panel ease of use (medium)
-fix nested hookstates (low priority)
+- write test base class
+- write tests for job endpoint
+- write tests for notification
+- validate that point lies inside ward polygon
+- fix nested hookstates (low priority)
