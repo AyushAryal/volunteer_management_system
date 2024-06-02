@@ -82,7 +82,7 @@ export function MapControls() {
             model={items}
             visible={true}
             direction="left"
-            style={{ top: 0, right: 0 }}
+            style={{ right: 0 }}
             hideOnClickOutside={false}
             buttonTemplate={
                 (options) => <MapControlButton icon={faFilter} onClick={options.onClick} />

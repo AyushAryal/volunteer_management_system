@@ -469,6 +469,21 @@ class Command(BaseCommand):
                     """
                 ),
             },
+            {
+                "label": "overview",
+                "content": inspect.cleandoc(
+                    """
+                    The National Volunteer Bureau formation and Mobilization Platform is
+                    a robust platform that houses records of all volunteers based on
+                    age, skills, preferences, and availability along with the
+                    functionality to manage them. It is built upon the concept of
+                    creating a national portal embedded with independent platforms for
+                    national, provincial, district, and municipal governments with a
+                    bottom-up approach of disaster data partnership focusing on the
+                    principle of user centric design.
+                    """
+                ),
+            },
         ]
         site_contents = []
         for content in contents:

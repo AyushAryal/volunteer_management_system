@@ -1,8 +1,8 @@
 import "@styles/overview.css";
-import { Statistics } from "@models/incident";
+import { Statistics, SiteContent} from "@models/incident";
 import { useState, useEffect } from "react";
 import { ProgressSpinner } from "primereact/progressspinner";
-import { get_statistics } from "@api/incident";
+import { get_statistics, get_site_content_list } from "@api/incident";
 
 
 const CountsComponent = () => {
@@ -30,9 +30,18 @@ const CountsComponent = () => {
     "Total Programs": stats.programs.total,
     "Total Jobs": stats.jobs.total,
     "Completed Jobs": stats.jobs.status["Completed"],
-    "In Progress Jobs": stats.jobs.status["In Progress"],
+    "Jobs In Progress": stats.jobs.status["In Progress"],
   };
-
+  const colors = [
+    "text-teal-300",
+    "text-teal-300",
+    "text-teal-300",
+    "text-teal-300",
+    "text-teal-300",
+    "text-teal-300",
+    "text-teal-300",
+    "text-teal-300",
+  ];
   return (
     <div
       className="gap-2"
@@ -41,12 +50,12 @@ const CountsComponent = () => {
         gridTemplateColumns: "auto auto",
       }}
     >
-      {Object.entries(counts).map(([label, count]) => (
+      {Object.entries(counts).map(([label, count], index) => (
         <div
           key={label}
           className="flex flex-column justify-content-center align-items-center text-center border-round-sm bg-primary p-4"
         >
-          <div className="font-bold text-2xl text-cyan-100">{count}</div>
+          <div className={`font-bold text-2xl ${colors[index % colors.length]}`}>{count}</div>
           <div className="font-semibold">{label}</div>
         </div>
       ))}
@@ -56,6 +65,22 @@ const CountsComponent = () => {
 
 
 const Overview = () => {
+  const [siteContents, setSiteContents] = useState<SiteContent[]>([]);
+
+  useEffect(() => {
+    get_site_content_list().then((response) => {
+      setSiteContents(response);
+    });
+  }, []);
+  const overview = siteContents.find((siteContent) => siteContent.label === "overview");
+  const overviewContent = (
+    <div>
+      <p
+        className="text-xl"
+        dangerouslySetInnerHTML={{ __html: overview?.content ?? "" }}
+      />
+    </div>
+  );
   return (
     <section className="flex flex-wrap flex-row gap-5 align-items-center justify-content-center bg-indigo-100 p-3">
       <div className="flex-1" style={{ minWidth: "20rem" }}>
@@ -64,14 +89,7 @@ const Overview = () => {
       <div className="flex-1">
         <h2 className="text-4xl">Overview</h2>
         <p className="text-xl">
-          The National Volunteer Bureau formation and Mobilization Platform is a
-          robust platform that houses records of all volunteers based on age,
-          skills, preferences, and availability along with the functionality to
-          manage them. It is built upon the concept of creating a national
-          portal embedded with independent platforms for national, provincial,
-          district, and municipal governments with a bottom-up approach of
-          disaster data partnership focusing on the principle of user centric
-          design.
+          {overviewContent}
         </p>
       </div>
     </section>
