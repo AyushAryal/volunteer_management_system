@@ -94,7 +94,7 @@ class TrainingCategory(models.IntegerChoices):
 class VolunteerCategory(models.IntegerChoices):
     (
         Student,
-        RSS,
+        Scout,
         RetiredAPF,
         RetiredArmy,
         RetiredGovernmentService,
@@ -108,7 +108,7 @@ class VolunteerCategory(models.IntegerChoices):
         label = super().label
         return {
             "Student": _("Student"),
-            "Rss": _("RSS"),
+            "Scout": _("Scout"),
             "Retiredapf": _("Retired APF"),
             "Retiredarmy": _("Retired Army"),
             "Retiredgovernmentservice": _("Retired Government Service"),

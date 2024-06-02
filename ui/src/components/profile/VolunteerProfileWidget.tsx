@@ -163,7 +163,7 @@ export function VolunteerProfileRequiredWidget() {
 
     const volunteerCategories = [
         { value: "Student" },
-        { value: "RSS" },
+        { value: "Scout" },
         { value: "Retired APF" },
         { value: "Retired Army" },
         { value: "Retired Government Service" },

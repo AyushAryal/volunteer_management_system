@@ -10,7 +10,7 @@ export type BloodGroup = "O Negative" | "O Positive"
     | "Ab Negative" | "Ab Positive";
 
 export type VolunteerCategory = "Student" |
-    "Rss" |
+    "Scout" |
     "Retiredapf" |
     "Retiredarmy" |
     "Retiredgovernmentservice" |
