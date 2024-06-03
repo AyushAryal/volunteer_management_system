@@ -468,6 +468,15 @@ class StatisticsViewSet(
             field_name="end_date", lookup_expr="range"
         )
 
+    def count_by_foreign_key(self, qs, foreign_qs, key):
+        qs = qs.values(key).annotate(count=Count(key))
+        counts_initial = {m.pk: (str(m), 0) for m in foreign_qs}
+        for pair in qs:
+            if pair[key] in counts_initial:
+                label, _ = counts_initial[pair[key]]
+                counts_initial[pair[key]] = (label, pair["count"])
+        return {n: v for (_, (n, v)) in counts_initial.items()}
+
     def count_by_criteria(self, key, model, qs):
         qs = qs.values(key).annotate(count=Count(key))
         counts_initial = {m: 0 for m in model}
@@ -524,6 +533,40 @@ class StatisticsViewSet(
         if end_date:
             end_date = timezone.make_aware(datetime.datetime.fromisoformat(end_date))
 
+        level, federal_pk = next(
+            (
+                (level, request.GET[level])
+                for level in ("ward", "municipality", "district", "province")
+                if level in request.GET
+            ),
+            ("national", None),
+        )
+
+        def federal_qs_from_level(pk):
+            if level == "province":
+                return federal.models.District.objects.filter(province=pk)
+            elif level == "district":
+                return federal.models.Municipality.objects.filter(district=pk)
+            elif level == "municipality":
+                return federal.models.Ward.objects.filter(
+                    municipality=pk
+                ).select_related("municipality")
+            elif level == "ward":
+                return federal.models.Ward.objects.filter(pk=pk)
+            else:
+                return federal.models.Province.objects.all()
+
+        federal_qs = federal_qs_from_level(federal_pk)
+
+        def accessors_from_ward(key):
+            return {
+                "national": f"{key}__municipality__district__province",
+                "province": f"{key}__municipality__district",
+                "district": f"{key}__municipality",
+                "municipality": f"{key}",
+                "ward": f"{key}",
+            }
+
         return Response(
             {
                 "volunteers": {
@@ -545,6 +588,11 @@ class StatisticsViewSet(
                     "category": self.count_by_criteria(
                         "category", models.VolunteerCategory, volunteer_qs
                     ),
+                    "by_federal": self.count_by_foreign_key(
+                        volunteer_qs,
+                        federal_qs,
+                        accessors_from_ward("temporary_ward")[level],
+                    ),
                 },
                 "jobs": {
                     "total": job_qs.count(),
@@ -554,6 +602,11 @@ class StatisticsViewSet(
                     "by_time": self.count_by_date_range(
                         job_qs, start_date, end_date, field="end_date"
                     ),
+                    "by_federal": self.count_by_foreign_key(
+                        job_qs,
+                        federal_qs,
+                        accessors_from_ward("program__incident__ward")[level],
+                    ),
                 },
                 "incidents": {
                     "total": incident_qs.count(),
@@ -562,11 +615,24 @@ class StatisticsViewSet(
                         start_date,
                         end_date,
                     ),
+                    "by_federal": self.count_by_foreign_key(
+                        incident_qs,
+                        federal_qs,
+                        accessors_from_ward("ward")[level],
+                    ),
                 },
                 "programs": {
                     "total": program_qs.count(),
                     "by_time": self.count_by_date_range(
-                        program_qs, start_date, end_date, field="incident__date"
+                        program_qs,
+                        start_date,
+                        end_date,
+                        field="incident__date",
+                    ),
+                    "by_federal": self.count_by_foreign_key(
+                        program_qs,
+                        federal_qs,
+                        accessors_from_ward("incident__ward")[level],
                     ),
                 },
             }

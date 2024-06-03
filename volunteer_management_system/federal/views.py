@@ -1,6 +1,7 @@
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
+import django_filters
 from vectortiles.views import MVTView
 from vectortiles import VectorLayer
 
@@ -75,6 +76,18 @@ class ProvinceViewSet(
         }.get(self.action, super().get_serializer_class())
 
 
+class DistrictFilter(django_filters.FilterSet):
+    province = django_filters.ModelChoiceFilter(
+        label="Province",
+        field_name="province",
+        queryset=models.Province.objects.all(),
+    )
+
+    class Meta:
+        model = models.District
+        fields = []
+
+
 class DistrictViewSet(
     viewsets.GenericViewSet,
     viewsets.mixins.RetrieveModelMixin,
@@ -83,7 +96,7 @@ class DistrictViewSet(
 ):
     queryset = models.District.objects.all()
     serializer_class = serializers.DistrictSerializer
-    filterset_fields = ("province",)
+    filterset_class = DistrictFilter
 
     @property
     def paginator(self):
@@ -97,6 +110,24 @@ class DistrictViewSet(
         }.get(self.action, super().get_serializer_class())
 
 
+class MunicipalityFilter(django_filters.FilterSet):
+    province = django_filters.ModelChoiceFilter(
+        label="Province",
+        field_name="district__province",
+        queryset=models.Province.objects.all(),
+    )
+
+    district = django_filters.ModelChoiceFilter(
+        label="District",
+        field_name="district",
+        queryset=models.District.objects.all(),
+    )
+
+    class Meta:
+        model = models.Municipality
+        fields = []
+
+
 class MunicipalityViewSet(
     viewsets.GenericViewSet,
     viewsets.mixins.RetrieveModelMixin,
@@ -105,7 +136,7 @@ class MunicipalityViewSet(
 ):
     queryset = models.Municipality.objects.all()
     serializer_class = serializers.MunicipalitySerializer
-    filterset_fields = ("district", "district__province")
+    filterset_class = MunicipalityFilter
 
     @property
     def paginator(self):
@@ -119,6 +150,30 @@ class MunicipalityViewSet(
         }.get(self.action, super().get_serializer_class())
 
 
+class WardFilter(django_filters.FilterSet):
+    province = django_filters.ModelChoiceFilter(
+        label="Province",
+        field_name="municipality__district__province",
+        queryset=models.Province.objects.all(),
+    )
+
+    district = django_filters.ModelChoiceFilter(
+        label="District",
+        field_name="municipality__district",
+        queryset=models.District.objects.all(),
+    )
+
+    municipality = django_filters.ModelChoiceFilter(
+        label="Municipality",
+        field_name="municipality",
+        queryset=models.Municipality.objects.all(),
+    )
+
+    class Meta:
+        model = models.Ward
+        fields = []
+
+
 class WardViewSet(
     viewsets.GenericViewSet,
     viewsets.mixins.RetrieveModelMixin,
@@ -127,11 +182,7 @@ class WardViewSet(
 ):
     queryset = models.Ward.objects.all().order_by("municipality", "name")
     serializer_class = serializers.WardSerializer
-    filterset_fields = (
-        "municipality",
-        "municipality__district",
-        "municipality__district__province",
-    )
+    filterset_class = WardFilter
 
     @property
     def paginator(self):
