@@ -126,7 +126,7 @@ export function VolunteerProfileAddressWidget() {
         onChangeSelectedDistrict={setPermanentDistrict}
         selectedMunicipality={selectedPermanentMunicipality}
         onChangeSelectedMunicipality={setPermanentMunicipality}
-        selectedWard={form.volunteer.temporary_ward}
+        selectedWard={form.volunteer.permanent_ward}
         onChangeSelectedWard={(ward) => setForm({
             ...form,
             volunteer: {
