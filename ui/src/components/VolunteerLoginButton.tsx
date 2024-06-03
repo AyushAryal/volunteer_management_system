@@ -89,7 +89,7 @@ type VolunteerLoginModalProps = {
     setVisible: (visible: boolean) => void;
 }
 
-function VolunteerLoginModal({ visible, setVisible }: VolunteerLoginModalProps) {
+export function VolunteerLoginModal({ visible, setVisible }: VolunteerLoginModalProps) {
     const token = useHookstate(storeState.token);
     const volunteer = useHookstate(storeState.volunteer);
 
@@ -168,8 +168,10 @@ function VolunteerLoginModal({ visible, setVisible }: VolunteerLoginModalProps) 
                         />
                     </div>
                     {response}
-                    <Button outlined
-                        size="small" label="Login" onClick={onLogin} />
+                    <div className="flex justify-content-end">
+                        <Button outlined
+                            size="small" label="Login" onClick={onLogin} />
+                    </div>
                 </div>
             </div>
         )}

@@ -6,6 +6,8 @@ import { Button } from "primereact/button";
 import { get_site_content_list } from "@api/incident";
 import { SiteContent } from "@models/incident";
 import { map2, volunteering } from "@assets/index";
+import { useHookstate } from "@hookstate/core";
+import { storeState } from "@models/store";
 
 const Hero = () => {
     const navigate = useNavigate();
@@ -23,7 +25,19 @@ const Hero = () => {
             dangerouslySetInnerHTML={{ __html: hero?.content ?? "" }}
         />
     </div>;
-
+    
+    const mapControlsSelectedProvince = useHookstate(
+      storeState.mapControls.selectedProvince
+    );
+    const mapControlsSelectedDistrict = useHookstate(
+      storeState.mapControls.selectedDistrict
+    );
+    const mapControlsSelectedMunicipality = useHookstate(
+      storeState.mapControls.selectedMunicipality
+    );
+    const mapControlsSelectedWard = useHookstate(
+      storeState.mapControls.selectedWard
+    );
     return (
       <section
         className="relative w-full h-auto min-h-screen mx-auto bg-cover"
@@ -44,10 +58,16 @@ const Hero = () => {
             {heroContent}
             <div className="flex flex-wrap align-items-center"></div>
             <Button
-              className="my-3 fadeinleft animation-duration-1000 animation-iteration-1 animation-ease-in shadow-4"
+              className="my-3 shadow-4"
               label="Dashboard"
               raised
-              onClick={() => navigate("/dashboard")}
+              onClick={() => {
+                navigate("/dashboard");
+                mapControlsSelectedProvince.set(null);
+                mapControlsSelectedDistrict.set(null);
+                mapControlsSelectedMunicipality.set(null);
+                mapControlsSelectedWard.set(null);
+              }}
             />
           </div>
           <div

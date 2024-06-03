@@ -148,7 +148,7 @@ export function JobDetailModal(props: JobDetailModalProps) {
         </span>
         <div className="flex justify-content-end p-2">
             {(volunteer === null) ?
-                <span className=" font-italic text-xs border-1 border-primary border-round p-1">Login to apply</span> :
+                <span className=" font-italic text-xs border-1 border-primary border-round p-1" >Login to apply</span> :
                 <div>
                     <JobActionWidget
                         job={job}
