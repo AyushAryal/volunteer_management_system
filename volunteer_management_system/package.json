@@ -5,14 +5,15 @@
   "author": "Ayush Aryal",
   "license": "ISC",
   "devDependencies": {
-    "htmx.org": "^1.9.12",
     "@alpinejs/persist": "^3.11.1",
     "@fortawesome/fontawesome-free": "^6.3.0",
     "@parcel/transformer-sass": "^2.8.3",
     "@types/node": "^18.14.2",
     "alpinejs": "^3.11.1",
     "bootstrap": "^5.2.3",
+    "htmx.org": "^1.9.12",
     "parcel": "^2.8.3",
+    "process": "^0.11.10",
     "typescript": "^4.9.5"
   },
   "scripts": {
@@ -20,10 +21,19 @@
     "build": "parcel build"
   },
   "browserslist": "> 0.5%, last 2 versions, not dead",
-  "source": "administrator/assets/admin/base.ts",
   "targets": {
-    "default": {
+    "modern": {
+      "source": "administrator/assets/admin/modern.tsx",
+      "distDir": "./administrator/static/admin/dist"
+    },
+    "django": {
+      "source": "administrator/assets/admin/base.ts",
       "distDir": "./administrator/static/admin/dist"
     }
+  },
+  "dependencies": {
+    "chart.js": "^4.4.3",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
   }
 }

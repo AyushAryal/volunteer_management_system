@@ -10,3 +10,4 @@ Alpine.plugin(persist);
 Alpine.start();
 window["Alpine"] = Alpine;
 window["htmx"] = require('htmx.org');
+

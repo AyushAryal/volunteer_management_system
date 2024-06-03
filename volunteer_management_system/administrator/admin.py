@@ -7,6 +7,7 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.sites.models import Site
 from django.utils.translation import gettext_lazy as _
 from django.utils.html import mark_safe
+from django.views.generic import TemplateView
 from django.http import HttpResponse
 from leaflet.admin import LeafletGeoAdmin
 from django.urls import path
@@ -58,6 +59,13 @@ class MainAdminSite(admin.AdminSite):
     def get_urls(self):
         urls = super().get_urls()
         my_urls = [
+            path(
+                "modern",
+                self.admin_view(
+                    TemplateView.as_view(template_name="admin/modern.html")
+                ),
+                name="modern",
+            ),
             path(
                 "table/volunteer",
                 self.admin_view(VolunteerProfileTableView.as_view()),
