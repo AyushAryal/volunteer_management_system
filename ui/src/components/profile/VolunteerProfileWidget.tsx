@@ -178,7 +178,7 @@ export function VolunteerProfileAddressWidget() {
 }
 
 
-export function VolunteerProfileOptionalWidget() {
+export function VolunteerProfileOrganizationWidget() {
     let { form, setForm } = useContext(VolunteerFormContext);
 
     return <div
@@ -484,8 +484,8 @@ export function VolunteerProfileWidget() {
     return (
         <div>
             <VolunteerProfileRequiredWidget />
-            <h2> Optional fields </h2>
-            <VolunteerProfileOptionalWidget />
+            <h2> Organization Information </h2>
+            <VolunteerProfileOrganizationWidget />
             <h2> Address Information </h2>
             <VolunteerProfileAddressWidget />
         </div>

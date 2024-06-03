@@ -28,7 +28,7 @@ export type AcademicQualification = "Secondarylevel" |
 export type TrainingCategory = "Rescue" | "Reliefdistribution" | "Evacuation" | "Other" |
     "Healthandsafety" | "Logistics" | "Softskills" | "Leadership" |
     "Teamtraining" | "Management" | "Qualitytraining" | "Humanitarian" |
-    "Familyreunification" | "Motorvehicleoperator";
+    "Familyreunification" | "Motorvehicleoperator" | "";
 
 export type JobStatus = "Completed" | "In Progress" | "Not Assigned";
 export type JobApplicationStatus = "Accepted" | "Rejected" | "Pending" | "Cancelled";
@@ -240,19 +240,23 @@ export interface Statistics {
         blood_group: { [key: string]: number },
         academic_qualification: { [key: string]: number },
         category: { [key: string]: number },
+        by_federal: { [key: string]: number }
     }
     jobs: {
         total: number,
         status: { [key: string]: number },
         by_time: { date: Date, value: number }[]
+        by_federal: { [key: string]: number }
     },
     incidents: {
         total: number,
         by_time: { date: Date, value: number }[]
+        by_federal: { [key: string]: number }
     },
     programs: {
         total: number,
         by_time: { date: Date, value: number }[]
+        by_federal: { [key: string]: number }
     }
 }
 

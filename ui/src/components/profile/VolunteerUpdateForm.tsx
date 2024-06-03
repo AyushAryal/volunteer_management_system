@@ -94,42 +94,46 @@ export function VolunteerUpdateForm(props: VolunteerUpdateFormProps) {
             visible={props.visible}
             style={{ width: '50vw' }}
             onHide={() => { props.setVisible(false); }}>
-            <div className="flex flex-column gap-2">
-                <div className="flex gap-5 align-items-center mb-4">
-                    <div className="flex flex-column justify-content-center align-items-center">
-                        <ProfileImageUpload
-                            file={form.volunteer.profile_image}
-                            onChange={(file) => setForm({
-                                ...form,
-                                volunteer: {
-                                    ...form.volunteer,
-                                    profile_image: file,
-                                }
-                            })}
-                        />
+            <div>
+                <div className="flex flex-column gap-2">
+                    <div className="flex gap-5 align-items-center p-3 px-4">
+                        <div className="flex flex-column justify-content-center align-items-center">
+                            <ProfileImageUpload
+                                file={form.volunteer.profile_image}
+                                onChange={(file) => setForm({
+                                    ...form,
+                                    volunteer: {
+                                        ...form.volunteer,
+                                        profile_image: file,
+                                    }
+                                })}
+                            />
+                        </div>
+                        <h1>{`${form.volunteer.first_name} ${form.volunteer.last_name}`}</h1>
                     </div>
-                    <h1>{`${form.volunteer.first_name} ${form.volunteer.last_name}`}</h1>
                 </div>
-            </div>
-
-            <h2> Profile Information </h2>
-            <VolunteerProfileWidget />
-            <h2> Identification </h2>
-            <IdentificationDocumentsWidget />
-            <h2> Training </h2>
-            <TrainingListWidget />
-            <div className="flex gap-4 align-self-end align-items-center mt-5">
-                {response}
-                <Button
-                    label="Save"
-                    onClick={async () => {
-                        let newFormState = await perform_volunteer_update(form)
-                        if (!newFormState.hasErrors() && newFormState.response) {
-                            volunteerState.set(VolunteerDeserializer(await newFormState.response.json()));
-                        }
-                        setFormState(await perform_volunteer_update(form));
-                    }}
-                />
+    
+                    <div className='px-8'>
+                        <h2> Profile Information </h2>
+                        <VolunteerProfileWidget />
+                        <h2> Identification </h2>
+                        <IdentificationDocumentsWidget />
+                        <h2> Training </h2>
+                        <TrainingListWidget />
+                        <div className="flex gap-4 justify-content-end mt-5">
+                            {response}
+                            <Button
+                                label="Save"
+                                onClick={async () => {
+                                    let newFormState = await perform_volunteer_update(form)
+                                    if (!newFormState.hasErrors() && newFormState.response) {
+                                        volunteerState.set(VolunteerDeserializer(await newFormState.response.json()));
+                                    }
+                                    setFormState(await perform_volunteer_update(form));
+                                }}
+                            />
+                        </div>
+                    </div>
             </div>
         </Dialog>
     </VolunteerFormContext.Provider >;

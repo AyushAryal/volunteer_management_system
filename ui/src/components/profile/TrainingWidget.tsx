@@ -90,35 +90,48 @@ export function TrainingEditWidget({ training, onChange }: TrainingWidgetProps) 
 export function TrainingListWidget() {
   let { form, setForm } = useContext(VolunteerFormContext);
 
-  let trainingEdit = form.trainings.map((training, index) =>
+  let trainingEdit = form.trainings.map((training, index) => (
     <>
-      <Button size="small" outlined label="Remove Training" onClick={() => {
-        setForm({
-          ...form, trainings: form.trainings.filter((t) => t !== training)
-        })
-      }} />
+      <div className="flex justify-content-end">
+        <Button
+          size="small"
+          outlined
+          label="Remove Training"
+          severity="danger"
+          onClick={() => {
+            setForm({
+              ...form,
+              trainings: form.trainings.filter((t) => t !== training),
+            });
+          }}
+        />
+      </div>
       <TrainingEditWidget
         key={index}
         training={training}
         onChange={(training) => {
-          let trainings = Object.assign([...form.trainings], { [index]: training });
-          setForm({ ...form, trainings })
+          let trainings = Object.assign([...form.trainings], {
+            [index]: training,
+          });
+          setForm({ ...form, trainings });
         }}
       />
     </>
-  );
+  ));
 
   return <div className="flex flex-column gap-2">
     {...trainingEdit}
-    <Button size="small" outlined label="Add Training" onClick={() => {
-      setForm({
-        ...form, trainings: [...form.trainings, {
-          name: "",
-          subject: "",
-          image: "",
-          category: "Other",
-        }]
-      });
-    }} />
+    <div className="flex justify-content-start">
+      <Button size="small" outlined label="Add Training" onClick={() => {
+        setForm({
+          ...form, trainings: [...form.trainings, {
+            name: "",
+            subject: "",
+            image: "",
+            category: "",
+          }]
+        });
+      }} />
+    </div>
   </div>;
 }

@@ -4,7 +4,7 @@ import {
     MunicipalityBrief,
     WardBrief,
 } from '@models/federal';
-import { Incident, Job, Program, Volunteer, Report, Notification, Statistics, VolunteerGeotagDeserializer, VolunteerGeotag } from '@models/incident';
+import { Incident, Job, Program, Volunteer, Report, Notification, Statistics, VolunteerGeotag } from '@models/incident';
 
 import { hookstate } from '@hookstate/core';
 
