@@ -64,7 +64,6 @@ export const VolunteerCategoryStats = () => {
     type="bar"
     data={make_dataset("Volunteer Category", statistics.volunteers.category)}
     options={{
-      indexAxis: "y",
       maintainAspectRatio: false,
     }}
   />;
@@ -133,6 +132,100 @@ export const IncidentByTimeRangeStats = () => {
     }}
   />;
 }
+export const VolunteerByFederal = () => {
+  let statistics = useHookstate(storeState.statistics).get();
+  if (!statistics) return <ProgressSpinner />;
+
+  const data = statistics.volunteers.by_federal
+  const labelCallback = function (this:any, value: string | number) {
+    const label = this.getLabelForValue(value as number);
+    if (label.includes("-")) {
+      return label.slice(-2);
+    }
+    return label;
+  }
+  const options = {
+    scales: {
+      x: {
+        ticks: {
+          callback: labelCallback,
+        },
+      },
+    },
+    maintainAspectRatio: false,
+  };
+
+  return (
+    <Chart
+      className="h-full w-full"
+      type="bar"
+      data={make_dataset("Volunteers By Federal Region", data)}
+      options={options}
+    />
+  );
+}
+export const JobByFederal = () => {
+  let statistics = useHookstate(storeState.statistics).get();
+  if (!statistics) return <ProgressSpinner />;
+
+  const data = statistics.jobs.by_federal;
+  const labelCallback = function (this: any, value: string | number) {
+    const label = this.getLabelForValue(value as number);
+    if (label.includes("-")) {
+      return label.slice(-2);
+    }
+    return label;
+  };
+  const options = {
+    scales: {
+      x: {
+        ticks: {
+          callback: labelCallback,
+        },
+      },
+    },
+    maintainAspectRatio: false,
+  };
+  return (
+    <Chart
+      className="h-full w-full"
+      type="bar"
+      data={make_dataset("Jobs By Federal Region", data)}
+      options={options}
+    />
+  );
+};
+export const IncidentByFederal = () => {
+  let statistics = useHookstate(storeState.statistics).get();
+  if (!statistics) return <ProgressSpinner />;
+
+  const data = statistics.incidents.by_federal;
+  const labelCallback = function (this: any, value: string | number) {
+    const label = this.getLabelForValue(value as number);
+    if (label.includes("-")) {
+      return label.slice(-2);
+    }
+    return label;
+  };
+  const options = {
+    scales: {
+      x: {
+        ticks: {
+          callback: labelCallback,
+        },
+      },
+    },
+    maintainAspectRatio: false,
+  };
+  return (
+    <Chart
+      className="h-full w-full"
+      type="bar"
+      data={make_dataset("Incidents By Federal Region", data)}
+      options={options}
+    />
+  );
+};
 
 export const JobByTimeRangeStats = () => {
   let statistics = useHookstate(storeState.statistics).get();

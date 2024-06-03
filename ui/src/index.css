@@ -9,3 +9,17 @@ path.leaflet-interactive:focus {
     font-size: 12px;
     font-weight: "100px";
 }
+
+.p-stepper .p-stepper-header .p-stepper-action .p-stepper-number {
+    font-size: 12px;
+    min-width: 1.5rem;
+    height: 1.5rem;
+}
+
+.p-stepper .p-stepper-header .p-stepper-action .p-stepper-title {
+    font-size: 12px;
+}
+
+.p-dialog .p-dialog-header {
+    padding: 1rem;
+}

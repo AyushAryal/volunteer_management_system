@@ -9,7 +9,9 @@ import { storeState } from "@models/store";
 import { IncidentDetailModal } from "@components/map/sidebar/IncidentDetailModal";
 import { ListSkeleton } from "@components/map/sidebar/ListSkeleton";
 import { faChartLine, faList, faLocation } from "@fortawesome/free-solid-svg-icons";
-import { IncidentByTimeRangeStats } from "@components/landing/Stats";
+import { IncidentByFederal, IncidentByTimeRangeStats } from "@components/landing/Stats";
+import { Stepper } from "primereact/stepper";
+import { StepperPanel } from "primereact/stepperpanel";
 
 type IncidentRibbonProps = { incident: Incident }
 
@@ -49,7 +51,7 @@ function IncidentRibbon({ incident }: IncidentRibbonProps) {
             <div className="flex align-items-center gap-2">
                 <span className="border-1 text-primary border-round px-2"> {incident.programs} Programs </span>
                 <span className="border-1 text-red-600 border-round px-2"> {incident.jobs} Jobs </span>
-                <FontAwesomeIcon className="mr-2 hover:bg-bluegray-100 p-2 border-circle" icon={faAngleRight} onClick={() => setVisible(true)} />
+                <FontAwesomeIcon className="mr-2 hover:bg-bluegray-100 p-2 border-circle" style={{ cursor: "pointer" }} icon={faAngleRight} onClick={() => setVisible(true)} />
             </div>
             {visible ? viewIncidentDetail : null}
         </div>
@@ -66,6 +68,24 @@ export function Incidents() {
     if (!loadedIncidentList.get()) {
         return <ListSkeleton />;
     }
+    const tabs = [
+      {
+        title: "Time Range",
+        content: (
+          <div className="p-1 my-3 w-30rem" style={{ height: "20rem" }}>
+            <IncidentByTimeRangeStats />
+          </div>
+        ),
+      },
+      {
+        title: "Federal Region",
+        content: (
+          <div className="p-1 my-3 w-30rem" style={{ height: "20rem" }}>
+            <IncidentByFederal />
+          </div>
+        ),
+      },
+    ];
 
     return (
       <div>
@@ -76,8 +96,16 @@ export function Incidents() {
           />
         </div>
         {showChart && (
-          <div className=" w-30rem" style={{ height: "20rem" }}>
-            <IncidentByTimeRangeStats />
+          <div>
+            <Stepper>
+              {tabs.map((tab) => {
+                return (
+                  <StepperPanel key={tab.title} header={tab.title}>
+                    {tab.content}
+                  </StepperPanel>
+                );
+              })}
+            </Stepper>
           </div>
         )}
         {!showChart && (

@@ -9,7 +9,7 @@ import { Incidents } from '@components/map/sidebar/Incidents';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useHookstate } from "@hookstate/core";
 import { storeState } from "@models/store";
-import { faBell, faPeopleCarryBox, faPersonWalkingLuggage } from "@fortawesome/free-solid-svg-icons";
+import { faBell, faBriefcase, faPeopleCarryBox } from "@fortawesome/free-solid-svg-icons";
 import { Badge } from "primereact/badge";
 import { Notifications } from "./Notifications";
 import { Profile } from "./Profile";
@@ -64,7 +64,7 @@ export function Tabpage() {
         onClick={options.onClick}
       >
         <div className="text-xl">
-          <FontAwesomeIcon icon={faPersonWalkingLuggage} />
+          <FontAwesomeIcon icon={faBriefcase} />
         </div>
         <span className="white-space-nowrap">{options.titleElement}</span>
       </div>

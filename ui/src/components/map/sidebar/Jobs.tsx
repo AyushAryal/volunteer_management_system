@@ -11,7 +11,9 @@ import { Job } from "@models/incident";
 import { storeState } from "@models/store";
 import { ListSkeleton } from "@components/map/sidebar/ListSkeleton";
 import { JobDetailModal } from "@components/map/sidebar/JobDetailModal";
-import { JobByTimeRangeStats } from "@components/landing/Stats";
+import { JobByFederal, JobByTimeRangeStats } from "@components/landing/Stats";
+import { Stepper } from "primereact/stepper";
+import { StepperPanel } from "primereact/stepperpanel";
 
 
 
@@ -73,6 +75,7 @@ export function JobRibbon({ job }: JobRibbonProps) {
                         className="mr-2 hover:bg-bluegray-100 p-2 border-circle"
                         icon={faAngleRight}
                         onClick={() => setVisible(true)}
+                        style={{ cursor: "pointer" }}
                     />
                 </div>
             </div>
@@ -90,15 +93,43 @@ export function Jobs() {
     if (!loadedJobList.get()) {
         return <ListSkeleton />
     }
-
+    const tabs = [
+      {
+        title: "Time Range",
+        content: (
+          <div className="p-1 my-3 w-30rem" style={{ height: "20rem" }}>
+            <JobByTimeRangeStats />
+          </div>
+        ),
+      },
+      {
+        title: "Federal Region",
+        content: (
+          <div className="p-1 my-3 w-30rem" style={{ height: "20rem" }}>
+            <JobByFederal />
+          </div>
+        ),
+      },
+    ];
     return (
       <div>
-        <div className="flex justify-content-end"><FontAwesomeIcon icon={icon} onClick={() => setShowChart(!showChart)} /></div>
+        <div className="flex justify-content-end">
+          <FontAwesomeIcon
+            icon={icon}
+            onClick={() => setShowChart(!showChart)}
+          />
+        </div>
         {showChart && (
           <div>
-            <div className=" w-30rem" style={{ height: "20rem" }}>
-              <JobByTimeRangeStats />
-            </div>
+            <Stepper>
+              {tabs.map((tab) => {
+                return (
+                  <StepperPanel key={tab.title} header={tab.title}>
+                    {tab.content}
+                  </StepperPanel>
+                );
+              })}
+            </Stepper>
           </div>
         )}
         {!showChart && (

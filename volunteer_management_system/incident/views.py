@@ -590,7 +590,7 @@ class StatisticsViewSet(
                     ),
                     "by_federal": self.count_by_foreign_key(
                         volunteer_qs,
-                        federal_qs,
+                        federal_qs.order_by("name"),
                         accessors_from_ward("temporary_ward")[level],
                     ),
                 },
@@ -604,7 +604,7 @@ class StatisticsViewSet(
                     ),
                     "by_federal": self.count_by_foreign_key(
                         job_qs,
-                        federal_qs,
+                        federal_qs.order_by("name"),
                         accessors_from_ward("program__incident__ward")[level],
                     ),
                 },
@@ -617,7 +617,7 @@ class StatisticsViewSet(
                     ),
                     "by_federal": self.count_by_foreign_key(
                         incident_qs,
-                        federal_qs,
+                        federal_qs.order_by("name"),
                         accessors_from_ward("ward")[level],
                     ),
                 },
@@ -631,7 +631,7 @@ class StatisticsViewSet(
                     ),
                     "by_federal": self.count_by_foreign_key(
                         program_qs,
-                        federal_qs,
+                        federal_qs.order_by("name"),
                         accessors_from_ward("incident__ward")[level],
                     ),
                 },
