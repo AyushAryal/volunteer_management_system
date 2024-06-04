@@ -165,12 +165,21 @@ export function VolunteerLoginModal({ visible, setVisible }: VolunteerLoginModal
                             feedback={false}
                             id="password"
                             aria-describedby="password-help"
+                            onKeyDown={(event) => {
+                                if (event.key === 'Enter') {
+                                    onLogin();
+                                }
+                            }}
                         />
                     </div>
                     {response}
                     <div className="flex justify-content-end">
-                        <Button outlined
-                            size="small" label="Login" onClick={onLogin} />
+                        <Button
+                            outlined
+                            size="small"
+                            label="Login"
+                            onClick={onLogin}
+                        />
                     </div>
                 </div>
             </div>

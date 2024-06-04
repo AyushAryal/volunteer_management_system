@@ -7,14 +7,71 @@
 {% endblock %}
 
 {% block content %}
-    <div hx-get="{% url 'admin:volunteer_profile_table' %}" 
-          hx-swap="outerHTML" 
-          hx-trigger="load"
+    <div x-data="{
+            statistics: null,
+            async get_statistics() {
+                this.statistics = await (await fetch('/api/statistics')).json();
+            }
+        }"
+        x-init="get_statistics()"
+        class="d-flex flex-row justify-content-evenly py-3 mb-3"
     >
+        <div 
+            class="d-flex align-items-center justify-content-evenly bg-secondary text-white card py-3"
+            style="width: 30ch"
+        >
+        <h2> <i class="fa fa-person" ></i> &nbsp; {% translate "Volunteers" %} </h2>
+            <span class="display-1" x-text="statistics !== null ? statistics.volunteers.total : ''"> </span>
+        </div>
+        <div 
+            class="d-flex align-items-center justify-content-evenly bg-secondary text-white card py-3"
+            style="width: 30ch"
+        >
+        <h2> <i class="fa fa-fire" ></i> &nbsp; {% translate "Incidents" %} </h2>
+            <span class="display-1" x-text="statistics !== null ? statistics.incidents.total : ''"> </span>
+        </div>
+        <div 
+            class="d-flex align-items-center justify-content-evenly bg-secondary text-white card py-3"
+            style="width: 30ch"
+        >
+        <h2> <i class="fa fa-briefcase" ></i> &nbsp; {% translate "Jobs" %} </h2>
+            <span class="display-1" x-text="statistics !== null ? statistics.jobs.total : ''"> </span>
+        </div>
     </div>
-    <div hx-get="{% url 'admin:job_application_table' %}" 
-          hx-swap="outerHTML" 
-          hx-trigger="load"
-    >
+
+
+    
+    <div x-data="{ current_tab: 'volunteer' }">
+        <ul class="nav nav-underline">
+            <button 
+                x-on:click="current_tab = 'volunteer'" 
+                class="nav-link active" 
+                :class="{ 'active': current_tab == 'volunteer' }"
+                aria-current="page"
+            >
+                {% translate "Volunteer profile" %}
+            </button>
+            <button 
+                x-on:click="current_tab = 'job'" 
+                class="nav-link"
+                :class="{ 'active': current_tab == 'job' }"
+            >
+                {% translate "Job Applications" %}
+            </button>
+        </ul>
+        <div x-show="current_tab == 'volunteer'">
+            <div hx-get="{% url 'admin:volunteer_profile_table' %}" 
+                  hx-swap="outerHTML" 
+                  hx-trigger="load"
+            >
+            </div>
+        </div>
+        <div x-show="current_tab == 'job'">
+            <div hx-get="{% url 'admin:job_application_table' %}" 
+                  hx-swap="outerHTML" 
+                  hx-trigger="load"
+            >
+            </div>
+        </div>
     </div>
 {% endblock %}

@@ -1,8 +1,8 @@
-// $primary: #ab003c;
-// $secondary: #2a599a;
+$primary: #ab003c;
+$secondary: #2a599a;
 
-$primary: #5472d4;
-$secondary: #d82e2e;
+// $primary: #5472d4;
+// $secondary: #d82e2e;
 
 
 @import "~bootstrap/scss/bootstrap";
@@ -40,6 +40,10 @@ a.deletelink,
 #searchbar,
 select {
   height: auto !important;
+}
+
+#changelist-filter-extra-actions h3 {
+  font-size: 0.8rem;
 }
 
 /* Fixes for ckeditor5 */

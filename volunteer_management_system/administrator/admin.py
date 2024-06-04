@@ -9,7 +9,11 @@ from django.utils.translation import gettext_lazy as _
 from django.utils.html import mark_safe
 from django.views.generic import TemplateView
 from django.http import HttpResponse
-from leaflet.admin import LeafletGeoAdmin
+from leaflet.admin import LeafletGeoAdmin, LeafletGeoAdminMixin
+from leaflet.forms.widgets import LeafletWidget
+
+from djgeojson.fields import GeoJSONField
+from django.contrib.gis.db.models import GeometryField
 from django.urls import path
 from administrator.forms import (
     JobReportForm,
@@ -38,9 +42,9 @@ def csv_response_from_queryset(queryset, filename="export"):
 
 
 class MainAdminSite(admin.AdminSite):
-    site_title = "Dashboard"
-    site_header = "Admin Dashboard"
-    index_title = "Volunteer Management System"
+    site_title = _("Dashboard")
+    site_header = _("Admin Dashboard")
+    index_title = _("Volunteer Management System")
 
     def export_volunteer_csv(self, request):
         wards = get_user_controlled_wards(request.user)
@@ -131,7 +135,7 @@ class OtherIdentificationDocumentInline(admin.StackedInline):
     extra = 0
 
 
-class VolunteerProfileInline(admin.StackedInline):
+class VolunteerProfileInline(LeafletGeoAdminMixin, admin.StackedInline):
     model = incident.models.VolunteerProfile
     readonly_fields = ("profile_image_preview",)
     can_delete = False
@@ -168,6 +172,7 @@ class JobAdmin(admin.ModelAdmin):
         "leader_",
         "status",
     )
+    list_filter = ("status",)
     search_fields = ("name",)
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
@@ -200,12 +205,17 @@ class JobAdmin(admin.ModelAdmin):
 class JobApplicationAdmin(admin.ModelAdmin):
     model = incident.models.JobApplication
     form = JobApplicationForm
-    list_display = ("__str__", "applicant", "application_status")
+    list_display = ("job_", "applicant", "application_status")
+    list_filter = ("status",)
     search_fields = (
         "job__name",
         "volunteer__first_name",
         "volunteer__last_name",
+        "volunteer__user__email",
     )
+
+    def job_(self, application):
+        return str(application)
 
     def application_status(self, application):
         status = incident.models.JobApplicationStatus(application.status)
@@ -252,6 +262,7 @@ class JobReportAdmin(admin.ModelAdmin):
         "job__name",
         "volunteer__first_name",
         "volunteer__last_name",
+        "volunteer__user__email",
     )
     form = JobReportForm
 

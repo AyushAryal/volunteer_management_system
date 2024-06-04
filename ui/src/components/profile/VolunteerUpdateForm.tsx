@@ -112,28 +112,31 @@ export function VolunteerUpdateForm(props: VolunteerUpdateFormProps) {
                         <h1>{`${form.volunteer.first_name} ${form.volunteer.last_name}`}</h1>
                     </div>
                 </div>
-    
-                    <div className='px-8'>
-                        <h2> Profile Information </h2>
-                        <VolunteerProfileWidget />
-                        <h2> Identification </h2>
-                        <IdentificationDocumentsWidget />
-                        <h2> Training </h2>
-                        <TrainingListWidget />
-                        <div className="flex gap-4 justify-content-end mt-5">
-                            {response}
-                            <Button
-                                label="Save"
-                                onClick={async () => {
-                                    let newFormState = await perform_volunteer_update(form)
-                                    if (!newFormState.hasErrors() && newFormState.response) {
-                                        volunteerState.set(VolunteerDeserializer(await newFormState.response.json()));
-                                    }
-                                    setFormState(await perform_volunteer_update(form));
-                                }}
-                            />
-                        </div>
+
+                <div className='px-8'>
+                    <h2> Profile Information </h2>
+                    <VolunteerProfileWidget />
+                    <h2> Identification </h2>
+                    <IdentificationDocumentsWidget />
+                    <h2> Training </h2>
+                    <TrainingListWidget />
+                    <div className="flex gap-4 justify-content-end mt-5">
+                        {response}
+                        <Button
+                            label="Save"
+                            loading={formState.isLoading()}
+                            onClick={async () => {
+                                setFormState(FormState.fromLoading(true));
+                                let newFormState = await perform_volunteer_update(form)
+                                if (!newFormState.hasErrors() && newFormState.response) {
+                                    setFormState(FormState.fromSubmitted(true));
+                                    volunteerState.set(VolunteerDeserializer(await newFormState.response.json()));
+                                }
+                                setFormState(await perform_volunteer_update(form));
+                            }}
+                        />
                     </div>
+                </div>
             </div>
         </Dialog>
     </VolunteerFormContext.Provider >;

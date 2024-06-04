@@ -1,4 +1,5 @@
 {% extends "admin/base_site.html" %}
+{% load leaflet_tags %}
 {% load static i18n %}
 
 {% block bodyclass %}{{block.super}} bg-light{% endblock %}
@@ -8,6 +9,8 @@
 {% block extrastyle %}
 <link rel="stylesheet" href="{% static 'admin/dist/base.css' %}" />
 <script defer src="{% static 'admin/dist/base.js' %}"></script>
+{% leaflet_js %}
+{% leaflet_css %}
 {% endblock %}
 
 {% block branding %}
@@ -60,6 +63,19 @@
     <button title="Logout" type="submit"><i class="fa-solid fa-right-from-bracket"></i></button>
 </form>
 
+<form class="d-flex flex-row ms-2" action="{% url 'set_language' %}" method="post">{% csrf_token %}
+  <input name="next" type="hidden" value="{{ redirect_to }}">
+  <select class="form-select-sm" name="language" onchange="this.form.submit()">
+      {% get_current_language as LANGUAGE_CODE %}
+      {% get_available_languages as LANGUAGES %}
+      {% get_language_info_list for LANGUAGES as languages %}
+      {% for language in languages %}
+          <option value="{{ language.code }}"{% if language.code == LANGUAGE_CODE %} selected{% endif %}>
+              {{ language.name_local }} ({{ language.code }})
+          </option>
+      {% endfor %}
+  </select>
+</form>
 {% endblock %}
 
 {% block footer %}

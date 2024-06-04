@@ -1,6 +1,5 @@
 from types import DynamicClassAttribute
-
-from django.contrib.auth import get_user, get_user_model
+from django.contrib.auth import get_user_model
 from django.templatetags.static import static
 from django.contrib.gis.db import models as gis_models
 from django.db import models
@@ -15,6 +14,11 @@ import federal.models
 
 
 class SiteContent(models.Model):
+    class Meta:
+        verbose_name = _("Site Content")
+        verbose_name_plural = _("Site Contents")
+        ordering = ("-pk",)
+
     label = models.CharField(
         primary_key=True,
         max_length=100,

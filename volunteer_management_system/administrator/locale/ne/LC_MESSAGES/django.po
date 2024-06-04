@@ -1,0 +1,169 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-06-04 03:04+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: admin.py:45
+msgid "Dashboard"
+msgstr "ड्यासबोर्ड"
+
+#: admin.py:46
+msgid "Admin Dashboard"
+msgstr "प्रशासन ड्यासबोर्ड"
+
+#: admin.py:47
+msgid "Volunteer Management System"
+msgstr "स्वयंसेवक व्यवस्थापन प्रणाली"
+
+#: admin.py:329
+msgid "Personal info"
+msgstr "व्यक्तिगत जानकारी"
+
+#: admin.py:331
+msgid "Permissions"
+msgstr "अनुमतिहरू"
+
+#: admin.py:342
+msgid "Important dates"
+msgstr "महत्वपूर्ण मितिहरू"
+
+#: apps.py:8
+msgid "Administrator"
+msgstr "प्रशासक"
+
+#: tables.py:115
+msgid "Applicant Email"
+msgstr "आवेदक इमेल"
+
+#: tables.py:119
+msgid "Job"
+msgstr "रोजगार"
+
+#: tables.py:123
+msgid "Incident"
+msgstr "घटना"
+
+#: tables.py:127
+msgid "Leader"
+msgstr "नेता"
+
+#: tables.py:131
+msgid "Leader name"
+msgstr "नेताको नाम"
+
+#: tables.py:135
+msgid "Start date"
+msgstr "सुरू मिति"
+
+#: tables.py:139
+msgid "End date"
+msgstr "अन्त्य मिति"
+
+#: tables.py:143
+msgid "Job status"
+msgstr "रोजगारी स्थिति"
+
+#: tables.py:147
+msgid "Status"
+msgstr "स्थिति"
+
+#: templates/admin/actions.html:29
+msgid "Run the selected action"
+msgstr "चयन गरिएका कार्य सञ्चालन गर्नुहोस्"
+
+#: templates/admin/actions.html:29
+msgid "Go"
+msgstr "जाऊँ"
+
+#: templates/admin/actions.html:40
+msgid "Click here to select the objects across all pages"
+msgstr "सबै पृष्ठहरूमा वस्तुहरू चयन गर्न यहाँ क्लिक गर्नुहोस्"
+
+#: templates/admin/actions.html:40
+#, python-format
+msgid "Select all %(total_count)s %(module_name)s"
+msgstr "सबै %(total_count)s %(module_name)s चयन गर्नुहोस्"
+
+#: templates/admin/actions.html:42
+msgid "Clear selection"
+msgstr "चयन हटाउनुहोस्"
+
+#: templates/admin/app_list.html:50 templates/admin/app_list.html:57
+msgid "Home"
+msgstr "घर"
+
+#: templates/admin/index.html:23
+msgid "Volunteers"
+msgstr "स्वयंसेवकहरू"
+
+#: templates/admin/index.html:30
+msgid "Incidents"
+msgstr "घटनाहरू"
+
+#: templates/admin/index.html:37
+msgid "Jobs"
+msgstr "रोजगारीहरू"
+
+#: templates/admin/index.html:52
+msgid "Volunteer profile"
+msgstr "स्वयंसेवक प्रोफाइल"
+
+#: templates/admin/index.html:59
+msgid "Job Applications"
+msgstr "रोजगारी आवेदनहरू"
+
+#: templates/admin/search_form.html:30 templates/admin/search_form.html:32
+msgid "Search"
+msgstr "खोज्नुहोस्"
+
+#: templates/admin/search_form.html:45
+#, python-format
+msgid "%(counter)s result"
+msgid_plural "%(counter)s results"
+msgstr[0] "%(counter)s नतिजा"
+msgstr[1] "%(counter)s नतिजाहरू"
+
+#: templates/admin/search_form.html:45
+#, python-format
+msgid "%(full_result_count)s total"
+msgstr "कुल %(full_result_count)s"
+
+#: templates/admin/search_form.html:45
+msgid "Show all"
+msgstr "सबै देखाउनुहोस्"
+
+#: templates/administrator/tables/bootstrap5_htmx.html:36
+msgid "previous"
+msgstr "अघिल्लो"
+
+#: templates/administrator/tables/bootstrap5_htmx.html:63
+msgid "next"
+msgstr "अर्को"
+
+#: templates/administrator/tables/job_application_table.html:7
+msgid "Job Application Table"
+msgstr "रोजगारी आवेदन तालिका"
+
+#: templates/administrator/tables/job_application_table.html:9
+#: templates/administrator/tables/volunteer_profile_table.html:9
+msgid "Export CSV"
+msgstr "CSV निर्यात गर्नुहोस्"
+
+#: templates/administrator/tables/volunteer_profile_table.html:7
+msgid "Volunteer Profile Table"
+msgstr "स्वयंसेवक प्रोफाइल तालिका"

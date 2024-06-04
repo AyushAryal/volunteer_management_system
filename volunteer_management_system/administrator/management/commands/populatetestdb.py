@@ -1,4 +1,5 @@
 import json
+import csv
 import random
 import os
 import inspect
@@ -354,6 +355,110 @@ class Command(BaseCommand):
             volunteer.save()
             self.stdout.write(self.style.SUCCESS(f"Created volunteer {email}"))
 
+    def match_municipality_by_name(self, name):
+        qs = federal.models.Municipality.objects.filter(name_iexact=name)
+        if qs:
+            return qs.first()
+        return None
+
+    def create_red_cross_volunteers(self):
+        def valid_red_cross_data(row):
+            if (
+                row["First Name"]
+                and row["Last Name"]
+                and row["Email"]
+                and (row["Date Of Birth (AD)"])
+                and (row["Contact Number 2"] or row["Contact Number 1"])
+                and (row["Local Bodies"] or row["Temporary Local Bodies"])
+                and (row["Ward"] or row["Temporary Ward"])
+            ):
+                return True
+            return False
+
+        blood_type_mapping = {
+            "O+": incident.models.BloodGroup.O_Positive,
+            "O-": incident.models.BloodGroup.O_Negative,
+            "B+": incident.models.BloodGroup.B_Positive,
+            "B-": incident.models.BloodGroup.B_Negative,
+            "AB+": incident.models.BloodGroup.AB_Positive,
+            "AB-": incident.models.BloodGroup.AB_Negative,
+            "A+": incident.models.BloodGroup.A_Positive,
+            "A-": incident.models.BloodGroup.A_Negative,
+            "": incident.models.BloodGroup.B_Positive,
+        }
+
+        academic_qualification_mapping = {
+            "": incident.models.AcademicQualification.SecondaryLevel,
+            "Lower Secondary Education": incident.models.AcademicQualification.SecondaryLevel,
+            "Higher Secondary Education": incident.models.AcademicQualification.HighSchool,
+            "Secondary Education": incident.models.AcademicQualification.SecondaryLevel,
+            "Bachelor": incident.models.AcademicQualification.UnderGrad,
+            "Literate": incident.models.AcademicQualification.SecondaryLevel,
+            "Diploma": incident.models.AcademicQualification.UnderGrad,
+            "Master Degree": incident.models.AcademicQualification.Grad,
+        }
+
+        filepath = "./red_cross_data.csv"
+
+        filepath = settings.BASE_DIR / "shared" / "red_cross_data.csv"
+
+        with open(filepath, "r") as csvfile:
+            rc_csv = csv.DictReader(
+                csvfile,
+            )
+            for row in rc_csv:
+                if valid_red_cross_data(row):
+                    first_name = row["First Name"]
+                    last_name = row["Last Name"]
+                    email = row["Email"]
+                    date_of_birth = datetime.fromisoformat(row["Date Of Birth (AD)"])
+                    row["Contact Number 1"]
+                    row["Contact Number 2"]
+                    blood_group = row["Blood Group"]
+                    blood_group = blood_type_mapping[blood_group]
+                    academic_qualification = row["Qualification"]
+                    academic_qualification = academic_qualification_mapping[
+                        academic_qualification
+                    ]
+                    temporary_ward = row["Temporary Ward"]
+                    temporary_municipality = row["Temporary Local Bodies"]
+                    permanent_ward = row["Ward"]
+                    premanent_municipality = row["Local Bodies"]
+                    user = get_user_model().objects.create_user(
+                        password=PASSWORD, email=email
+                    )
+                    user.email_verified = True
+                    user.save()
+
+                    citizenship = incident.models.Citizenship(
+                        id=incident.models.Citizenship.objects.all().count() + 1,
+                        user=user,
+                        registration_date=date_of_birth,
+                        registration_district=federal.models.District.objects.get(pk=1),
+                    )
+                    citizenship.save()
+
+                    ward = federal.models.Ward.objects.get(pk=1)
+                    # point = self.uniformly_sample_point(
+                    #     federal.models.Ward.objects.get(pk=1)
+                    # )
+
+                    volunteer = incident.models.VolunteerProfile(
+                        user=user,
+                        first_name=first_name.capitalize(),
+                        last_name=last_name.capitalize(),
+                        gender=random.choice(incident.models.Gender.values),
+                        blood_group=blood_group,
+                        date_of_birth=date_of_birth,
+                        nationality=incident.models.Nationality.National,
+                        temporary_ward=ward,
+                        permanent_ward=ward,
+                        academic_qualification=academic_qualification,
+                        category=incident.models.VolunteerCategory.General,
+                    )
+                    volunteer.save()
+                    self.stdout.write(self.style.SUCCESS(f"Created volunteer {email}"))
+
     def load_incidents(self):
         filepath = settings.BASE_DIR / "shared" / "incidents.json"
         with open(filepath, encoding="utf8") as j:
@@ -539,6 +644,9 @@ class Command(BaseCommand):
             random.sample(incidents, int(len(incidents) * 0.25))
         )
         incident.models.Program.objects.bulk_create(programs)
+
+        self.stdout.write(self.style.SUCCESS("loading red cross users"))
+        self.create_red_cross_volunteers()
 
         self.stdout.write(self.style.SUCCESS("Creating volunteers"))
         self.create_volunteers(wards)

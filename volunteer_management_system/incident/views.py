@@ -144,8 +144,6 @@ class VolunteerProfileViewSet(
 
     def get_serializer_class(self):
         return {
-            "create": serializers.JobReportCreateSerializer,
-            "update": serializers.JobReportCreateSerializer,
             "geotag": serializers.VolunteerLocationSerializer,  # This is used for geotag
         }.get(self.action, super().get_serializer_class())
 

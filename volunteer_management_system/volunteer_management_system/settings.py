@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 import os
 from pathlib import Path
 from urllib.parse import quote_plus
+from django.utils.translation import gettext_lazy as _
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -71,6 +72,7 @@ MIDDLEWARE = [
     "django_htmx.middleware.HtmxMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.locale.LocaleMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "django.contrib.sites.middleware.CurrentSiteMiddleware",
 ]
@@ -135,6 +137,13 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
+
+LANGUAGES = [
+    ("en", _("English")),
+    ("ne", _("Nepali")),
+]
+
+LANGUAGE_COOKIE_NAME = "lang"
 
 LANGUAGE_CODE = "en-us"
 
@@ -212,7 +221,7 @@ LEAFLET_CONFIG = {
             },
         ),
     ],
-    "MINIMAP": True,
+    "MINIMAP": False,
 }
 
 CKEDITOR_5_COLOR_PALETTE = [

@@ -12,22 +12,25 @@ export type JobActionWidgetProps = {
 
 export function JobActionWidget({ job, onChange }: JobActionWidgetProps) {
     let today = new Date(Date.now());
-    let [formErrors, setFormErrors] = useState<string>();
+    let [formState, setFormState] = useState<FormState>(FormState.init());
 
     let button: JSX.Element;
 
     if (job.application_status == "Not applied" && job.vacancy - job.filled_positions > 0 && job.end_date > today) {
         button = <Button
             outlined
+            loading={formState.isLoading()}
             className="flex-shrink-0"
             size="small"
             label="Apply"
             onClick={async () => {
+                setFormState(FormState.fromLoading(true));
                 let response = await job_apply(job.url);
                 if (response.status == 200) {
                     onChange && onChange();
+                    setFormState(FormState.fromSubmitted(true));
                 } else if (response.status == 400) {
-                    setFormErrors(describe_api_errors(await response.json()));
+                    setFormState(FormState.fromError(describe_api_errors(await response.json())));
                 }
             }} />;
     } else if (job.application_status == "Accepted") {
@@ -38,15 +41,18 @@ export function JobActionWidget({ job, onChange }: JobActionWidgetProps) {
                 <span className="font-italic text-green-400">{job.application_status}</span>
                 <Button
                     outlined
+                    loading={formState.isLoading()}
                     className="flex-shrink-0"
                     size="small"
                     label="Cancel"
                     onClick={async () => {
+                        setFormState(FormState.fromLoading(true));
                         let response = await job_cancel(job.url);
                         if (response.status == 200) {
                             onChange && onChange();
+                            setFormState(FormState.fromSubmitted(true));
                         } else if (response.status == 400) {
-                            setFormErrors(describe_api_errors(await response.json()));
+                            setFormState(FormState.fromError(describe_api_errors(await response.json())));
                         }
                     }}
                 />
@@ -61,15 +67,18 @@ export function JobActionWidget({ job, onChange }: JobActionWidgetProps) {
                 <span className="font-italic text-yellow-600">{job.application_status}</span>
                 <Button
                     outlined
+                    loading={formState.isLoading()}
                     className="flex-shrink-0"
                     size="small"
                     label="Withdraw"
                     onClick={async () => {
+                        setFormState(FormState.fromLoading(true));
                         let response = await job_withdraw(job.url);
                         if (response.status == 200) {
                             onChange && onChange();
+                            setFormState(FormState.fromSubmitted(true));
                         } else if (response.status == 400) {
-                            setFormErrors(describe_api_errors(await response.json()));
+                            setFormState(FormState.fromError(describe_api_errors(await response.json())));
                         }
                     }} />
             </div>
@@ -85,7 +94,7 @@ export function JobActionWidget({ job, onChange }: JobActionWidgetProps) {
     }
 
     return <div className="flex align-items-center gap-2">
-        <span className="font-semibold text-red-600">{formErrors}</span>
+        {formState.getErrorAsElement()}
         {button}
     </div>
 }

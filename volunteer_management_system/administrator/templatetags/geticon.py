@@ -15,6 +15,8 @@ def modelicon(model):
         incident.models.VolunteerProfile: "fa-solid fa-id-card-clip",
         incident.models.Incident: "fa-solid fa-user-injured",
         incident.models.Job: "fa-solid fa-briefcase",
+        incident.models.JobApplication: "fa-solid fa-pen",
+        incident.models.JobReport: "fa-solid fa-book-open",
         incident.models.Program: "fa-solid fa-tent",
         incident.models.Notification: "fa-solid fa-bell",
         federal.models.Province: "fa-solid fa-landmark-dome",

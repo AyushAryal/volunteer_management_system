@@ -1,5 +1,5 @@
 import "@styles/overview.css";
-import { Statistics, SiteContent} from "@models/incident";
+import { Statistics, SiteContent } from "@models/incident";
 import { useState, useEffect } from "react";
 import { ProgressSpinner } from "primereact/progressspinner";
 import { get_statistics, get_site_content_list } from "@api/incident";
@@ -75,10 +75,10 @@ const Overview = () => {
   const overview = siteContents.find((siteContent) => siteContent.label === "overview");
   const overviewContent = (
     <div>
-      <p
+      <div
         className="text-xl"
         dangerouslySetInnerHTML={{ __html: overview?.content ?? "" }}
-      />
+      ></div>
     </div>
   );
   return (
@@ -88,9 +88,9 @@ const Overview = () => {
       </div>
       <div className="flex-1">
         <h2 className="text-4xl">Overview</h2>
-        <p className="text-xl">
+        <div className="text-xl">
           {overviewContent}
-        </p>
+        </div>
       </div>
     </section>
   );

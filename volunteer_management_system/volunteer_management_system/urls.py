@@ -35,6 +35,7 @@ router.registry.extend(federal_router.registry)
 favicon_view = RedirectView.as_view(url="/static/favicon.ico", permanent=True)
 
 urlpatterns = [
+    path("i18n/", include("django.conf.urls.i18n")),
     path("admin/", include("administrator.urls")),
     path("api/", include((router.urls, "api"))),
     path("select2/", include("django_select2.urls")),

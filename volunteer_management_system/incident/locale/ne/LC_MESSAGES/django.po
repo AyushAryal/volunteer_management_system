@@ -1,0 +1,530 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-06-04 02:52+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: apps.py:8
+msgid "incident"
+msgstr "घटना"
+
+#: models.py:19
+msgid "Site Content"
+msgstr "साइट सामग्री"
+
+#: models.py:20
+msgid "Site Contents"
+msgstr "साइट सामग्रीहरू"
+
+#: models.py:26
+msgid "label"
+msgstr "लेबल"
+
+#: models.py:42
+msgid "National"
+msgstr "राष्ट्रीय"
+
+#: models.py:43
+msgid "International"
+msgstr "अन्तर्राष्ट्रिय"
+
+#: models.py:44 models.py:57 models.py:96 models.py:123 models.py:136
+#: models.py:159 models.py:186 models.py:487 models.py:609
+msgid "None"
+msgstr "कुनै पनि"
+
+#: models.py:54
+msgid "Completed"
+msgstr "पूरा भयो"
+
+#: models.py:55
+msgid "In Progress"
+msgstr "प्रगतिको क्रममा"
+
+#: models.py:56
+msgid "Not Assigned"
+msgstr "नतोकीएको"
+
+#: models.py:82
+msgid "Rescue"
+msgstr "उद्धार"
+
+#: models.py:83
+msgid "Relief Distribution"
+msgstr "राहत वितरण"
+
+#: models.py:84
+msgid "Evacuation"
+msgstr "हटाउने कार्य"
+
+#: models.py:85 models.py:135
+msgid "Other"
+msgstr "अन्य"
+
+#: models.py:86
+msgid "Health and safety"
+msgstr "स्वास्थ्य र सुरक्षा"
+
+#: models.py:87
+msgid "Logistics"
+msgstr "लजिस्टिक्स"
+
+#: models.py:88
+msgid "Soft skills"
+msgstr "सफ्ट स्किल्स"
+
+#: models.py:89
+msgid "Leadership"
+msgstr "नेतृत्व"
+
+#: models.py:90
+msgid "Team Training"
+msgstr "टोली प्रशिक्षण"
+
+#: models.py:91
+msgid "Management"
+msgstr "व्यवस्थापन"
+
+#: models.py:92
+msgid "Quality Training"
+msgstr "गुणस्तर प्रशिक्षण"
+
+#: models.py:93
+msgid "Humanitarian"
+msgstr "मानवीय"
+
+#: models.py:94
+msgid "Family Reunification"
+msgstr "पारिवारिक पुनर्मिलन"
+
+#: models.py:95
+msgid "Motor Vehicle Operator"
+msgstr "मोटर वाहन अपरेटर"
+
+#: models.py:115
+msgid "Student"
+msgstr "विद्यार्थी"
+
+#: models.py:116
+msgid "Scout"
+msgstr "स्काउट"
+
+#: models.py:117
+msgid "Retired APF"
+msgstr "सेवानिवृत्त एपीएफ"
+
+#: models.py:118
+msgid "Retired Army"
+msgstr "सेवानिवृत्त सेना"
+
+#: models.py:119
+msgid "Retired Government Service"
+msgstr "सेवानिवृत्त सरकारी सेवा"
+
+#: models.py:120
+msgid "Senior Citizen"
+msgstr "जेष्ठ नागरिक"
+
+#: models.py:121
+msgid "Community"
+msgstr "समुदाय"
+
+#: models.py:122
+msgid "General"
+msgstr "साधारण"
+
+#: models.py:133
+msgid "Male"
+msgstr "पुरुष"
+
+#: models.py:134
+msgid "Female"
+msgstr "महिला"
+
+#: models.py:153
+msgid "Secondary Level"
+msgstr "माध्यमिक स्तर"
+
+#: models.py:154
+msgid "High School"
+msgstr "उच्च विद्यालय"
+
+#: models.py:155
+msgid "Under Grad"
+msgstr "स्नातक अन्तर्गत"
+
+#: models.py:156
+msgid "Grad"
+msgstr "स्नातक"
+
+#: models.py:157
+msgid "Doctorate"
+msgstr "डॉक्टरेट"
+
+#: models.py:158
+msgid "Post Doc"
+msgstr "पोस्ट डक"
+
+#: models.py:178
+msgid "O Negative"
+msgstr "ओ नेगेटिभ"
+
+#: models.py:179
+msgid "O Positive"
+msgstr "ओ पोजेटिभ"
+
+#: models.py:180
+msgid "A Negative"
+msgstr "ए नेगेटिभ"
+
+#: models.py:181
+msgid "A Positive"
+msgstr "ए पोजेटिभ"
+
+#: models.py:182
+msgid "B Negative"
+msgstr "बी नेगेटिभ"
+
+#: models.py:183
+msgid "B Positive"
+msgstr "बी पोजेटिभ"
+
+#: models.py:184
+msgid "AB Negative"
+msgstr "एबी नेगेटिभ"
+
+#: models.py:185
+msgid "AB Positive"
+msgstr "एबी पोजेटिभ"
+
+#: models.py:191
+msgid "Citizenship"
+msgstr "नागरिकता"
+
+#: models.py:192
+msgid "Citizenships"
+msgstr "नागरिकताहरू"
+
+#: models.py:195 models.py:229 models.py:259
+msgid "id"
+msgstr "आईडी"
+
+#: models.py:203 models.py:237 models.py:267 models.py:292 models.py:316
+#: models.py:337 models.py:458 models.py:703
+msgid "user"
+msgstr "प्रयोगकर्ता"
+
+#: models.py:205 models.py:270
+msgid "registration date"
+msgstr "दर्ता मिति"
+
+#: models.py:210
+msgid "district"
+msgstr "जिल्ला"
+
+#: models.py:216 models.py:246 models.py:274 models.py:299 models.py:321
+#: models.py:472
+msgid "image"
+msgstr "छवि"
+
+#: models.py:225
+msgid "Passport"
+msgstr "राहदानी"
+
+#: models.py:226
+msgid "Passports"
+msgstr "राहदानीहरू"
+
+#: models.py:240
+msgid "issue date"
+msgstr "जारी मिति"
+
+#: models.py:242
+msgid "expiry date"
+msgstr "समाप्ति मिति"
+
+#: models.py:255
+msgid "National ID"
+msgstr "राष्ट्रिय परिचयपत्र"
+
+#: models.py:256
+msgid "National IDs"
+msgstr "राष्ट्रिय परिचयपत्रहरू"
+
+#: models.py:283
+msgid "Other Identification Document"
+msgstr "अन्य पहिचान दस्तावेज"
+
+#: models.py:284
+msgid "Other Identification Documents"
+msgstr "अन्य पहिचान दस्तावेजहरू"
+
+#: models.py:308
+msgid "Certificate"
+msgstr "प्रमाणपत्र"
+
+#: models.py:309
+msgid "Certificates"
+msgstr "प्रमाणपत्रहरू"
+
+#: models.py:327
+msgid "Volunteer profile"
+msgstr "स्वयंसेवक प्रोफाइल"
+
+#: models.py:328
+msgid "Volunteer profiles"
+msgstr "स्वयंसेवक प्रोफाइलहरू"
+
+#: models.py:340
+msgid "first name"
+msgstr "पहिलो नाम"
+
+#: models.py:342
+msgid "last name"
+msgstr "थर"
+
+#: models.py:344
+msgid "contact number"
+msgstr "सम्पर्क नम्बर"
+
+#: models.py:350
+msgid "profile image"
+msgstr "प्रोफाइल छवि"
+
+#: models.py:353
+msgid "date of birth"
+msgstr "जन्म मिति"
+
+#: models.py:357
+msgid "gender"
+msgstr "लिङ्ग"
+
+#: models.py:362
+msgid "blood type"
+msgstr "रक्त प्रकार"
+
+#: models.py:367
+msgid "nationality"
+msgstr "राष्ट्रीयता"
+
+#: models.py:373
+msgid "permanent ward"
+msgstr "स्थायी वार्ड"
+
+#: models.py:380
+msgid "temporary ward"
+msgstr "अस्थायी वार्ड"
+
+#: models.py:387 models.py:514
+msgid "point"
+msgstr "बिन्दु"
+
+#: models.py:392
+msgid "academic qualification"
+msgstr "शैक्षिक योग्यता"
+
+#: models.py:397
+msgid "volunteer category"
+msgstr "स्वयंसेवक कोटी"
+
+#: models.py:401
+msgid "organization name"
+msgstr "संस्थाको नाम"
+
+#: models.py:405
+msgid "organization phone number"
+msgstr "संस्थाको फोन नम्बर"
+
+#: models.py:409
+msgid "organization website"
+msgstr "संस्थाको वेबसाइट"
+
+#: models.py:450
+msgid "Volunteer Training"
+msgstr "स्वयंसेवक प्रशिक्षण"
+
+#: models.py:451
+msgid "Volunteer Trainings"
+msgstr "स्वयंसेवक प्रशिक्षणहरू"
+
+#: models.py:461 models.py:496 models.py:546
+msgid "name"
+msgstr "नाम"
+
+#: models.py:463
+msgid "subject"
+msgstr "विषय"
+
+#: models.py:467
+msgid "category"
+msgstr "कोटी"
+
+#: models.py:483
+msgid "Low"
+msgstr "तल्लो"
+
+#: models.py:484
+msgid "Moderate"
+msgstr "मध्यम"
+
+#: models.py:485
+msgid "High"
+msgstr "उच्च"
+
+#: models.py:486
+msgid "Critical"
+msgstr "समालोचना"
+
+#: models.py:492
+msgid "Incident"
+msgstr "घटना"
+
+#: models.py:493
+msgid "Incidents"
+msgstr "घटनाहरू"
+
+#: models.py:500 models.py:707
+msgid "date"
+msgstr "मिति"
+
+#: models.py:505
+msgid "ward"
+msgstr "वार्ड"
+
+#: models.py:511
+msgid "severity"
+msgstr "गम्भीरता"
+
+#: models.py:522
+msgid "Program"
+msgstr "कार्यक्रम"
+
+#: models.py:523
+msgid "Programs"
+msgstr "कार्यक्रमहरू"
+
+#: models.py:542 models.py:633 models.py:683
+msgid "Job"
+msgstr "काम"
+
+#: models.py:543
+msgid "Jobs"
+msgstr "कामहरू"
+
+#: models.py:548
+msgid "start date"
+msgstr "सुरु मिति"
+
+#: models.py:550
+msgid "end date"
+msgstr "अन्त्य मिति"
+
+#: models.py:552
+msgid "vacancy"
+msgstr "खाली स्थान"
+
+#: models.py:558 models.py:640
+msgid "status"
+msgstr "स्थिति"
+
+#: models.py:570
+msgid "leader"
+msgstr "नेता"
+
+#: models.py:577
+msgid "age_limit"
+msgstr "उमेर सीमा"
+
+#: models.py:605
+msgid "Accepted"
+msgstr "स्वीकार"
+
+#: models.py:606
+msgid "Rejected"
+msgstr "अस्वीकृत"
+
+#: models.py:607
+msgid "Pending"
+msgstr "पेन्डिङ"
+
+#: models.py:608
+msgid "Cancelled"
+msgstr "रद्द"
+
+#: models.py:614
+msgid "Job Application"
+msgstr "कामको आवेदन"
+
+#: models.py:615
+msgid "Job Applications"
+msgstr "कामको आवेदनहरू"
+
+#: models.py:626 models.py:676
+msgid "volunteer"
+msgstr "स्वयंसेवक"
+
+#: models.py:664
+msgid "Job Report"
+msgstr "काम रिपोर्ट"
+
+#: models.py:665
+msgid "Job Reports"
+msgstr "काम रिपोर्टहरू"
+
+#: models.py:695
+msgid "Notification"
+msgstr "सूचना"
+
+#: models.py:696
+msgid "Notifications"
+msgstr "सूचनाहरू"
+
+#: models.py:706
+msgid "message"
+msgstr "सन्देश"
+
+#: models.py:708
+msgid "viewed"
+msgstr "हेर्नुभयो"
+
+#: views.py:175
+msgid "No profile present for this user"
+msgstr "यस प्रयोगकर्ताको लागि कुनै प्रोफाइल छैन"
+
+#: views.py:353
+msgid "Job application has already been processed."
+msgstr "कामको आवेदन पहिले नै प्रक्रिया गरिएको छ।"
+
+#: views.py:358 views.py:400
+msgid "Job application does not exist."
+msgstr "कामको आवेदन अस्तित्वमा छैन।"
+
+#: views.py:393
+msgid "Job application is either rejected, pending or cancelled."
+msgstr "कामको आवेदन अस्वीकृत, पेन्डिङ वा रद्द छ।"
+
+#: views.py:435
+msgid "No vacancy"
+msgstr "खाली स्थान छैन"
+
+#: views.py:444
+msgid "Ineligible due to age limit."
+msgstr "उमेर सीमाका कारण अयोग्य।"
+
+#: views.py:456
+msgid "Job application exists."
+msgstr "कामको आवेदन अवस्थित छ।"

@@ -1,0 +1,87 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-06-04 02:31+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: apps.py:8
+msgid "federal"
+msgstr "संघीय"
+
+#: models.py:9
+msgid "Province"
+msgstr "प्रदेश"
+
+#: models.py:10
+msgid "Provinces"
+msgstr "प्रदेशहरू"
+
+#: models.py:13 models.py:32 models.py:54 models.py:76
+msgid "name"
+msgstr "नाम"
+
+#: models.py:14 models.py:33 models.py:55 models.py:77
+msgid "shape"
+msgstr "आकृति"
+
+#: models.py:18 models.py:40 models.py:62
+msgid "admin"
+msgstr "प्रशासन"
+
+#: models.py:28
+msgid "District"
+msgstr "जिल्ला"
+
+#: models.py:29
+msgid "Districts"
+msgstr "जिल्लाहरू"
+
+#: models.py:35
+msgid "province"
+msgstr "प्रदेश"
+
+#: models.py:50
+msgid "Municipality"
+msgstr "नगरपालिका"
+
+#: models.py:51
+msgid "Municipalities"
+msgstr "नगरपालिकाहरू"
+
+#: models.py:57
+msgid "district"
+msgstr "जिल्ला"
+
+#: models.py:72
+msgid "Ward"
+msgstr "वार्ड"
+
+#: models.py:73
+msgid "Wards"
+msgstr "वार्डहरू"
+
+#: models.py:21
+msgid "label"
+msgstr "लेबल"
+
+#: models.py:37
+msgid "National"
+msgstr "राष्ट्रीय"
+
+#: models.py:38
+msgid "International"
+msgstr "अन्तर्राष्ट्रिय"

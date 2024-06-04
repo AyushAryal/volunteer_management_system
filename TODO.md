@@ -2,4 +2,5 @@
 - write tests for job endpoint
 - write tests for notification
 - validate that point lies inside ward polygon
-- fix nested hookstates (low priority)
+- select widgets better UI in admin
+- limit options in widget admin (incident, program, job, user)
