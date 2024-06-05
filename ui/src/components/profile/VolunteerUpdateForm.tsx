@@ -13,6 +13,7 @@ import { useState } from 'react';
 import { FormState } from '@api/form';
 import { ProfileImageUpload } from './ProfileImageUpload';
 import { TrainingListWidget } from './TrainingWidget';
+import { useTranslation } from 'react-i18next';
 
 
 type VolunteerUpdateFormProps = {
@@ -21,6 +22,7 @@ type VolunteerUpdateFormProps = {
 }
 
 export function VolunteerUpdateForm(props: VolunteerUpdateFormProps) {
+    const {t} = useTranslation();
     const volunteerState = useHookstate(storeState.volunteer);
     const volunteer = volunteerState.get() as Volunteer;
     if (volunteer == null) return null;
@@ -76,14 +78,13 @@ export function VolunteerUpdateForm(props: VolunteerUpdateFormProps) {
         trainings: volunteer.trainings,
     });
 
-
     let response;
     if (formState.isSubmitted() && !formState.hasErrors()) {
         response = <div
             style={{ color: "var(--green-600)", fontWeight: "bold" }}
             className="my-2"
         >
-            <span>Profile Updated!</span>
+            <span>{t("Profile Updated")}!</span>
         </div>
     } else if (formState.hasErrors()) {
         response = formState.getErrorAsElement();
@@ -94,50 +95,50 @@ export function VolunteerUpdateForm(props: VolunteerUpdateFormProps) {
             visible={props.visible}
             style={{ width: '50vw' }}
             onHide={() => { props.setVisible(false); }}>
-            <div>
-                <div className="flex flex-column gap-2">
-                    <div className="flex gap-5 align-items-center p-3 px-4">
-                        <div className="flex flex-column justify-content-center align-items-center">
-                            <ProfileImageUpload
-                                file={form.volunteer.profile_image}
-                                onChange={(file) => setForm({
-                                    ...form,
-                                    volunteer: {
-                                        ...form.volunteer,
-                                        profile_image: file,
+                <div>
+                    <div className="flex flex-column gap-2">
+                        <div className="flex gap-5 align-items-center p-3 px-4">
+                            <div className="flex flex-column justify-content-center align-items-center">
+                                <ProfileImageUpload
+                                    file={form.volunteer.profile_image}
+                                    onChange={(file) => setForm({
+                                        ...form,
+                                        volunteer: {
+                                            ...form.volunteer,
+                                            profile_image: file,
+                                        }
+                                    })}
+                                />
+                            </div>
+                            <h1>{`${form.volunteer.first_name} ${form.volunteer.last_name}`}</h1>
+                        </div>
+                    </div>
+    
+                    <div className='px-8'>
+                        <h2> {t("Profile Information")} </h2>
+                        <VolunteerProfileWidget />
+                        <h2> {t("Identification")} </h2>
+                        <IdentificationDocumentsWidget />
+                        <h2> {t("Training")} </h2>
+                        <TrainingListWidget />
+                        <div className="flex gap-4 justify-content-end mt-5">
+                            {response}
+                            <Button
+                                label={t("Save")}
+                                loading={formState.isLoading()}
+                                onClick={async () => {
+                                    setFormState(FormState.fromLoading(true));
+                                    let newFormState = await perform_volunteer_update(form)
+                                    if (!newFormState.hasErrors() && newFormState.response) {
+                                        setFormState(FormState.fromSubmitted(true));
+                                        volunteerState.set(VolunteerDeserializer(await newFormState.response.json()));
                                     }
-                                })}
+                                    setFormState(await perform_volunteer_update(form));
+                                }}
                             />
                         </div>
-                        <h1>{`${form.volunteer.first_name} ${form.volunteer.last_name}`}</h1>
                     </div>
                 </div>
-
-                <div className='px-8'>
-                    <h2> Profile Information </h2>
-                    <VolunteerProfileWidget />
-                    <h2> Identification </h2>
-                    <IdentificationDocumentsWidget />
-                    <h2> Training </h2>
-                    <TrainingListWidget />
-                    <div className="flex gap-4 justify-content-end mt-5">
-                        {response}
-                        <Button
-                            label="Save"
-                            loading={formState.isLoading()}
-                            onClick={async () => {
-                                setFormState(FormState.fromLoading(true));
-                                let newFormState = await perform_volunteer_update(form)
-                                if (!newFormState.hasErrors() && newFormState.response) {
-                                    setFormState(FormState.fromSubmitted(true));
-                                    volunteerState.set(VolunteerDeserializer(await newFormState.response.json()));
-                                }
-                                setFormState(await perform_volunteer_update(form));
-                            }}
-                        />
-                    </div>
-                </div>
-            </div>
         </Dialog>
     </VolunteerFormContext.Provider >;
 }

@@ -12,8 +12,10 @@ import { FormState } from '@api/form.tsx';
 import { VolunteerProfileAddressWidget, VolunteerProfileRequiredWidget } from '@components/profile/VolunteerProfileWidget';
 import { IdentificationDocumentsWidget } from '@components/profile/IdentificationDocumentsWidget';
 import { VolunteerForm, VolunteerFormContext, perform_signup } from '@forms/volunteer';
+import { useTranslation } from 'react-i18next';
 
 export function Signup() {
+    const {t} = useTranslation();
     let [form, setForm] = useState<VolunteerForm>({
         terms_accepted: false,
         email: "",
@@ -90,10 +92,10 @@ export function Signup() {
                     onChange={e => setForm({ ...form, terms_accepted: e.checked ?? false })}
                     checked={form.terms_accepted}
                 />
-                <span className="ml-2"> Accept Terms & Conditions </span>
+                <span className="ml-2"> {t("Accept Terms & Conditions")} </span>
             </div>
             <Button
-                label="Submit"
+                label={t("Submit")}
                 disabled={(!form.terms_accepted || formState.isSubmitted() && !formState.hasErrors())}
                 onClick={async () => {
                     setFormState(await perform_signup(form));
@@ -104,10 +106,10 @@ export function Signup() {
     </div>;
 
     const sections = [
-        { label: "Profile" },
-        { label: "Address" },
-        { label: "Identification" },
-        { label: "Submit" },
+        { label: t("Profile") },
+        { label: t("Address") },
+        { label: t("Identification") },
+        { label: t("Submit") },
     ]
 
     const PaginationWrapper = (component: JSX.Element) => {

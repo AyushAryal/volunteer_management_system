@@ -11,8 +11,10 @@ import { ScrollPanel } from "primereact/scrollpanel";
 
 import { get_id } from "@api/utils";
 import { District, Municipality, Province, Ward } from "@models/federal";
+import { useTranslation } from "react-i18next";
 
 export function Profile() {
+    const { t } = useTranslation();
     let volunteer = useHookstate(storeState.volunteer).get();
     if (volunteer === null) {
         return 0;
@@ -112,7 +114,7 @@ export function Profile() {
     ]);
     return (
       <ScrollPanel className="w-full" style={{ height: "75vh" }}>
-        <h3>Basic Information</h3>
+        <h3>{t("Basic Information")}</h3>
         <div className="flex flex-row justify-content-between px-4">
           <div className="pb-2">
             <div className="py-2">
@@ -185,7 +187,7 @@ export function Profile() {
         volunteer.volunteer.organization_website ? (
           <div>
             <Divider />
-            <h3>Organization Information</h3>
+            <h3>{t("Organization Information")}</h3>
             <div className="flex flex-row justify-content-around">
               {volunteer.volunteer.organization_name ? (
                 <div>{volunteer.volunteer.organization_name}</div>
@@ -209,19 +211,24 @@ export function Profile() {
         )}
         <Divider />
         <h3>
-          <FontAwesomeIcon icon={faMapLocationDot} />&nbsp;&nbsp;
-          Address Information
+          <FontAwesomeIcon icon={faMapLocationDot} />
+          &nbsp;&nbsp;
+          {t("Address Information")}
         </h3>
         <div className="flex flex-row gap-8 pl-5">
           <div>
-            <div className="font-semibold underline">Permanent Address</div>
+            <div className="font-semibold underline">
+              {t("Permanent Address")}
+            </div>
             <div>{permanentProvince?.name}</div>
             <div>{permanentDistrict?.name}</div>
             <div>{permanentMunicipality?.name}</div>
             <div>{permanentWard?.name}</div>
           </div>
           <div>
-            <div className="font-semibold underline">Temporary Address</div>
+            <div className="font-semibold underline">
+              {t("Temporary Address")}
+            </div>
             <div>{temporaryProvince?.name}</div>
             <div>{temporaryDistrict?.name}</div>
             <div>{temporaryMunicipality?.name}</div>
@@ -231,17 +238,17 @@ export function Profile() {
         <Divider />
         <h3>
           <FontAwesomeIcon icon={faFolderOpen} />
-          &nbsp; Documents
+          &nbsp; {t("Documents")}
         </h3>
         <div className="flex flex-column gap-4 pl-3">
           {volunteer.citizenship ? (
             <div className="flex flex-column gap-2">
               <div>
-                <span className="font-semibold">Citizenship ID:</span>
+                <span className="font-semibold">{t("Citizenship ID")} :</span>
                 &nbsp;&nbsp;{volunteer.citizenship?.id}
               </div>
               <div>
-                <span className="font-semibold">Registration Date:</span>
+                <span className="font-semibold">{t("Registration Date")}:</span>
                 &nbsp;&nbsp;
                 {volunteer.citizenship?.registration_date.toLocaleDateString(
                   "en-US",
@@ -249,7 +256,7 @@ export function Profile() {
                 )}
               </div>
               <div>
-                <span className="font-semibold">Registration District:</span>
+                <span className="font-semibold">{t("Registration District")}:</span>
                 &nbsp;&nbsp;
                 {registrationDistrict?.name}
               </div>
@@ -271,11 +278,12 @@ export function Profile() {
           {volunteer.national_id ? (
             <div className="flex flex-column gap-2">
               <div>
-                <span className="font-semibold">National ID:</span>&nbsp;&nbsp;
+                <span className="font-semibold">{t("National ID")}:</span>
+                &nbsp;&nbsp;
                 {volunteer.national_id?.id}
               </div>
               <div>
-                <span className="font-semibold">Registration Date:</span>
+                <span className="font-semibold">{t("Registration Date")}:</span>
                 &nbsp;&nbsp;
                 {volunteer.national_id?.registration_date.toLocaleDateString(
                   "en-US",
@@ -300,11 +308,13 @@ export function Profile() {
           {volunteer.passport ? (
             <div className="flex flex-column gap-2">
               <div>
-                <span className="font-semibold">Passport ID:</span>&nbsp;&nbsp;
+                <span className="font-semibold">{t("Passport ID")}:</span>
+                &nbsp;&nbsp;
                 {volunteer.passport?.id}
               </div>
               <div>
-                <span className="font-semibold">Issue Date:</span>&nbsp;&nbsp;
+                <span className="font-semibold">{t("Issue Date")}:</span>
+                &nbsp;&nbsp;
                 {volunteer.passport?.issue_date.toLocaleDateString("en-US", {
                   day: "numeric",
                   month: "short",
@@ -312,7 +322,8 @@ export function Profile() {
                 })}
               </div>
               <div>
-                <span className="font-semibold">Expiry Date:</span>&nbsp;&nbsp;
+                <span className="font-semibold">{t("Expiry Date")}:</span>
+                &nbsp;&nbsp;
                 {volunteer.passport?.expiry_date.toLocaleDateString("en-US", {
                   day: "numeric",
                   month: "short",
@@ -336,7 +347,7 @@ export function Profile() {
           {volunteer.other_identification_document ? (
             <div className="flex flex-column gap-2">
               <div>
-                <span className="font-semibold">Other ID:</span>&nbsp;&nbsp;
+                <span className="font-semibold">{t("Other ID")}:</span>&nbsp;&nbsp;
                 {volunteer.other_identification_document?.name}
               </div>
               <div className="flex flex-column align-items-center">
@@ -357,7 +368,7 @@ export function Profile() {
         <Divider />
         <h3>
           <FontAwesomeIcon icon={faTrophy} />
-          &nbsp; Certificates
+          &nbsp; {t("Certificates")}
         </h3>
         <div className="flex flex-column gap-4 align-items-center">
           {volunteer.certificates.map((certificate, index) => (

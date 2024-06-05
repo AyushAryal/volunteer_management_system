@@ -17,6 +17,7 @@ import { Polygon } from 'react-leaflet/Polygon';
 import { useMap, useMapEvents } from 'react-leaflet/hooks';
 import { Marker } from 'react-leaflet/Marker';
 import { Tooltip } from 'react-leaflet/Tooltip';
+import { useTranslation } from 'react-i18next';
 
 type PointPickerProps = {
     label: string,
@@ -158,19 +159,19 @@ export function VolunteerProfileAddressWidget() {
             })
         }} />
     </MapContainer>
-
+    const { t } = useTranslation();
     return <div className="flex flex-column w-full" style={{ gap: "1rem" }}>
         <div className="font-semibold">
-            Permanent Address <span className="text-red-500">*</span>
+            {t("Permanent Address")} <span className="text-red-500">*</span>
         </div>
         {permanentLocationSelector}
         <div className="font-semibold">
-            Temporary Address <span className="text-red-500">*</span>
+            {t("Temporary Address")} <span className="text-red-500">*</span>
         </div>
         {temporaryLocationSelector}
-        <span className="font-semibold">Geolocation</span>
+        <span className="font-semibold">{t("Geolocation")}</span>
         <span className="text-sm font-semibold text-red-700">
-            DISCLAIMER: This is an OPTIONAL field. Your location may be shared with other people anonymously.
+            {t("DISCLAIMER")}
         </span>
         {map}
     </div>;
@@ -284,209 +285,232 @@ export function VolunteerProfileRequiredWidget() {
         { value: "General" },
     ];
 
+    const { t } = useTranslation();
     return (
-        <div>
-            <div
-                className="flex flex-column w-full align-items-stretch"
-                style={{ gap: "2rem" }}
-            >
-                <span className="p-float-label">
-                    <InputText
-                        value={form.volunteer.first_name}
-                        id="first-name"
-                        className="p-inputtext-sm w-full"
-                        onChange={(ev) => setForm({
-                            ...form,
-                            volunteer: {
-                                ...form.volunteer,
-                                first_name: ev.target.value
-                            }
-                        })}
-                    />
-                    <label htmlFor="first-name">
-                        First Name <span className="text-sm text-red-500">*</span>
-                    </label>
-                </span>
-                <span className="p-float-label">
-                    <InputText
-                        value={form.volunteer.last_name}
-                        id="last-name"
-                        className="p-inputtext-sm w-full"
-                        onChange={(ev) => setForm({
-                            ...form,
-                            volunteer: {
-                                ...form.volunteer,
-                                last_name: ev.target.value
-                            }
-                        })}
-                    />
-                    <label htmlFor="last-name">
-                        Last Name <span className="text-sm text-red-500">*</span>
-                    </label>
-                </span>
-                <FloatLabel>
-                    <InputMask
-                        value={form.volunteer.contact_number}
-                        id="contact-number"
-                        mask="(+999)-9999999999"
-                        className="p-inputtext-sm w-full"
-                        onChange={(ev) => setForm({
-                            ...form,
-                            volunteer: {
-                                ...form.volunteer,
-                                contact_number: ev.target.value ?? ""
-                            }
-                        })}
-                    />
-                    <label htmlFor="contact-number">
-                        Contact Number (+977xxxxxxxxxx){" "}
-                        <span className="text-sm text-red-500">*</span>
-                    </label>
-                </FloatLabel>
-                <FloatLabel>
-                    <Calendar
-                        className="w-full"
-                        id="date-of-birth"
-                        value={form.volunteer.date_of_birth}
-                        onChange={(ev) => setForm({
-                            ...form,
-                            volunteer: {
-                                ...form.volunteer,
-                                date_of_birth: ev.target.value ?? undefined
-                            }
-                        })}
-                        dateFormat="yy-mm-dd"
-                        showIcon
-                        mask="9999-99-99"
-                    />
-                    <label htmlFor="date-of-birth">
-                        Date of birth (yyyy-mm-dd){" "}
-                        <span className="text-sm text-red-500">*</span>
-                    </label>
-                </FloatLabel>
-                <div className="flex flex-wrap gap-3">
-                    <div className="flex align-items-center">
-                        <RadioButton
-                            inputId="male"
-                            name="male"
-                            value="Male"
-                            checked={form.volunteer.gender === "Male"}
-                            onChange={(ev) => setForm({
-                                ...form,
-                                volunteer: {
-                                    ...form.volunteer,
-                                    gender: ev.value,
-                                }
-                            })}
-                        />
-                        <label htmlFor="male" className="ml-2 text-gray-800">
-                            Male
-                        </label>
-                    </div>
-                    <div className="flex align-items-center">
-                        <RadioButton
-                            inputId="female"
-                            name="female"
-                            value="Female"
-                            checked={form.volunteer.gender === "Female"}
-                            onChange={(ev) => setForm({
-                                ...form,
-                                volunteer: {
-                                    ...form.volunteer,
-                                    gender: ev.value,
-                                }
-                            })}
-                        />
-                        <label htmlFor="female" className="ml-2 text-gray-800">
-                            Female
-                        </label>
-                    </div>
-                    <div className="flex align-items-center">
-                        <RadioButton
-                            inputId="other"
-                            name="other"
-                            value="Other"
-                            checked={form.volunteer.gender === "Other"}
-                            onChange={(ev) => setForm({
-                                ...form,
-                                volunteer: {
-                                    ...form.volunteer,
-                                    gender: ev.value,
-                                }
-                            })}
-                        />
-                        <label htmlFor="other" className="ml-2 text-gray-800">
-                            Other
-                        </label>
-                    </div>
-                </div>
-                <Dropdown
-                    value={form.volunteer.blood_group}
-                    onChange={(ev) => setForm({
-                        ...form,
-                        volunteer: {
-                            ...form.volunteer,
-                            blood_group: ev.value,
-                        }
-                    })}
-                    options={bloodGroups}
-                    placeholder="Select a blood group"
-                    optionLabel="value"
-                />
-
-                <Dropdown
-                    value={form.volunteer.academic_qualification}
-                    onChange={(ev) => setForm({
-                        ...form,
-                        volunteer: {
-                            ...form.volunteer,
-                            academic_qualification: ev.value,
-                        }
-                    })}
-                    options={academicQualifications}
-                    placeholder="Select a academic qualification"
-                    optionLabel="value"
-                />
-                <Dropdown
-                    value={form.volunteer.nationality}
-                    onChange={(ev) => setForm({
-                        ...form,
-                        volunteer: {
-                            ...form.volunteer,
-                            nationality: ev.value,
-                        }
-                    })}
-                    options={nationalities}
-                    placeholder="Select a Nationality"
-                    optionLabel="value"
-                />
-                <Dropdown
-                    value={form.volunteer.category}
-                    onChange={(ev) => setForm({
-                        ...form,
-                        volunteer: {
-                            ...form.volunteer,
-                            category: ev.value,
-                        }
-                    })}
-                    options={volunteerCategories}
-                    placeholder="Select a category"
-                    optionLabel="value"
-                />
-
+      <div>
+        <div
+          className="flex flex-column w-full align-items-stretch"
+          style={{ gap: "2rem" }}
+        >
+          <span className="p-float-label">
+            <InputText
+              value={form.volunteer.first_name}
+              id="first-name"
+              className="p-inputtext-sm w-full"
+              onChange={(ev) =>
+                setForm({
+                  ...form,
+                  volunteer: {
+                    ...form.volunteer,
+                    first_name: ev.target.value,
+                  },
+                })
+              }
+            />
+            <label htmlFor="first-name">
+              {t("First Name")} <span className="text-sm text-red-500">*</span>
+            </label>
+          </span>
+          <span className="p-float-label">
+            <InputText
+              value={form.volunteer.last_name}
+              id="last-name"
+              className="p-inputtext-sm w-full"
+              onChange={(ev) =>
+                setForm({
+                  ...form,
+                  volunteer: {
+                    ...form.volunteer,
+                    last_name: ev.target.value,
+                  },
+                })
+              }
+            />
+            <label htmlFor="last-name">
+              {t("Last Name")} <span className="text-sm text-red-500">*</span>
+            </label>
+          </span>
+          <FloatLabel>
+            <InputMask
+              value={form.volunteer.contact_number}
+              id="contact-number"
+              mask="(+999)-9999999999"
+              className="p-inputtext-sm w-full"
+              onChange={(ev) =>
+                setForm({
+                  ...form,
+                  volunteer: {
+                    ...form.volunteer,
+                    contact_number: ev.target.value ?? "",
+                  },
+                })
+              }
+            />
+            <label htmlFor="contact-number">
+              {t("Contact Number")}{" "}
+              <span className="text-sm text-red-500">*</span>
+            </label>
+          </FloatLabel>
+          <FloatLabel>
+            <Calendar
+              className="w-full"
+              id="date-of-birth"
+              value={form.volunteer.date_of_birth}
+              onChange={(ev) =>
+                setForm({
+                  ...form,
+                  volunteer: {
+                    ...form.volunteer,
+                    date_of_birth: ev.target.value ?? undefined,
+                  },
+                })
+              }
+              dateFormat="yy-mm-dd"
+              showIcon
+              mask="9999-99-99"
+            />
+            <label htmlFor="date-of-birth">
+              {t("Date of birth (yyyy-mm-dd)")}{" "}
+              <span className="text-sm text-red-500">*</span>
+            </label>
+          </FloatLabel>
+          <div className="flex flex-wrap gap-3">
+            <div className="flex align-items-center">
+              <RadioButton
+                inputId="male"
+                name="male"
+                value="Male"
+                checked={form.volunteer.gender === "Male"}
+                onChange={(ev) =>
+                  setForm({
+                    ...form,
+                    volunteer: {
+                      ...form.volunteer,
+                      gender: ev.value,
+                    },
+                  })
+                }
+              />
+              <label htmlFor="male" className="ml-2 text-gray-800">
+                {t("Male")}
+              </label>
             </div>
+            <div className="flex align-items-center">
+              <RadioButton
+                inputId="female"
+                name="female"
+                value="Female"
+                checked={form.volunteer.gender === "Female"}
+                onChange={(ev) =>
+                  setForm({
+                    ...form,
+                    volunteer: {
+                      ...form.volunteer,
+                      gender: ev.value,
+                    },
+                  })
+                }
+              />
+              <label htmlFor="female" className="ml-2 text-gray-800">
+                {t("Female")}
+              </label>
+            </div>
+            <div className="flex align-items-center">
+              <RadioButton
+                inputId="other"
+                name="other"
+                value="Other"
+                checked={form.volunteer.gender === "Other"}
+                onChange={(ev) =>
+                  setForm({
+                    ...form,
+                    volunteer: {
+                      ...form.volunteer,
+                      gender: ev.value,
+                    },
+                  })
+                }
+              />
+              <label htmlFor="other" className="ml-2 text-gray-800">
+                {t("Other")}
+              </label>
+            </div>
+          </div>
+          <Dropdown
+            value={form.volunteer.blood_group}
+            onChange={(ev) =>
+              setForm({
+                ...form,
+                volunteer: {
+                  ...form.volunteer,
+                  blood_group: ev.value,
+                },
+              })
+            }
+            options={bloodGroups}
+            placeholder={t("Select a blood group")}
+            optionLabel="value"
+          />
+
+          <Dropdown
+            value={form.volunteer.academic_qualification}
+            onChange={(ev) =>
+              setForm({
+                ...form,
+                volunteer: {
+                  ...form.volunteer,
+                  academic_qualification: ev.value,
+                },
+              })
+            }
+            options={academicQualifications}
+            placeholder={t("Select an academic qualification")}
+            optionLabel="value"
+          />
+          <Dropdown
+            value={form.volunteer.nationality}
+            onChange={(ev) =>
+              setForm({
+                ...form,
+                volunteer: {
+                  ...form.volunteer,
+                  nationality: ev.value,
+                },
+              })
+            }
+            options={nationalities}
+            placeholder={t("Select a Nationality")}
+            optionLabel="value"
+          />
+          <Dropdown
+            value={form.volunteer.category}
+            onChange={(ev) =>
+              setForm({
+                ...form,
+                volunteer: {
+                  ...form.volunteer,
+                  category: ev.value,
+                },
+              })
+            }
+            options={volunteerCategories}
+            placeholder={t("Select a category")}
+            optionLabel="value"
+          />
         </div>
+      </div>
     );
 }
 
 
 export function VolunteerProfileWidget() {
+    const { t } = useTranslation();
     return (
         <div>
             <VolunteerProfileRequiredWidget />
-            <h2> Organization Information </h2>
+            <h2> {t("Organization Information")} </h2>
             <VolunteerProfileOrganizationWidget />
-            <h2> Address Information </h2>
+            <h2> {t("Address Information")} </h2>
             <VolunteerProfileAddressWidget />
         </div>
     );
