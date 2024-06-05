@@ -3,26 +3,27 @@ import { useHookstate } from '@hookstate/core';
 import { storeState } from '@models/store.ts';
 import { Dialog } from 'primereact/dialog';
 import { ProgressSpinner } from 'primereact/progressspinner';
+import { useTranslation } from 'react-i18next';
 
 
 export function LoadingDisplay() {
     const loaded = useHookstate(storeState.loaded);
-
+    const { t } = useTranslation();
     let loadingMessageMap = new Map<string, string>([
-        ["provinceList", "Loading Provinces..."],
-        ["districtList", "Loading Districts..."],
-        ["municipalityList", "Loading Municipalities..."],
-        ["incidentList", "Loading Incidents..."],
-        ["jobList", "Loading Jobs..."],
-        ["programList", "Loading Programs..."],
-        ["wardList", "Loading Wards..."],
-        ["notificationList", "Loading Notifications..."],
-        ["volunteersGeotagList", "Loading volunteer locations..."],
+        ["provinceList", t("Loading Provinces")+"..."],
+        ["districtList", t("Loading Districts")+"..."],
+        ["municipalityList", t("Loading Municipalities")+"..."],
+        ["incidentList", t("Loading Incidents")+"..."],
+        ["jobList", t("Loading Jobs")+"..."],
+        ["programList", t("Loading Programs")+"..."],
+        ["wardList", t("Loading Wards")+"..."],
+        ["notificationList", t("Loading Notifications")+"..."],
+        ["volunteersGeotagList", t("Loading volunteer locations")+"..."],
     ]);
 
     let messages = Object.entries(loaded)
         .filter(([_, state]) => !state.get())
-        .map(([key, _]) => loadingMessageMap.get(key) ?? `Loading ${key}...`);
+        .map(([key, _]) => loadingMessageMap.get(key) ?? `${t("Loading")} ${t(key)}...`);
 
     let messageTemplate = (message: string) => (
         <div key={message}>

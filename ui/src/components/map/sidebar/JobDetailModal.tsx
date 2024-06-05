@@ -14,6 +14,7 @@ import { Fieldset } from 'primereact/fieldset';
 import { Button } from 'primereact/button';
 import { Divider } from 'primereact/divider';
 import default_profile_image from "@assets/default_profile_image.png";
+import { useTranslation } from 'react-i18next';
 
 type JobDetailModalProps = {
     job: string,
@@ -23,6 +24,7 @@ type JobDetailModalProps = {
 
 
 export function JobDetailModal(props: JobDetailModalProps) {
+    const { t } = useTranslation();
     const store = useHookstate(storeState);
     let volunteer = store.volunteer.get();
 
@@ -122,7 +124,7 @@ export function JobDetailModal(props: JobDetailModalProps) {
             <span>
                 {job.leader.first_name} {job.leader.last_name}
             </span>
-        </div> : "No Leader Assigned";
+        </div> : t("No Leader Assigned");
 
     return <Dialog
         header={job.name}

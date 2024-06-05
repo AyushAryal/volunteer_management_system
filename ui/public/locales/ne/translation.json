@@ -7,7 +7,7 @@
   "Dashboard": "ड्यासबोर्ड",
   "Overview": "विस्तृत सर्वेक्षण",
   "Incidents": "घटनाहरू",
-  "Program": "कार्यक्रमहरू",
+  "Programs": "कार्यक्रमहरू",
   "Jobs": "कामहरू",
   "Volunteers": "स्वयम् सेवकहरू",
   "Your Jobs": "तपाईको कामहरू",
@@ -125,10 +125,31 @@
   "3 months": "३ महिना",
   "Custom": "कस्टम",
 
-  "Training": "तालीम", 
-  "Subject":"विषय",
-  "Category":"वर्ग",
+  "Training": "तालीम",
+  "Subject": "विषय",
+  "Category": "वर्ग",
 
   "Save": "सेभ गर्नुहोस्",
-  "ID": "आईडी"
+  "ID": "आईडी",
+
+  "Loading Provinces": "प्रदेशहरू लोड गर्दै",
+  "Loading Districts": "जिल्लाहरू लोड गर्दै",
+  "Loading Municipalities": "नगरपालिकाहरू लोड गर्दै",
+  "Loading Wards": "वडाहरू लोड गर्दै",
+  "Loading": "लोड गर्दै",
+  "Loading Incidents": "घटनाहरू लोड गर्दै",
+  "Loading Jobs": "कामहरू लोड गर्दै",
+  "Loading Programs": "कार्यक्रमहरू लोड गर्दै",
+  "Loading Notifications": "सूचनाहरू लोड गर्दै",
+  "Loading volunteer locations": "स्वयम् सेवक स्थानहरू लोड गर्दै",
+  "statistics": "तथ्याङ्क",
+  "Federal Region": "संघीय क्षेत्र",
+  "Academic Qualification": "शैक्षिक योग्यता",
+  "Blood Group": "रक्त समूह",
+
+  "Time Range": "समय अवधि",
+  "Program List": "कार्यक्रम सूची",
+  "No Leader Assigned": "लीडर नियुक्त गरिएको छैन",
+  "Reports from other volunteers": "अन्य स्वयंसेवकहरूको रिपोर्टहरू",
+  "Apply": "आवेदन गर्नु"
 }

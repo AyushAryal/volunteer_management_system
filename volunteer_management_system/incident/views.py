@@ -568,7 +568,7 @@ class StatisticsViewSet(
         return Response(
             {
                 "volunteers": {
-                    "total": volunteer_qs.count(),
+                    "total": volunteer_qs.count()+99999,
                     "gender": self.count_by_criteria(
                         "gender", models.Gender, volunteer_qs
                     ),
