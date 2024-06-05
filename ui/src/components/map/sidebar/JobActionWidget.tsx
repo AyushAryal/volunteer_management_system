@@ -2,7 +2,6 @@ import { Job, JobApplicationStatus } from '@models/incident';
 import { job_apply, job_cancel, job_withdraw } from '@api/incident';
 import { Button } from "primereact/button";
 import { useState } from 'react';
-import { FormState } from '@api/form';
 import { describe_api_errors } from '@api/utils';
 
 export type JobActionWidgetProps = {
