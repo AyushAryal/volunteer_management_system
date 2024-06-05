@@ -21,6 +21,7 @@ import App from './App.tsx';
 import { BrowserRouter } from 'react-router-dom';
 import { GlobalEffects } from '@components/GlobalEffects.tsx';
 
+import './i18n';
 
 function Main() {
     const pt = {
