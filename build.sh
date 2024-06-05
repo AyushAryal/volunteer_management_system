@@ -7,11 +7,11 @@ if [[ $DJANGO_SETTINGS_MODULE == "volunteer_management_system.development" ]]; t
     rm $PARENT/volunteer_management_system/federal/migrations/0001_initial.py
     rm $PARENT/volunteer_management_system/incident/migrations/0001_initial.py
     rm $PARENT/volunteer_management_system/authentication/migrations/0001_initial.py
-    sudo su postgres -c "psql -c 'DROP DATABASE vms;' && createdb vms" &&
-    python $PARENT/volunteer_management_system/manage.py makemigrations federal &&
-    python $PARENT/volunteer_management_system/manage.py makemigrations incident &&
-    python $PARENT/volunteer_management_system/manage.py makemigrations authentication &&
-    python $PARENT/volunteer_management_system/manage.py migrate &&
+    sudo su postgres -c "psql -c 'DROP DATABASE vms;' && createdb vms"
+    python $PARENT/volunteer_management_system/manage.py makemigrations federal
+    python $PARENT/volunteer_management_system/manage.py makemigrations incident
+    python $PARENT/volunteer_management_system/manage.py makemigrations authentication
+    python $PARENT/volunteer_management_system/manage.py migrate
     python $PARENT/volunteer_management_system/manage.py populatedb
 else
     echo "--------------------------------------------------" 1>&2;
