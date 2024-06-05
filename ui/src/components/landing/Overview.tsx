@@ -25,8 +25,8 @@ const CountsComponent = () => {
 
   const counts = {
     [t("Total Volunteers")]: stats.volunteers.total,
-    [t("National Volunteers")]: stats.volunteers.nationality.National,
-    [t("International Volunteers")]: stats.volunteers.nationality.International,
+    [t("Registered Volunteers")]: stats.volunteers.nationality.National,
+    [t("Unregistered Volunteers")]: stats.volunteers.total-stats.volunteers.nationality.National,
     [t("Total Incidents")]: stats.incidents.total,
     [t("Total Programs")]: stats.programs.total,
     [t("Total Jobs")]: stats.jobs.total,
@@ -83,16 +83,21 @@ const Overview = () => {
   //   </div>
   // );
   return (
-    <section className="flex flex-wrap flex-row gap-5 align-items-center justify-content-center bg-indigo-100 p-3">
-      <div className="flex-1" style={{ minWidth: "20rem" }}>
-        <CountsComponent />
-      </div>
-      <div className="flex-1">
-        <h2 className="text-4xl">{t("Overview")}</h2>
-        <p className="text-xl">
-          {t("Hero")}
-          {/* {overviewContent} */}
-        </p>
+    <section className="flex flex-wrap  bg-indigo-100 p-3">
+      <div className="flex flex-wrap gap-5 align-items-center justify-content-center">
+        <div className="flex-1" style={{ minWidth: "20rem" }}>
+          <CountsComponent />
+        </div>
+        <div className="flex-1" style={{ minWidth: "20rem" }}>
+          <h2 className="text-4xl">{t("Overview")}</h2>
+          <p className="text-xl">
+            {t("Hero")}
+            {/* {overviewContent} */}
+          </p>
+          <div className="flex justify-content-end pt-2 text-red-400 text-xs">
+            *{t("Unregistered volunteers need to update their profile")}
+          </div>
+        </div>
       </div>
     </section>
   );

@@ -67,7 +67,10 @@ export function Sidebar({ mapRef }: SidebarProps) {
           <div className="flex justify-content-between">
             <span className="text-xs font-bold text-300 flex gap-2 align-items-center pt-3 pb-2 pl-2">
               <FontAwesomeIcon icon={faCalendar}></FontAwesomeIcon>
-              Data From {startDate?.toDateString()} - {endDate?.toDateString()}
+              {t("Data From", {
+                startDate: startDate?.toDateString(),
+                endDate: endDate?.toDateString(),
+              })}
             </span>
             <div className="flex pt-3 pb-2 pl-2 mr-3">
               <LanguageSelector />

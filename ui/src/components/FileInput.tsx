@@ -3,6 +3,7 @@ import { useRef } from 'react';
 import { Button } from 'primereact/button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClose } from '@fortawesome/free-solid-svg-icons';
+import { useTranslation } from 'react-i18next';
 
 const toBase64 = (file: File): Promise<string | null> =>
     new Promise((resolve, reject) => {
@@ -21,52 +22,54 @@ type FileInputProps = {
 
 export function FileInput(props: FileInputProps) {
     let uploadRef = useRef<FileUpload>(null);
-
-    return <div className="flex align-items-center gap-1">
-        <div
-            style={{ display: !props.file ? "initial" : "none" }}
-        >
-            <FileUpload
-                mode="basic"
-                ref={uploadRef}
-                accept="image/*"
-                customUpload
-                auto
-                uploadHandler={(event: FileUploadHandlerEvent) => {
-                    let file = event.files[0];
-                    toBase64(file).then((base64) => {
-                        props.onChange(base64 ?? "");
-                    })
-                }}
-            />
+    const { t } = useTranslation();
+    return (
+      <div className="flex align-items-center gap-1">
+        <div style={{ display: !props.file ? "initial" : "none" }}>
+          <FileUpload
+            mode="basic"
+            ref={uploadRef}
+            accept="image/*"
+            customUpload
+            auto
+            chooseLabel={t("Upload")}
+            uploadHandler={(event: FileUploadHandlerEvent) => {
+              let file = event.files[0];
+              toBase64(file).then((base64) => {
+                props.onChange(base64 ?? "");
+              });
+            }}
+          />
         </div>
-        <img style={{
+        <img
+          style={{
             height: "100px",
             width: "auto",
-            objectFit: "cover"
-        }}
-            src={props.file} />
-        {
-            !props.file ? null :
-                <Button
-                    className="flex justify-content-center"
-                    severity={"danger"}
-                    outlined
-                    onClick={() => {
-                        uploadRef.current?.clear();
-                        props.onChange(undefined);
-                    }}
-                    size="small"
-                >
-                    <FontAwesomeIcon
-                        icon={faClose}
-                        style={{
-                            fontSize: "2rem",
-                            height: "1.2rem",
-                            width: "1.2rem",
-                        }}
-                    />
-                </Button>
-        }
-    </div>;
+            objectFit: "cover",
+          }}
+          src={props.file}
+        />
+        {!props.file ? null : (
+          <Button
+            className="flex justify-content-center"
+            severity={"danger"}
+            outlined
+            onClick={() => {
+              uploadRef.current?.clear();
+              props.onChange(undefined);
+            }}
+            size="small"
+          >
+            <FontAwesomeIcon
+              icon={faClose}
+              style={{
+                fontSize: "2rem",
+                height: "1.2rem",
+                width: "1.2rem",
+              }}
+            />
+          </Button>
+        )}
+      </div>
+    );
 }

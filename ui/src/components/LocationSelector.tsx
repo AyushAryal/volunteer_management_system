@@ -10,6 +10,7 @@ import {
     WardBrief,
     FederalBodyBrief
 } from '@models/federal';
+import { useTranslation } from 'react-i18next';
 
 type Tree = Map<string, Tree | null>;
 
@@ -71,7 +72,7 @@ export function ProvinceSelector({ value, onChange }: FederalSelectorProps) {
 export function DistrictSelector({ value, onChange }: FederalSelectorProps) {
     const districtList = useHookstate(storeState.districtList);
     const progressSpinner = <ProgressSpinner style={{ width: '50px', height: '50px' }} />;
-
+    const {t} = useTranslation();
     return <div className="flex flex-column justify-content-center align-content-center">
         <Dropdown
             value={districtList.get().find((d) => value == d.url)}
@@ -81,14 +82,14 @@ export function DistrictSelector({ value, onChange }: FederalSelectorProps) {
             optionLabel="name"
             showClear
             filter
-            placeholder="Select a district" />
+            placeholder={t("Select a district")} />
     </div>;
 }
 
 export function MunicipalitySelector({ value, onChange }: FederalSelectorProps) {
     const municipalityList = useHookstate(storeState.municipalityList);
     const progressSpinner = <ProgressSpinner style={{ width: '50px', height: '50px' }} />;
-
+    const {t} = useTranslation();
     return <div className="flex flex-column justify-content-center align-content-center">
         <Dropdown
             value={municipalityList.get().find((m) => value == m.url)}
@@ -98,7 +99,7 @@ export function MunicipalitySelector({ value, onChange }: FederalSelectorProps) 
             optionLabel="name"
             showClear
             filter
-            placeholder="Select a municipality" />
+            placeholder={t("Select a municipality")} />
     </div>;
 }
 
@@ -207,6 +208,7 @@ export function LocationSelector(props: LocationSelectorProps) {
     let municipalityOptions = calculateOptions(props.selectedDistrict || props.selectedProvince, municipalityList);
     let wardOptions = calculateOptions(props.selectedMunicipality || props.selectedDistrict || props.selectedProvince, wardList);
     
+    const {t} = useTranslation();
     return (
       <div className={`flex ${props.className}  justify-content-center align-content-center`}>
         <Dropdown
@@ -222,7 +224,7 @@ export function LocationSelector(props: LocationSelectorProps) {
           }
           optionLabel="name"
           showClear
-          placeholder="Select a province"
+          placeholder={t("Select a province")}
         />
         <Dropdown
           value={store.districtList
@@ -239,7 +241,7 @@ export function LocationSelector(props: LocationSelectorProps) {
           showClear
           filter
           filterInputAutoFocus
-          placeholder="Select a district"
+          placeholder={t("Select a district")}
         />
         <Dropdown
           value={store.municipalityList
@@ -258,7 +260,7 @@ export function LocationSelector(props: LocationSelectorProps) {
           showClear
           filter
           filterInputAutoFocus
-          placeholder="Select a municipality"
+          placeholder={t("Select a municipality")}
         />
         <Dropdown
           value={store.wardList
@@ -276,7 +278,7 @@ export function LocationSelector(props: LocationSelectorProps) {
           filter
           filterInputAutoFocus
           virtualScrollerOptions={{ itemSize: 38 }}
-          placeholder="Select a ward"
+          placeholder={t("Select a ward")}
         />
       </div>
     );

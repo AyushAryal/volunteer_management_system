@@ -45,7 +45,7 @@ const Footer = () => {
         </div>
 
         <div className="flex flex-column px-2">
-          <h3 className="text-white">Useful Links</h3>
+          <h3 className="text-white">{t("Useful Links")}</h3>
           <div>
             <li className="mb-2">
               <a
@@ -53,7 +53,7 @@ const Footer = () => {
                 href="https://bipad.gov.np/"
                 target="_blank"
               >
-                NDRRMA
+                {t("NDRRMA")}
               </a>
             </li>
             <li className="mb-2">
@@ -62,7 +62,7 @@ const Footer = () => {
                 href="https://bipadportal.gov.np/"
                 target="_blank"
               >
-                Bipad Portal
+                {t("Bipad Portal")}
               </a>
             </li>
             <li className="mb-2">
@@ -71,7 +71,7 @@ const Footer = () => {
                 href="https://exposure.ndrrma.gov.np"
                 target="_blank"
               >
-                Building Exposure
+                {t("Building Exposure")}
               </a>
             </li>
             <li className="mb-2">
@@ -80,19 +80,19 @@ const Footer = () => {
                 href="https://godam.ndrrma.gov.np/dashboard"
                 target="_blank"
               >
-                Godam
+                {t("Godam")}
               </a>
             </li>
             <li className="mb-2">
               <a className="link text-md" href="#" target="_blank">
-                E-learning
+                {t("E-learning")}
               </a>
             </li>
           </div>
         </div>
 
         <div className="flex flex-column px-2">
-          <h3 className="text-white">Contact Details</h3>
+          <h3 className="text-white">{t("Contact Details")}</h3>
           <div>
             <li className="mb-2">
               <FontAwesomeIcon icon="landmark-dome" className="mr-2 text-red-400" />
@@ -101,7 +101,7 @@ const Footer = () => {
                 href="https://bipad.gov.np/"
                 target="_blank"
               >
-                NDRRMA
+                {t("NDRRMA")}
               </a>
             </li>
             <li className="mb-2">
@@ -111,7 +111,7 @@ const Footer = () => {
                 href="https://bipad.gov.np/"
                 target="_blank"
               >
-                Singhadurbar, Kathmandu, Nepal
+                {t("Singhadurbar, Kathmandu, Nepal")}
               </a>
             </li>
             <li className="mb-2">
@@ -121,7 +121,7 @@ const Footer = () => {
                 href="https://bipad.gov.np/"
                 target="_blank"
               >
-                P.O. Box no. 213213
+                {t("P.O. Box no. 213213")}
               </a>
             </li>
             <li className="mb-2">
@@ -131,7 +131,7 @@ const Footer = () => {
                 href="https://bipad.gov.np/"
                 target="_blank"
               >
-                info@bipad.gov.np
+                {t("info@bipad.gov.np")}
               </a>
             </li>
             {/* <li className="mb-2">
@@ -151,7 +151,7 @@ const Footer = () => {
                 href="https://bipad.gov.np/"
                 target="_blank"
               >
-                Web Link: www.bipad.gov.np
+                {t("Web Link: www.bipad.gov.np")}
               </a>
             </li>
           </div>
