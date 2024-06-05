@@ -40,7 +40,12 @@ export function FileInput(props: FileInputProps) {
                 }}
             />
         </div>
-        <img style={{ height: "100px", width: "auto", objectFit: "cover" }} src={props.file} />
+        <img style={{
+            height: "100px",
+            width: "auto",
+            objectFit: "cover"
+        }}
+            src={props.file} />
         {
             !props.file ? null :
                 <Button

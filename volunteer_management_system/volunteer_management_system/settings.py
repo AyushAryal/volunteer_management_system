@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 import os
 from pathlib import Path
-from urllib.parse import quote_plus
 from django.utils.translation import gettext_lazy as _
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -179,12 +178,21 @@ FILE_UPLOAD_MAX_MEMORY_SIZE = DATA_UPLOAD_MAX_MEMORY_SIZE
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 FRONTEND_URLS = {
-    "email_verification_successful": quote_plus("/registration-success"),
-    "email_verification_failed": quote_plus("/verify-email"),
-    "reset_password_form": quote_plus("/reset-password"),
+    "email_verification_successful": ("/registration-success"),
+    "email_verification_failed": ("/verify-email"),
+    "reset_password_form": ("/reset-password"),
 }
+FRONTEND_USES_TLS = False
 
 VERIFICATION_LINK_TIMEOUT = 60 * 30
+
+# Email settings
+
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
+EMAIL_USE_TLS = True
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (

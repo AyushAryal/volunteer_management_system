@@ -3,20 +3,20 @@ import csv
 import random
 import os
 import inspect
-from datetime import timedelta, datetime
+from datetime import datetime
 
 import federal.models
 import incident.models
 
 import requests
 from django.conf import settings
+from django.db.utils import IntegrityError
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group, Permission
 from django.contrib.gis.geos import Point
 from django.contrib.gis.geos import Polygon
 from django.contrib.gis.db.models import Extent
 from django.core.management.base import BaseCommand
-from django.utils import timezone
 
 PASSWORD = os.getenv("ADMIN_PASSWORD", "shark@123")
 
@@ -205,155 +205,183 @@ class Command(BaseCommand):
             tries += 1
         raise RuntimeError("Too many attempts to generate random point")
 
-    def create_volunteers(self, wards, n=1000):
-        first_names = [
-            "first",
-            "ram",
-            "shyam",
-            "hari",
-            "ayush",
-            "ankit",
-            "aakash",
-            "bishal",
-            "sishir",
-            "aavash",
-            "bigyan",
-            "gita",
-            "sita",
-            "joti",
-            "shushmita",
-            "sneha",
-            "sambriddhi",
-            "fulkumari",
-            "kalpana",
-        ]
-        genders = [
-            incident.models.Gender.Male,
-            incident.models.Gender.Male,
-            incident.models.Gender.Male,
-            incident.models.Gender.Male,
-            incident.models.Gender.Male,
-            incident.models.Gender.Male,
-            incident.models.Gender.Male,
-            incident.models.Gender.Male,
-            incident.models.Gender.Male,
-            incident.models.Gender.Male,
-            incident.models.Gender.Male,
-            incident.models.Gender.Female,
-            incident.models.Gender.Female,
-            incident.models.Gender.Female,
-            incident.models.Gender.Female,
-            incident.models.Gender.Female,
-            incident.models.Gender.Female,
-            incident.models.Gender.Female,
-            incident.models.Gender.Female,
-        ]
-        last_names = [
-            "last",
-            "sitaula",
-            "sharma",
-            "adhikari",
-            "shrestha",
-            "kc",
-            "pandit",
-            "pandey",
-            "panday",
-            "aryal",
-            "khanal",
-            "marhatta",
-            "wagle",
-            "gyanwali",
-            "dahal",
-        ]
-        domains = [
-            "example.com",
-            "gmail.com",
-            "hotmail.com",
-            "yahoo.com",
-            "mail.com",
-            "outlook.com",
-            "live.com",
-            "apple.com",
-            "pm.com",
-            "zoho.com",
-            "aol.com",
-            "icloud.com",
-            "tutanota.com",
-            "yandex.com",
-            "inbox.com",
-            "amazon.com",
-        ]
-        generators = [
-            lambda f, s, d: f"{f}{s}@{d}",
-            lambda f, s, d: f"{s}{f}@{d}",
-            lambda f, s, d: f"{f}.{s}@{d}",
-            lambda f, s, d: f"{s}.{f}@{d}",
-            lambda f, s, d: f"{f}_{s}@{d}",
-            lambda f, s, d: f"{s}_{f}@{d}",
-        ]
+    def load_old_vms_volunteer_from_row(self, i, row):
+        academic_qualification_mapping = {
+            "": incident.models.AcademicQualification.SecondaryLevel,
+            "Primary Education": incident.models.AcademicQualification.SecondaryLevel,
+            "Lower Secondary Education": incident.models.AcademicQualification.SecondaryLevel,
+            "+2 Level": incident.models.AcademicQualification.SecondaryLevel,
+            "SLC": incident.models.AcademicQualification.HighSchool,
+            "Higher Secondary Education": incident.models.AcademicQualification.HighSchool,
+            "Secondary Level": incident.models.AcademicQualification.SecondaryLevel,
+            "Bachelore": incident.models.AcademicQualification.UnderGrad,
+            "Bachelor": incident.models.AcademicQualification.UnderGrad,
+            "Literate": incident.models.AcademicQualification.SecondaryLevel,
+            "Diploma": incident.models.AcademicQualification.UnderGrad,
+            "Masters": incident.models.AcademicQualification.Grad,
+            "Illiterate": incident.models.AcademicQualification.SecondaryLevel,
+            "Phd": incident.models.AcademicQualification.Doctorate,
+        }
 
-        details = set()
-        details.add((0, 0, 0, 2))
-        while len(details) != n:
-            first_name = random.randint(0, len(first_names) - 1)
-            last_name = random.randint(0, len(last_names) - 1)
-            domain = random.randint(0, len(domains) - 1)
-            generator = random.randint(0, len(generators) - 1)
-            details.add((first_name, last_name, domain, generator))
-        details = list(details)
-
-        for detail in details:
-            first_name_idx, last_name_idx, domain_idx, generator_idx = detail
-            gender = genders[first_name_idx]
-            first_name = first_names[first_name_idx]
-            last_name = last_names[last_name_idx]
-            domain = domains[domain_idx]
-            generator = generators[generator_idx]
-            email = generator(first_name, last_name, domain)
-            nationality = (
-                incident.models.Nationality.National
-                if random.random() < 0.95
-                else incident.models.Nationality.International
-            )
-            date_of_birth = timezone.now() - timedelta(
-                days=365 * random.randint(19, 45) + random.randint(0, 365)
-            )
-
-            user = get_user_model().objects.create_user(password=PASSWORD, email=email)
-            user.email_verified = True
-            user.save()
-
-            citizenship = incident.models.Citizenship(
-                id=incident.models.Citizenship.objects.all().count() + 1,
-                user=user,
-                registration_date=date_of_birth,
-                registration_district=federal.models.District.objects.get(pk=1),
-            )
-            citizenship.save()
-
-            ward = random.choice(wards)
-            point = self.uniformly_sample_point(
+        ward = federal.models.Ward.objects.get(pk=int(float(row["ward_id"])))
+        volunteer_profile_data = {
+            "first_name": row["first_name"].capitalize(),
+            "last_name": row["last_name"].capitalize(),
+            "gender": incident.models.Gender.Male,
+            "date_of_birth": datetime.fromisoformat(row["date_of_birth"]),
+            "blood_group": incident.models.BloodGroup.B_Positive,
+            "academic_qualification": academic_qualification_mapping[row["education"]],
+            "nationality": incident.models.Nationality.National,
+            "category": incident.models.VolunteerCategory.General,
+            "temporary_ward": ward,
+            "permanent_ward": ward,
+            "point": self.uniformly_sample_point(
                 federal.models.Ward.objects.filter(pk=ward.pk)
+            ),
+        }
+
+        user = get_user_model().objects.create_user(
+            password=PASSWORD, email=row["email"]
+        )
+        user.email_verified = True
+        user.save()
+
+        citizenship = incident.models.Citizenship(
+            id=f"UNKNOWN {i}",
+            user=user,
+            registration_date=volunteer_profile_data["date_of_birth"],
+            registration_district=ward.municipality.district,
+        )
+        citizenship.save()
+
+        volunteer = incident.models.VolunteerProfile(
+            user=user,
+            **volunteer_profile_data,
+        )
+        volunteer.save()
+
+    def load_old_vms_volunteers(self):
+        profile_filepath = settings.BASE_DIR / "shared" / "old_vms_data.csv"
+
+        with open(profile_filepath, "r") as profile_csv:
+            table = csv.DictReader(profile_csv)
+            successfully_loaded_volunteers = 0
+            for i, row in enumerate(table):
+                try:
+                    self.load_old_vms_volunteer_from_row(i, row)
+                    successfully_loaded_volunteers += 1
+                except (ValueError,):
+                    ...
+            self.stdout.write(
+                self.style.SUCCESS(
+                    f"Loaded {successfully_loaded_volunteers} volunteers from old VMS"
+                )
             )
 
-            volunteer = incident.models.VolunteerProfile(
-                user=user,
-                first_name=first_name.capitalize(),
-                last_name=last_name.capitalize(),
-                gender=gender,
-                blood_group=random.choice(incident.models.BloodGroup.values),
-                nationality=nationality,
-                date_of_birth=date_of_birth,
-                temporary_ward=ward,
-                permanent_ward=ward,
-                point=point,
-                academic_qualification=random.choice(
-                    incident.models.AcademicQualification.values
-                ),
-                category=random.choice(incident.models.VolunteerCategory.values),
+    def match_location_by_name(self, municipality_str, ward_str):
+        qs = federal.models.Municipality.objects.filter(name__iexact=municipality_str)
+        if qs:
+            municipality = qs.first()
+            wards = federal.models.Ward.objects.filter(
+                municipality=municipality, name=ward_str
             )
-            volunteer.save()
-            self.stdout.write(self.style.SUCCESS(f"Created volunteer {email}"))
+            if wards:
+                return wards.first()
+        return None
+
+    def load_red_cross_volunteers_from_row(self, i, row):
+        blood_type_mapping = {
+            "O+": incident.models.BloodGroup.O_Positive,
+            "O-": incident.models.BloodGroup.O_Negative,
+            "B+": incident.models.BloodGroup.B_Positive,
+            "B-": incident.models.BloodGroup.B_Negative,
+            "AB+": incident.models.BloodGroup.AB_Positive,
+            "AB-": incident.models.BloodGroup.AB_Negative,
+            "A+": incident.models.BloodGroup.A_Positive,
+            "A-": incident.models.BloodGroup.A_Negative,
+            "": incident.models.BloodGroup.B_Positive,
+        }
+
+        academic_qualification_mapping = {
+            "": incident.models.AcademicQualification.SecondaryLevel,
+            "Lower Secondary Education": incident.models.AcademicQualification.SecondaryLevel,
+            "Higher Secondary Education": incident.models.AcademicQualification.HighSchool,
+            "Secondary Education": incident.models.AcademicQualification.SecondaryLevel,
+            "Bachelor": incident.models.AcademicQualification.UnderGrad,
+            "Literate": incident.models.AcademicQualification.SecondaryLevel,
+            "Diploma": incident.models.AcademicQualification.UnderGrad,
+            "Master Degree": incident.models.AcademicQualification.Grad,
+        }
+
+        ward = self.match_location_by_name(
+            row["Temporary Local Bodies"], row["Temporary Ward"]
+        )
+
+        if not ward:
+            return
+
+        volunteer_profile_data = {
+            "first_name": row["First Name"].capitalize(),
+            "last_name": row["Last Name"].capitalize(),
+            "date_of_birth": datetime.fromisoformat(row["Date Of Birth (AD)"]),
+            "blood_group": blood_type_mapping.get(
+                row["Blood Group"], incident.models.BloodGroup.B_Positive
+            ),
+            "academic_qualification": academic_qualification_mapping.get(
+                row["Qualification"],
+                incident.models.AcademicQualification.SecondaryLevel,
+            ),
+            "temporary_ward": ward,
+            "permanent_ward": ward,
+            "nationality": incident.models.Nationality.National,
+            "category": incident.models.VolunteerCategory.General,
+            "gender": incident.models.Gender.Male,
+            "point": self.uniformly_sample_point(
+                federal.models.Ward.objects.filter(pk=ward.pk)
+            ),
+        }
+
+        user = get_user_model().objects.create_user(
+            password=PASSWORD,
+            email=row["Email"],
+        )
+        user.email_verified = True
+        user.save()
+
+        citizenship = incident.models.Citizenship(
+            id=f"UNKNOWN RED_CROSS {i}",
+            user=user,
+            registration_date=volunteer_profile_data["date_of_birth"],
+            registration_district=federal.models.District.objects.get(pk=1),
+        )
+        citizenship.save()
+
+        volunteer = incident.models.VolunteerProfile(
+            user=user,
+            **volunteer_profile_data,
+        )
+        volunteer.save()
+
+    def load_red_cross_volunteers(self):
+        filepath = settings.BASE_DIR / "shared" / "red_cross_data.csv"
+
+        with open(filepath, "r") as csvfile:
+            rc_csv = csv.DictReader(
+                csvfile,
+            )
+            successfully_loaded_volunteers = 0
+            for i, row in enumerate(rc_csv):
+                try:
+                    self.load_red_cross_volunteers_from_row(i, row)
+                    successfully_loaded_volunteers += 1
+                except (IntegrityError, ValueError):
+                    ...
+
+            self.stdout.write(
+                self.style.SUCCESS(
+                    f"Loaded {successfully_loaded_volunteers} volunteers from red cross"
+                )
+            )
 
     def load_incidents(self):
         filepath = settings.BASE_DIR / "shared" / "incidents.json"
@@ -376,82 +404,6 @@ class Command(BaseCommand):
                 )
                 incidents.append(incident_)
             return incidents
-
-    def create_programs(self, incidents):
-        programs = []
-        actions = [
-            "Relief for",
-            "Donatations for",
-            "Rescue operations for",
-            "Restoration after",
-            "Reconstruction efforts after",
-        ]
-        for incident_ in incidents:
-            name = "{} {}".format(random.choice(actions), incident_.name)
-            program = incident.models.Program(
-                incident=incident_,
-                name=name,
-                description=name,
-            )
-            programs.append(program)
-        return programs
-
-    def create_jobs(self, programs):
-        jobs = []
-        for program in programs:
-            start_date = program.incident.date + timedelta(days=random.randint(1, 7))
-            job = incident.models.Job(
-                program=program,
-                start_date=start_date,
-                end_date=start_date + timedelta(days=random.randint(1, 30)),
-                name=program.name,
-                vacancy=random.randint(1, 5),
-                description=program.name,
-                status=incident.models.JobStatus.NotAssigned,
-            )
-            jobs.append(job)
-        return jobs
-
-    def create_job_applications(self, jobs, volunteers):
-        job_applications = []
-        for job in jobs:
-            applicants = random.sample(volunteers, min(4, job.vacancy))
-            for applicant in applicants:
-                job_application = incident.models.JobApplication(
-                    job=job,
-                    volunteer=applicant,
-                    status=random.choice(incident.models.JobApplicationStatus.values),
-                )
-                job_applications.append(job_application)
-        return job_applications
-
-    def create_job_reports(self, jobs):
-        job_reports = []
-        for job in jobs:
-            accepted_applications = job.applications.filter(
-                status=incident.models.JobApplicationStatus.Accepted
-            )
-            for application in accepted_applications:
-                job_report = incident.models.JobReport(
-                    volunteer=application.volunteer,
-                    job=application.job,
-                    report=f"Job Report description for {job} by {application.volunteer}",
-                )
-                job_reports.append(job_report)
-        return job_reports
-
-    def create_notifications(self, users):
-        notifications = []
-        for user in users:
-            for _ in range(3):
-                notification = incident.models.Notification(
-                    message="Sample notification",
-                    date=timezone.now(),
-                    viewed=random.random() > 0.5,
-                    user=user,
-                )
-                notifications.append(notification)
-        return notifications
 
     def create_site_contents(self):
         contents = [
@@ -535,31 +487,10 @@ class Command(BaseCommand):
         incidents = self.load_incidents()
         incident.models.Incident.objects.bulk_create(incidents)
 
-        self.stdout.write(self.style.SUCCESS("Creating programs"))
-        programs = self.create_programs(
-            random.sample(incidents, int(len(incidents) * 0.25))
-        )
-        incident.models.Program.objects.bulk_create(programs)
+        self.stdout.write(self.style.SUCCESS("Loading old vms users"))
+        self.load_old_vms_volunteers()
 
-        self.stdout.write(self.style.SUCCESS("Creating volunteers"))
-        self.create_volunteers(wards)
-
-        self.stdout.write(self.style.SUCCESS("Creating jobs"))
-        jobs = self.create_jobs(programs)
-        jobs = incident.models.Job.objects.bulk_create(jobs)
-
-        self.stdout.write(self.style.SUCCESS("Creating job applications"))
-        job_applications = self.create_job_applications(
-            jobs, list(incident.models.VolunteerProfile.objects.all())
-        )
-        incident.models.JobApplication.objects.bulk_create(job_applications)
-
-        self.stdout.write(self.style.SUCCESS("Creating job reports"))
-        job_reports = self.create_job_reports(jobs)
-        incident.models.JobReport.objects.bulk_create(job_reports)
-
-        self.stdout.write(self.style.SUCCESS("Creating notifications"))
-        notifications = self.create_notifications(list(get_user_model().objects.all()))
-        incident.models.Notification.objects.bulk_create(notifications)
+        self.stdout.write(self.style.SUCCESS("Loading old vms users"))
+        self.load_red_cross_volunteers()
 
         _ = self.create_site_contents()

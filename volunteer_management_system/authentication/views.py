@@ -125,10 +125,11 @@ class UserViewSet(
         token = request.query_params.get("token", "")
         success_path = settings.FRONTEND_URLS["email_verification_successful"]
         error_path = settings.FRONTEND_URLS["email_verification_failed"]
+        protocol = "https" if settings.FRONTEND_USES_TLS else "http"
         if not VerificationLinkTokenGenerator().check_token(user, token):
-            return redirect(f"{site.domain}{error_path}")
+            return redirect(f"{protocol}://{site.domain}{error_path}")
         elif user.email_verified:
-            return redirect(f"{site.domain}{error_path}")
+            return redirect(f"{protocol}://{site.domain}{error_path}")
         else:
             user.email_verified = True
             user.save()
