@@ -22,8 +22,8 @@ export function IncidentMarkers() {
     let markers = (incidentList.get() as Incident[]).map((incident: Incident) => {
         return <CircleMarker
             fill={true}
-            fillOpacity={0.6}
-            color='#d42224'
+            fillOpacity={0.2}
+            color='#e33662'
             key={incident.url}
             center={incident.point}
             radius={4}

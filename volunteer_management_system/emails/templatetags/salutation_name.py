@@ -5,6 +5,6 @@ register = template.Library()
 
 @register.filter
 def salutation_name(user, *args, **kwargs):
-    if hasattr(user, "customer"):
-        return user.customer.first_name
-    return "Customer"
+    if hasattr(user, "volunteer"):
+        return user.volunteer.first_name
+    return "User"
