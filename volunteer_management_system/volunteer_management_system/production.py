@@ -13,12 +13,15 @@ REST_FRAMEWORK["DEFAULT_AUTHENTICATION_CLASSES"] = (
     "rest_framework.authentication.TokenAuthentication",
 )
 
-REST_FRAMEWORK["DEFAULT_THROTTLE_CLASSES"] = (
-    [
-        "rest_framework.throttling.AnonRateThrottle",
-    ],
-)
+# REST_FRAMEWORK["DEFAULT_THROTTLE_CLASSES"] = (
+#     [
+#         "rest_framework.throttling.AnonRateThrottle",
+#     ],
+# )
+#
+# REST_FRAMEWORK["DEFAULT_THROTTLE_RATES"] = {
+#     "anon": "100/day",
+# }
 
-REST_FRAMEWORK["DEFAULT_THROTTLE_RATES"] = {
-    "anon": "100/day",
-}
+ALLOWED_HOSTS = ["182.93.86.220"]
+STATIC_ROOT = os.path.join(BASE_DIR, "../static")
