@@ -461,6 +461,10 @@ class Command(BaseCommand):
         return user
 
     def handle(self, *_, **__):
+        if federal.models.Province.objects.all().count() != 0:
+            self.stderr.write(self.style.ERROR("Database is not empty. Aborting."))
+            return
+
         self.download_federal_geojson_files()
         self.download_incidents()
 

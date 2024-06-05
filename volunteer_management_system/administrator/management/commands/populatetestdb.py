@@ -509,6 +509,10 @@ class Command(BaseCommand):
         return user
 
     def handle(self, *_, **__):
+        if not settings.DEBUG:
+            self.stderr.write(self.style.ERROR("In production. Aborting."))
+            return
+
         self.download_federal_geojson_files()
         self.download_incidents()
 
