@@ -18,6 +18,7 @@ import { get_volunteer } from '@api/incident.ts';
 import { describe_api_errors } from '@api/utils';
 import { FormState } from '@api/form.tsx';
 import default_profile_image from "@assets/default_profile_image.png";
+import { t } from 'i18next';
 
 export function VolunteerProfileMenu() {
     const token = useHookstate(storeState.token);
@@ -195,7 +196,7 @@ export function VolunteerLoginButton() {
         if (modalVisible) {
             return <VolunteerLoginModal visible={modalVisible} setVisible={setModalVisible} />;
         } else {
-            return <Button outlined size="small" className="mx-1 text-primary border-1 border-white hover:underline" label='Login' onClick={() => setModalVisible(true)}>
+            return <Button outlined size="small" className="mx-1 text-primary border-1 border-white hover:underline" label={t("Login")} onClick={() => setModalVisible(true)}>
                 <FontAwesomeIcon className="ml-2" icon={faUser} />
             </Button>;
         }

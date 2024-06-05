@@ -1,30 +1,32 @@
-import { useState, useEffect } from "react";
+// import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { Button } from "primereact/button";
 
-import { get_site_content_list } from "@api/incident";
-import { SiteContent } from "@models/incident";
+// import { get_site_content_list } from "@api/incident";
+// import { SiteContent } from "@models/incident";
 import { map2, volunteering } from "@assets/index";
 import { useHookstate } from "@hookstate/core";
 import { storeState } from "@models/store";
+import { useTranslation } from "react-i18next";
 
 const Hero = () => {
+    const {t} = useTranslation();
     const navigate = useNavigate();
-    const [siteContents, setSiteContents] = useState<SiteContent[]>([]);
+    // const [siteContents, setSiteContents] = useState<SiteContent[]>([]);
 
-    useEffect(() => {
-        get_site_content_list().then((response) => {
-            setSiteContents(response);
-        })
-    }, []);
-    const hero = siteContents.find((siteContent) => siteContent.label === "hero");
-    const heroContent = <div>
-        <p
-            className="text-white text-xl"
-            dangerouslySetInnerHTML={{ __html: hero?.content ?? "" }}
-        />
-    </div>;
+    // useEffect(() => {
+    //     get_site_content_list().then((response) => {
+    //         setSiteContents(response);
+    //     })
+    // }, []);
+    // const hero = siteContents.find((siteContent) => siteContent.label === "hero");
+    // const heroContent = <div>
+    //     <p
+    //         className="text-white text-xl"
+    //         dangerouslySetInnerHTML={{ __html: hero?.content ?? "" }}
+    //     />
+    // </div>;
     
     const mapControlsSelectedProvince = useHookstate(
       storeState.mapControls.selectedProvince
@@ -51,15 +53,16 @@ const Hero = () => {
         >
           <div className="flex-1 min-w-5">
             <h1 className="text-4xl text-white">
-              Welcome To
+              {t("Welcome To")}
               <br />
-              <span className="">Volunteer Management System</span>
+              <span className="">{t("Volunteer Management System")}</span>
             </h1>
-            {heroContent}
+            {<div><p className="text-white text-xl">{t("Hero")}</p></div>}
+            {/* {heroContent} */}
             <div className="flex flex-wrap align-items-center"></div>
             <Button
               className="my-3 shadow-4"
-              label="Dashboard"
+              label={t("Dashboard")}
               raised
               onClick={() => {
                 navigate("/dashboard");

@@ -1,42 +1,44 @@
 import "@styles/footer.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useTranslation } from "react-i18next";
 
 const Footer = () => {
+  const { t } = useTranslation();
   return (
     <section className="relative w-full h-auto mx-auto bg-gray-800 md:px-8 py-3 px-3">
       <div className="flex flex-row flex-wrap justify-content-between">
         <div className="flex flex-column px-2">
-          <h3 className="text-white">Useful Resources</h3>
+          <h3 className="text-white">{t("Useful Resources")}</h3>
           <div>
             <li className="mb-2">
               <a className="link text-md" href="#">
-                User Manual
+                {t("User Manual")}
               </a>
             </li>
             <li className="mb-2">
               <a className="link text-md" href="#">
-                Volunteer Guidelines
+                {t("Volunteer Guidelines")}
               </a>
             </li>
           </div>
         </div>
 
         <div className="flex flex-column px-2">
-          <h3 className="text-white">Quick Links</h3>
+          <h3 className="text-white">{t("Quick Links")}</h3>
           <div>
             <li className="mb-2">
               <a className="link text-md" href="#">
-                Home
+                {t("Home")}
               </a>
             </li>
             <li className="mb-2">
               <a className="link text-md" href="/dashboard">
-                Dashboard
+                {t("Dashboard")}
               </a>
             </li>
             <li className="mb-2">
               <a className="link text-md" href="/signup">
-                Signup
+                {t("Signup")}
               </a>
             </li>
           </div>
@@ -132,7 +134,7 @@ const Footer = () => {
                 info@bipad.gov.np
               </a>
             </li>
-            <li className="mb-2">
+            {/* <li className="mb-2">
               <FontAwesomeIcon icon="at" className="mr-2 text-red-400" />
               <a
                 className="link text-md"
@@ -141,7 +143,7 @@ const Footer = () => {
               >
                 Email: info@bipad.gov.np
               </a>
-            </li>
+            </li> */}
             <li className="mb-2">
               <FontAwesomeIcon icon="globe" className="mr-2 text-red-400" />
               <a
