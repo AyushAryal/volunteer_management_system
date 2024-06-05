@@ -461,7 +461,7 @@ class Command(BaseCommand):
         return user
 
     def handle(self, *_, **__):
-        if federal.models.Province.objects.all().count() != 0:
+        if get_user_model().objects.all().count() != 0:
             self.stderr.write(self.style.ERROR("Database is not empty. Aborting."))
             return
 
