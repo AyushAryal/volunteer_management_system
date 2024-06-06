@@ -1,7 +1,9 @@
+
 import { useHookstate } from '@hookstate/core';
 import { TimePeriod, storeState } from '@models/store';
 import { Calendar } from 'primereact/calendar';
 import { RadioButton, RadioButtonChangeEvent } from 'primereact/radiobutton';
+import { useTranslation } from 'react-i18next';
 
 
 function getRange(period: Exclude<TimePeriod, TimePeriod.Custom>): [Date, Date] {
@@ -31,7 +33,7 @@ export function TimeFilter() {
         }
         timePeriod.set(event.value);
     }
-
+    const { t } = useTranslation();
     let generalFilters = <div>
         <div
             className="gap-3"
@@ -47,7 +49,7 @@ export function TimeFilter() {
                     value={TimePeriod.Year}
                     checked={timePeriod.get() === TimePeriod.Year}
                     onChange={onRadioChange} />
-                <label htmlFor="year">Year</label>
+                <label htmlFor="year">{t("Year")}</label>
             </div>
             <div className="flex align-items-center gap-1">
                 <RadioButton
@@ -56,7 +58,7 @@ export function TimeFilter() {
                     value={TimePeriod.SixMonths}
                     checked={timePeriod.get() === TimePeriod.SixMonths}
                     onChange={onRadioChange} />
-                <label htmlFor="six_months" className="flex-shrink-0">6 months</label>
+                <label htmlFor="six_months" className="flex-shrink-0">{t("6 months")}</label>
             </div>
             <div className="flex align-items-center gap-1">
                 <RadioButton
@@ -65,7 +67,7 @@ export function TimeFilter() {
                     value={TimePeriod.Month}
                     checked={timePeriod.get() === TimePeriod.Month}
                     onChange={onRadioChange} />
-                <label htmlFor="month">Month</label>
+                <label htmlFor="month">{t("Month")}</label>
             </div>
             <div className="flex align-items-center gap-1">
                 <RadioButton
@@ -74,7 +76,7 @@ export function TimeFilter() {
                     value={TimePeriod.ThreeMonths}
                     checked={timePeriod.get() === TimePeriod.ThreeMonths}
                     onChange={onRadioChange} />
-                <label htmlFor="three_months">3 months</label>
+                <label htmlFor="three_months">{t("3 months")}</label>
             </div>
             <div className="flex align-items-center gap-1">
                 <RadioButton
@@ -83,7 +85,7 @@ export function TimeFilter() {
                     value={TimePeriod.Week}
                     checked={timePeriod.get() === TimePeriod.Week}
                     onChange={onRadioChange} />
-                <label htmlFor="week">Week</label>
+                <label htmlFor="week">{t("Week")}</label>
             </div>
             <div className="flex align-items-center gap-1">
                 <RadioButton
@@ -92,7 +94,7 @@ export function TimeFilter() {
                     value={TimePeriod.Custom}
                     checked={timePeriod.get() === TimePeriod.Custom}
                     onChange={onRadioChange} />
-                <label htmlFor="custom">Custom</label>
+                <label htmlFor="custom">{t("Custom")}</label>
             </div>
         </div>
     </div>;

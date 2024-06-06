@@ -5,13 +5,15 @@ import { Button } from "primereact/button";
 import { Stepper } from "primereact/stepper";
 import { StepperPanel } from "primereact/stepperpanel";
 import { useRef } from "react";
+import { useTranslation } from "react-i18next";
 
 
 
 export function Visualizations() {
+  const {t} = useTranslation();
   const tabs = [
     {
-      title: "Federal Region",
+      title: t("Federal Region"),
       content: (
         <div className="p-1 my-3 w-30rem" style={{ height: "20rem" }}>
           <VolunteerByFederal />
@@ -19,7 +21,7 @@ export function Visualizations() {
       ),
     },
     {
-      title: "Category",
+      title: t("Category"),
       content: (
         <div className="p-1 my-3 w-30rem" style={{ height: "20rem" }}>
           <VolunteerCategoryStats />
@@ -27,7 +29,7 @@ export function Visualizations() {
       ),
     },
     {
-      title: "Academic Qualification",
+      title: t("Academic Qualification"),
       content: (
         <div className="p-1 my-3 w-30rem" style={{ height: "20rem" }}>
           <AcademicQualificationStats />
@@ -35,7 +37,7 @@ export function Visualizations() {
       ),
     },
     {
-      title: "Gender",
+      title: t("Gender"),
       content: (
         <div className="p-1 my-3 w-30rem" style={{ width: "100%" }}>
           <GenderStats />
@@ -43,7 +45,7 @@ export function Visualizations() {
       ),
     },
     {
-      title: "Blood Group",
+      title: t("Blood Group"),
       content: (
         <div className="p-1 my-3 w-30rem" style={{ height: "20rem" }}>
           <BloodGroupStats />
@@ -51,7 +53,7 @@ export function Visualizations() {
       ),
     },
     {
-      title: "Training",
+      title: t("Training"),
       content: (
         <div className="p-1 my-3 w-30rem" style={{ height: "20rem" }}>
           <BloodGroupStats />
@@ -79,7 +81,7 @@ export function Visualizations() {
                   onClick={() => stepperRef.current.nextCallback()}
                 ><FontAwesomeIcon icon={faArrowRight} /></Button>
               </div>
-              {tab.content}
+              <div className="flex justify-content-center">{tab.content}</div>
             </StepperPanel>
           );
         })}

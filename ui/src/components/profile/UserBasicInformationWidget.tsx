@@ -3,10 +3,11 @@ import { Password } from 'primereact/password';
 
 import { VolunteerFormContext } from '@forms/volunteer';
 import { useContext } from 'react';
+import { useTranslation } from 'react-i18next';
 
 export function UserBasicInformationWidget() {
     let { form, setForm } = useContext(VolunteerFormContext);
-
+    const {t} = useTranslation();
     return <div className="flex flex-column w-full align-items-stretch" style={{ gap: "2rem" }}>
         <span className="p-float-label">
             <InputText
@@ -15,7 +16,7 @@ export function UserBasicInformationWidget() {
                 className="p-inputtext-sm w-full"
                 onChange={(ev) => setForm({ ...form, email: ev.target.value })}
             />
-            <label htmlFor="email">Email</label>
+            <label htmlFor="email">{t("Email")}</label>
         </span>
         <span className="p-float-label">
             <Password
@@ -25,7 +26,7 @@ export function UserBasicInformationWidget() {
                 feedback={false}
                 onChange={(ev) => setForm({ ...form, password: ev.target.value })}
             />
-            <label htmlFor="password">Password</label>
+            <label htmlFor="password">{t("Password")}</label>
         </span>
         <span className="p-float-label">
             <Password
@@ -35,7 +36,7 @@ export function UserBasicInformationWidget() {
                 feedback={false}
                 onChange={(ev) => setForm({ ...form, confirm_password: ev.target.value })}
             />
-            <label htmlFor="password-confirm">Confirm Password</label>
+            <label htmlFor="password-confirm">{t("Confirm Password")}</label>
         </span>
     </div>;
 }

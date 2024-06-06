@@ -13,6 +13,8 @@ import { Tabpage } from '@components/map/sidebar/Tabpage.tsx';
 import EmblemOfNepal from '@assets/emblem_of_nepal.svg';
 import { faCalendar } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
+import { LanguageSelector } from '@components/LanguageSelector.tsx';
+import { useTranslation } from 'react-i18next';
 
 type SidebarProps = { mapRef: RefObject<LeafletMap> }
 export function Sidebar({ mapRef }: SidebarProps) {
@@ -33,6 +35,7 @@ export function Sidebar({ mapRef }: SidebarProps) {
     mapRef.current?.invalidateSize(true);
   }, [visible]);
 
+  const {t} = useTranslation();
   return (
     <div
       className={"relative h-screen shadow-3"}
@@ -46,23 +49,33 @@ export function Sidebar({ mapRef }: SidebarProps) {
               style={{ color: "var(--red-600)", cursor: "pointer" }}
               onClick={() => navigate("/")}
             >
-              <img style={{ width: "4rem" }} src={EmblemOfNepal} alt="Emblem of Nepal" />
+              <img
+                style={{ width: "4rem" }}
+                src={EmblemOfNepal}
+                alt="Emblem of Nepal"
+              />
               VMS
             </div>
             <div
               className="font-semibold my-1 mx-1 text-xl"
               style={{ color: "var(--primary-color)" }}
             >
-              {federal_body?.name ?? "National"}{" "}
+              {federal_body?.name ?? t("National")}{" "}
             </div>
             <VolunteerLoginButton />
           </div>
-          <span className="text-xs font-bold text-300 flex gap-2 align-items-center pt-3 pb-2 pl-2 ">
-            <FontAwesomeIcon
-              icon={faCalendar}>
-            </FontAwesomeIcon>
-            Data From {startDate?.toDateString()} - {endDate?.toDateString()}
-          </span>
+          <div className="flex justify-content-between">
+            <span className="text-xs font-bold text-300 flex gap-2 align-items-center pt-3 pb-2 pl-2">
+              <FontAwesomeIcon icon={faCalendar}></FontAwesomeIcon>
+              {t("Data From", {
+                startDate: startDate?.toDateString(),
+                endDate: endDate?.toDateString(),
+              })}
+            </span>
+            <div className="flex pt-3 pb-2 pl-2 mr-3">
+              <LanguageSelector />
+            </div>
+          </div>
           <Tabpage />
         </div>
       </div>

@@ -12,6 +12,7 @@ import { JobActionWidget } from "@components/map/sidebar/JobActionWidget";
 import { faPeopleGroup } from '@fortawesome/free-solid-svg-icons';
 import { storeState } from '@models/store';
 import { useHookstate } from '@hookstate/core';
+import { useTranslation } from 'react-i18next';
 
 type IncidentDetailModalProps = {
     incident: string,
@@ -21,6 +22,7 @@ type IncidentDetailModalProps = {
 
 
 export function IncidentDetailModal(props: IncidentDetailModalProps) {
+    const { t } = useTranslation();
     const store = useHookstate(storeState);
     let volunteer = store.volunteer.get();
     const id = get_id(props.incident);
@@ -94,17 +96,18 @@ export function IncidentDetailModal(props: IncidentDetailModalProps) {
         visible={props.visible}
         style={{ width: '65vw' }}
         onHide={() => props.setVisible(false)}
-    >
-        <div className="flex flex-row p-2 m-1 align-items-center justify-content-between ">
-            <div className="text-xs">
-                <FontAwesomeIcon icon={faClock} /> &nbsp;
-                {incident.date.toDateString()}
+    >   
+            <div className="flex flex-row p-2 m-1 align-items-center justify-content-between ">
+                <div className="text-xs">
+                    <FontAwesomeIcon icon={faClock} /> &nbsp;
+                    {incident.date.toDateString()}
+                </div>
+                <Tag style={{ backgroundColor: serverity_color_map.get(incident.severity) }} value={incident.severity} />
             </div>
-            <Tag style={{ backgroundColor: serverity_color_map.get(incident.severity) }} value={incident.severity} />
-        </div>
-        <span> <div dangerouslySetInnerHTML={{ __html: incident.description || "" }} /></span>
-        <Divider type="solid" />
-        <h3> Program List</h3>
-        {programList}
+            <span> <div dangerouslySetInnerHTML={{ __html: incident.description || "" }} /></span>
+            <Divider type="solid" />
+            <h3> {t("Program List")}</h3>
+            {programList}
+
     </Dialog>;
 };

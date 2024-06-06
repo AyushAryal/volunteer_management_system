@@ -5,8 +5,10 @@ import { Calendar } from 'primereact/calendar';
 import { TabPanel, TabView } from 'primereact/tabview';
 import { VolunteerFormContext } from '@forms/volunteer';
 import { useContext } from 'react';
+import { useTranslation } from 'react-i18next';
 
 export function IdentificationDocumentsWidget() {
+    const {t} = useTranslation();
     let { form, setForm } = useContext(VolunteerFormContext);
 
     let citizenshipWidget = <div
@@ -26,7 +28,7 @@ export function IdentificationDocumentsWidget() {
                     }
                 })}
             />
-            <label htmlFor="first-name">Citizenship Number</label>
+            <label htmlFor="first-name">{t("Citizenship")} {t("Number")}</label>
         </span>
 
         <span className="p-float-label">
@@ -46,7 +48,7 @@ export function IdentificationDocumentsWidget() {
                 showIcon
             />
             <label htmlFor="citizenship-registration-date">
-                Citizenship Registration Date
+                {t("Citizenship Registration Date")}
             </label>
         </span>
 
@@ -91,7 +93,7 @@ export function IdentificationDocumentsWidget() {
                         }
                     })}
                 />
-                <label htmlFor="passport-number">Passport Number</label>
+                <label htmlFor="passport-number">{t("Passport")} {t("Number")}</label>
             </span>
 
             <span className="p-float-label">
@@ -110,7 +112,7 @@ export function IdentificationDocumentsWidget() {
                     mask="9999-99-99"
                     showIcon
                 />
-                <label htmlFor="passport-issue-date">Passport Issue Date</label>
+                <label htmlFor="passport-issue-date">{t("Passport")} {t("Issue Date")}</label>
             </span>
             <span className="p-float-label">
                 <Calendar
@@ -128,7 +130,7 @@ export function IdentificationDocumentsWidget() {
                     mask="9999-99-99"
                     showIcon
                 />
-                <label htmlFor="passport-expiry-date">Passport Expiry Date</label>
+                <label htmlFor="passport-expiry-date">{t("Passport")} {t("Expiry Date")}</label>
             </span>
 
             <FileInput
@@ -162,7 +164,7 @@ export function IdentificationDocumentsWidget() {
                         }
                     })}
                 />
-                <label htmlFor="national-id">National Id Number</label>
+                <label htmlFor="national-id">{t("National ID")} {t("Number")}</label>
             </span>
 
             <span className="p-float-label">
@@ -182,7 +184,7 @@ export function IdentificationDocumentsWidget() {
                     showIcon
                 />
                 <label htmlFor="national-id-registration-date">
-                    National Id Registration Date
+                    {t("National ID")} {t("Registration Date")}
                 </label>
             </span>
 
@@ -217,7 +219,7 @@ export function IdentificationDocumentsWidget() {
                     }
                 })}
             />
-            <label htmlFor="other-id-name">Other ID Name</label>
+            <label htmlFor="other-id-name">{t("Other ID Name")}</label>
         </span>
 
         <FileInput
@@ -235,20 +237,20 @@ export function IdentificationDocumentsWidget() {
 
     return (<>
         <i>
-            (At least ONE form of identification is mandatory)
+            ({t("At least ONE form of identification is mandatory")})
             <span className="text-red-500">*</span>
         </i>
         <TabView className="flex flex-column">
-            <TabPanel header="Citizenship">
+            <TabPanel header={t("Citizenship")}>
                 {citizenshipWidget}
             </TabPanel>
-            <TabPanel header="Passport">
+            <TabPanel header={t("Passport")}>
                 {passportWidget}
             </TabPanel>
-            <TabPanel header="National ID">
+            <TabPanel header={t("National ID")}>
                 {nationalIdWidget}
             </TabPanel>
-            <TabPanel header="Other ID">
+            <TabPanel header={t("Other ID")}>
                 {otherIdentificationDocumentWidget}
             </TabPanel>
         </TabView>

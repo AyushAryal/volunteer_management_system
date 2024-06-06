@@ -4,6 +4,7 @@ import { Button } from "primereact/button";
 import { useState } from 'react';
 import { FormState } from '@api/form';
 import { describe_api_errors } from '@api/utils';
+import { useTranslation } from 'react-i18next';
 
 export type JobActionWidgetProps = {
     job: Job,
@@ -11,6 +12,7 @@ export type JobActionWidgetProps = {
 }
 
 export function JobActionWidget({ job, onChange }: JobActionWidgetProps) {
+    const {t} = useTranslation();
     let today = new Date(Date.now());
     let [formState, setFormState] = useState<FormState>(FormState.init());
 
@@ -22,7 +24,7 @@ export function JobActionWidget({ job, onChange }: JobActionWidgetProps) {
             loading={formState.isLoading()}
             className="flex-shrink-0"
             size="small"
-            label="Apply"
+            label={t("Apply")}
             onClick={async () => {
                 setFormState(FormState.fromLoading(true));
                 let response = await job_apply(job.url);
@@ -44,7 +46,7 @@ export function JobActionWidget({ job, onChange }: JobActionWidgetProps) {
                     loading={formState.isLoading()}
                     className="flex-shrink-0"
                     size="small"
-                    label="Cancel"
+                    label={t("Cancel")}
                     onClick={async () => {
                         setFormState(FormState.fromLoading(true));
                         let response = await job_cancel(job.url);

@@ -5,8 +5,11 @@ import { VolunteerLoginButton } from "@components/VolunteerLoginButton";
 import { useHookstate } from "@hookstate/core";
 import { storeState } from "@models/store";
 import { logo } from "@assets/index"
+import { LanguageSelector } from "@components/LanguageSelector";
+import { useTranslation } from "react-i18next";
 
 const Navbar = () => {
+  const { t } = useTranslation();
   let store = useHookstate(storeState);
   const navigate = useNavigate();
 
@@ -16,7 +19,7 @@ const Navbar = () => {
       className="mx-1 text-white bg-indigo-800"
       text
       raised
-      label="Signup"
+      label={t("Signup")}
       outlined
       onClick={() => navigate("/signup")}
     >
@@ -30,7 +33,8 @@ const Navbar = () => {
         <img src={logo} alt="logo" className="h-3rem" style={{width: "100%"}} />
       </a>
       <div className="flex flex-row justify-content-end">
-        <div className="flex flex-wrap">{signupButton}</div>
+        <div className="pt-2"><LanguageSelector /></div>
+        <div className="flex flex-wrap pl-1">{signupButton}</div>
         <VolunteerLoginButton />
       </div>
     </div>

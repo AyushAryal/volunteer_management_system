@@ -23,3 +23,45 @@ path.leaflet-interactive:focus {
 .p-dialog .p-dialog-header {
     padding: 1rem;
 }
+
+.languageButton {
+    height: 0px;
+}
+.languageButton .nepButton {
+    background-color: #949494;
+    opacity: 0.67;
+    border: none;
+    color: white;
+    outline: none;
+    font-size: 14px;
+    text-decoration: none;
+    text-align: center;
+    cursor: pointer;
+    width: 26px;
+    height: 22px;
+    font-weight: 500;
+    filter: saturate(100%);
+}
+
+.languageButton .engButton {
+    background-color: #949494;
+    opacity: 0.67;
+    border: none;
+    color: white;
+    outline: none;
+    font-size: 14px;
+    text-decoration: none;
+    text-align: center;
+    cursor: pointer;
+    width: 26px;
+    height: 22px;
+    font-weight: 500;
+    filter: saturate(100%);
+    padding-right: 22px;
+}
+
+.languageButton .selectedLanguage {
+    background-color: #216cd7;
+    opacity: 1 !important;
+    width: 26px;
+}

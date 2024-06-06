@@ -12,10 +12,12 @@ import { faChartLine, faList, faLocation } from "@fortawesome/free-solid-svg-ico
 import { IncidentByFederal, IncidentByTimeRangeStats } from "@components/landing/Stats";
 import { Stepper } from "primereact/stepper";
 import { StepperPanel } from "primereact/stepperpanel";
+import { useTranslation } from "react-i18next";
 
 type IncidentRibbonProps = { incident: Incident }
 
 function IncidentRibbon({ incident }: IncidentRibbonProps) {
+    const { t } = useTranslation();
     let [visible, setVisible] = useState(false);
 
     const serverity_color_map = new Map([
@@ -49,8 +51,8 @@ function IncidentRibbon({ incident }: IncidentRibbonProps) {
                 </div>
             </div>
             <div className="flex align-items-center gap-2">
-                <span className="border-1 text-primary border-round px-2"> {incident.programs} Programs </span>
-                <span className="border-1 text-red-600 border-round px-2"> {incident.jobs} Jobs </span>
+                <span className="border-1 text-primary border-round px-2"> {incident.programs} {t("Programs")} </span>
+                <span className="border-1 text-red-600 border-round px-2"> {incident.jobs} {t("Jobs")} </span>
                 <FontAwesomeIcon className="mr-2 hover:bg-bluegray-100 p-2 border-circle" style={{ cursor: "pointer" }} icon={faAngleRight} onClick={() => setVisible(true)} />
             </div>
             {visible ? viewIncidentDetail : null}
@@ -61,6 +63,7 @@ function IncidentRibbon({ incident }: IncidentRibbonProps) {
 }
 
 export function Incidents() {
+    const { t } = useTranslation();
     const incidentList = useHookstate(storeState.incidentList);
     const loadedIncidentList = useHookstate(storeState.loaded.incidentList);
     const [showChart, setShowChart] = useState(false)
@@ -70,7 +73,7 @@ export function Incidents() {
     }
     const tabs = [
       {
-        title: "Time Range",
+        title: t("Time Range"),
         content: (
           <div className="p-1 my-3 w-30rem" style={{ height: "20rem" }}>
             <IncidentByTimeRangeStats />

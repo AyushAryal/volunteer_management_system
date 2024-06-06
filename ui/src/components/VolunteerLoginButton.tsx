@@ -18,6 +18,8 @@ import { get_volunteer } from '@api/incident.ts';
 import { describe_api_errors } from '@api/utils';
 import { FormState } from '@api/form.tsx';
 import default_profile_image from "@assets/default_profile_image.png";
+import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
 
 export function VolunteerProfileMenu() {
     const token = useHookstate(storeState.token);
@@ -121,7 +123,7 @@ export function VolunteerLoginModal({ visible, setVisible }: VolunteerLoginModal
     }
 
     let response = formState.hasErrors() ? formState.getErrorAsElement() : null;
-
+    const {t} = useTranslation();
     return <Dialog
         visible={visible}
         modal
@@ -155,11 +157,11 @@ export function VolunteerLoginModal({ visible, setVisible }: VolunteerLoginModal
                         </span>
                     </div>
                     <div className="flex flex-column gap-2">
-                        <label htmlFor="email">Email</label>
+                        <label htmlFor="email">{t("Email")}</label>
                         <InputText ref={emailRef} id="email" aria-describedby="email-help" />
                     </div>
                     <div className="flex flex-column gap-2">
-                        <label htmlFor="password">Password</label>
+                        <label htmlFor="password">{t("Password")}</label>
                         <Password
                             pt={{ input: { ref: passwordRef } }}
                             feedback={false}
@@ -177,7 +179,7 @@ export function VolunteerLoginModal({ visible, setVisible }: VolunteerLoginModal
                         <Button
                             outlined
                             size="small"
-                            label="Login"
+                            label={t("Login")}
                             onClick={onLogin}
                         />
                     </div>
@@ -195,7 +197,7 @@ export function VolunteerLoginButton() {
         if (modalVisible) {
             return <VolunteerLoginModal visible={modalVisible} setVisible={setModalVisible} />;
         } else {
-            return <Button outlined size="small" className="mx-1 text-primary border-1 border-white hover:underline" label='Login' onClick={() => setModalVisible(true)}>
+            return <Button outlined size="small" className="mx-1 text-primary border-1 border-white hover:underline" label={t("Login")} onClick={() => setModalVisible(true)}>
                 <FontAwesomeIcon className="ml-2" icon={faUser} />
             </Button>;
         }

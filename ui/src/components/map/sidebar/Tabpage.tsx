@@ -13,6 +13,7 @@ import { faBell, faBriefcase, faPeopleCarryBox } from "@fortawesome/free-solid-s
 import { Badge } from "primereact/badge";
 import { Notifications } from "./Notifications";
 import { Profile } from "./Profile";
+import { useTranslation } from "react-i18next";
 
 export function Tabpage() {
   const volunteer = useHookstate(storeState.volunteer);
@@ -123,30 +124,31 @@ export function Tabpage() {
     );
   };
 
+  const {t} = useTranslation();
 
   return (
 
     <TabView className="flex flex-column overflow-y-hidden">
-      <TabPanel header="Incidents" headerTemplate={tabIncidentTemplate}>
+      <TabPanel header={t("Incidents")} headerTemplate={tabIncidentTemplate}>
         <Incidents />
       </TabPanel>
-      <TabPanel header="Jobs" headerTemplate={tabJobTemplate}>
+      <TabPanel header={t("Jobs")} headerTemplate={tabJobTemplate}>
         <Jobs />
       </TabPanel>
-      <TabPanel header="Volunteers" headerTemplate={tabVisualizationTemplate}>
+      <TabPanel header={t("Volunteers")} headerTemplate={tabVisualizationTemplate}>
         <Visualizations />
       </TabPanel>
       {(volunteer.get() === null) ? <></> :
-        <TabPanel header="Your Jobs" headerTemplate={yourJobsHeaderTemplate}>
+        <TabPanel header={t("Your Jobs")} headerTemplate={yourJobsHeaderTemplate}>
           <YourJobs />
         </TabPanel>
       }
       {(volunteer.get() === null) ? <></> :
-        <TabPanel header="Notifications" headerTemplate={notificationHeaderTemplate}>
+        <TabPanel header={t("Notifications")} headerTemplate={notificationHeaderTemplate}>
           <Notifications />
         </TabPanel>}
       {(volunteer.get() === null) ? <></> :
-        <TabPanel header="Profile" headerTemplate={profileHeaderTemplate}>
+        <TabPanel header={t("Profile")} headerTemplate={profileHeaderTemplate}>
           <Profile />
         </TabPanel>
       }
