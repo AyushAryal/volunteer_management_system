@@ -137,18 +137,22 @@ class Gender(models.IntegerChoices):
 
 class AcademicQualification(models.IntegerChoices):
     (
+        Illiterate,
+        Literate,
         SecondaryLevel,
         HighSchool,
         UnderGrad,
         Grad,
         Doctorate,
         PostDoc,
-    ) = range(6)
+    ) = range(8)
 
     @DynamicClassAttribute
     def label(self):
         label = super().label
         return {
+            "Illiterate": _("Illiterate"),
+            "Literate": _("Literate"),
             "Secondarylevel": _("Secondary Level"),
             "Highschool": _("High School"),
             "Undergrad": _("Under Grad"),
@@ -361,6 +365,8 @@ class VolunteerProfile(models.Model):
         verbose_name=_("blood type"),
     )
 
+    active = models.BooleanField(verbose_name=_("active"))
+
     nationality = models.SmallIntegerField(
         choices=Nationality.choices,
         verbose_name=_("nationality"),
@@ -470,6 +476,10 @@ class Training(models.Model):
         upload_to="uploads/images/trainings/",
         verbose_name=_("image"),
     )
+
+    def __str__(self):
+        category_str = TrainingCategory(self.category).label
+        return f"{self.name} - {category_str}"
 
 
 class IncidentSeverity(models.IntegerChoices):

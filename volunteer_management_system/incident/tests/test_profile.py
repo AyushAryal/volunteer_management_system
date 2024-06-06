@@ -65,6 +65,7 @@ class VolunteerProfileTest(TestCase):
             gender=incident.models.Gender.Male,
             nationality=incident.models.Nationality.National,
             blood_group=incident.models.BloodGroup.O_Positive,
+            active=True,
             temporary_ward=ward,
             permanent_ward=ward,
             academic_qualification=incident.models.AcademicQualification.Doctorate,
@@ -156,6 +157,7 @@ class VolunteerProfileTest(TestCase):
                 "gender": "Male",
                 "nationality": "National",
                 "blood_group": "O Positive",
+                "active": True,
                 "category": "General",
                 "temporary_ward": reverse(
                     "api:ward-detail",
@@ -348,6 +350,7 @@ class VolunteerProfileTest(TestCase):
                 "gender": "Male",
                 "nationality": "National",
                 "blood_group": "A Positive",
+                "active": True,
                 "category": "General",
                 "temporary_ward": reverse(
                     "api:ward-detail",
@@ -425,6 +428,7 @@ class VolunteerProfileTest(TestCase):
                 "gender": "Female",
                 "nationality": "International",
                 "blood_group": "A Negative",
+                "active": True,
                 "category": "Student",
                 "temporary_ward": reverse(
                     "api:ward-detail",

@@ -216,10 +216,10 @@ class Command(BaseCommand):
             "Secondary Level": incident.models.AcademicQualification.SecondaryLevel,
             "Bachelore": incident.models.AcademicQualification.UnderGrad,
             "Bachelor": incident.models.AcademicQualification.UnderGrad,
-            "Literate": incident.models.AcademicQualification.SecondaryLevel,
+            "Literate": incident.models.AcademicQualification.Literate,
             "Diploma": incident.models.AcademicQualification.UnderGrad,
             "Masters": incident.models.AcademicQualification.Grad,
-            "Illiterate": incident.models.AcademicQualification.SecondaryLevel,
+            "Illiterate": incident.models.AcademicQualification.Illiterate,
             "Phd": incident.models.AcademicQualification.Doctorate,
         }
 
@@ -230,6 +230,7 @@ class Command(BaseCommand):
             "gender": incident.models.Gender.Male,
             "date_of_birth": datetime.fromisoformat(row["date_of_birth"]),
             "blood_group": incident.models.BloodGroup.B_Positive,
+            "active": True,
             "academic_qualification": academic_qualification_mapping[row["education"]],
             "nationality": incident.models.Nationality.National,
             "category": incident.models.VolunteerCategory.General,
@@ -308,7 +309,7 @@ class Command(BaseCommand):
             "Higher Secondary Education": incident.models.AcademicQualification.HighSchool,
             "Secondary Education": incident.models.AcademicQualification.SecondaryLevel,
             "Bachelor": incident.models.AcademicQualification.UnderGrad,
-            "Literate": incident.models.AcademicQualification.SecondaryLevel,
+            "Literate": incident.models.AcademicQualification.Literate,
             "Diploma": incident.models.AcademicQualification.UnderGrad,
             "Master Degree": incident.models.AcademicQualification.Grad,
         }
@@ -327,6 +328,7 @@ class Command(BaseCommand):
             "blood_group": blood_type_mapping.get(
                 row["Blood Group"], incident.models.BloodGroup.B_Positive
             ),
+            "active": False,
             "academic_qualification": academic_qualification_mapping.get(
                 row["Qualification"],
                 incident.models.AcademicQualification.SecondaryLevel,
@@ -383,6 +385,7 @@ class Command(BaseCommand):
                 )
             )
 
+    # bipad incident id must match with our
     def load_incidents(self):
         filepath = settings.BASE_DIR / "shared" / "incidents.json"
         with open(filepath, encoding="utf8") as j:
@@ -395,6 +398,7 @@ class Command(BaseCommand):
                 ward = federal.models.Ward.objects.get(pk=ward_id)
                 date = datetime.fromisoformat(result["incidentOn"])
                 incident_ = incident.models.Incident(
+                    pk=result["id"],
                     name=result["title"],
                     date=date,
                     description=result["description"] or "",

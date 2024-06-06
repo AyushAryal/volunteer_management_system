@@ -91,6 +91,7 @@ class BaseTest(TestCase):
             gender=incident.models.Gender.Male,
             nationality=incident.models.Nationality.National,
             blood_group=incident.models.BloodGroup.O_Positive,
+            status=incident.models.VolunteerStatus.Active,
             temporary_ward=ward,
             permanent_ward=ward,
             academic_qualification=incident.models.AcademicQualification.Doctorate,

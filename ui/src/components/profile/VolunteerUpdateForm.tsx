@@ -40,6 +40,7 @@ export function VolunteerUpdateForm(props: VolunteerUpdateFormProps) {
             contact_number: volunteer.volunteer.contact_number,
             date_of_birth: volunteer.volunteer.date_of_birth,
             blood_group: volunteer.volunteer.blood_group,
+            status: volunteer.volunteer.status,
             academic_qualification: volunteer.volunteer.academic_qualification,
             gender: volunteer.volunteer.gender,
             nationality: volunteer.volunteer.nationality,

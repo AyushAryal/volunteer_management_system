@@ -17,6 +17,7 @@ import { Polygon } from 'react-leaflet/Polygon';
 import { useMap, useMapEvents } from 'react-leaflet/hooks';
 import { Marker } from 'react-leaflet/Marker';
 import { Tooltip } from 'react-leaflet/Tooltip';
+import { InputSwitch } from 'primereact/inputswitch';
 
 type PointPickerProps = {
     label: string,
@@ -259,6 +260,8 @@ export function VolunteerProfileRequiredWidget() {
     ];
 
     const academicQualifications = [
+        { value: "Illiterate" },
+        { value: "Literate" },
         { value: "Secondary Level" },
         { value: "High School" },
         { value: "Under Grad" },
@@ -433,6 +436,21 @@ export function VolunteerProfileRequiredWidget() {
                     placeholder="Select a blood group"
                     optionLabel="value"
                 />
+
+
+                <div className="flex gap-3 align-items-center">
+                    <span> Active </span>
+                    <InputSwitch
+                        checked={form.volunteer.active}
+                        onChange={(e) => setForm({
+                            ...form,
+                            volunteer: {
+                                ...form.volunteer,
+                                active: e.value,
+                            }
+                        })}
+                    />
+                </div>
 
                 <Dropdown
                     value={form.volunteer.academic_qualification}

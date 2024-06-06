@@ -71,13 +71,13 @@ export function Visualizations() {
                   style={{ scale: "0.5" }}
                   severity="secondary"
                   onClick={() => stepperRef.current.prevCallback()}
-                ><FontAwesomeIcon icon={faArrowLeft}/></Button>
+                ><FontAwesomeIcon icon={faArrowLeft} /></Button>
                 <div>{tab.title}</div>
                 <Button
                   style={{ scale: "0.5" }}
                   severity="secondary"
                   onClick={() => stepperRef.current.nextCallback()}
-                ><FontAwesomeIcon icon={faArrowRight}/></Button>
+                ><FontAwesomeIcon icon={faArrowRight} /></Button>
               </div>
               {tab.content}
             </StepperPanel>

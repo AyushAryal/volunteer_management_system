@@ -18,7 +18,9 @@ export type VolunteerCategory = "Student" |
     "Community" |
     "General";
 
-export type AcademicQualification = "Secondarylevel" |
+export type AcademicQualification = "Illiterate" |
+    "Literate" |
+    "Secondarylevel" |
     "Highschool" |
     "Undergrad" |
     "Grad" |
@@ -121,6 +123,7 @@ export interface VolunteerProfile {
     last_name: string,
     contact_number: string,
     profile_image: string,
+    active: boolean,
     date_of_birth?: Date,
     gender?: Gender,
     category?: VolunteerCategory,

@@ -25,6 +25,7 @@ export function Signup() {
             profile_image: "",
             first_name: "",
             last_name: "",
+            active: true,
             contact_number: "",
             date_of_birth: undefined,
             blood_group: undefined,
@@ -94,8 +95,10 @@ export function Signup() {
             </div>
             <Button
                 label="Submit"
+                loading={formState.isLoading()}
                 disabled={(!form.terms_accepted || formState.isSubmitted() && !formState.hasErrors())}
                 onClick={async () => {
+                    setFormState(FormState.fromLoading(true));
                     setFormState(await perform_signup(form));
                 }}
             />

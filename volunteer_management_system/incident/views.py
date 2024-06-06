@@ -89,15 +89,61 @@ class VolunteerProfileViewSet(
         "volunteer": {
             "first_name": "Name",
             "last_name": "Name",
-            "profile_image": ???,
-            "date_of_birth": "2022-01-01",
+            "contact_number": "+9779840424017",
+            "date_of_birth": "2005-01-01",
             "gender": "Male",
             "nationality": "National",
             "blood_group": "O Positive",
+            "active": True,
             "category": "General",
-            "temporary_ward": "http://endpoint/to/ward/1",
-            "permanent_ward": "http://endpoint/to/ward/1",
+            "temporary_ward": "https://vms.ndrrma.com.np/api/ward/1",
+            "permanent_ward": "https://vms.ndrrma.com.np/api/ward/2",
+            "point": {
+                "type": "Point",
+                "coordinates": [0, 0],
+            },
+            "academic_qualification": "High School",
         },
+        "citizenship": {
+            "id": "123",
+            "registration_date": "2001-01-01",
+            "registration_district": "https://vms.ndrrma.com.np/api/district/1",
+            "image": "BASE64IMAGE==",
+        },
+        "passport": {
+            "id": "123",
+            "issue_date": "2001-01-01",
+            "expiry_date": "2032-01-10",
+            "image": "BASE64IMAGE==",
+        },
+        "national_id": {
+            "id": "123",
+            "registration_date": "2001-01-01",
+            "registration_district": "https://vms.ndrrma.com.np/api/district/1",
+            "image": "BASE64IMAGE==",
+        },
+        "other_identification_document": {
+            "name": "123",
+            "image": "BASE64IMAGE==",
+        },
+        "certificates": [
+            {"name": "1", "image": "BASE64IMAGE=="},
+            {"name": "2", "image": "BASE64IMAGE=="},
+        ],
+        "trainings": [
+            {
+                "name": "name",
+                "subject": "subject",
+                "category": "Rescue",
+                "image": "BASE64IMAGE==",
+            },
+            {
+                "name": "name2",
+                "subject": "subject2",
+                "category": "Other",
+                "image": "BASE64IMAGE==",
+            },
+        ],
     }
     ```
 
@@ -118,16 +164,66 @@ class VolunteerProfileViewSet(
     ### Example request body:
     ```
         {
-            "first_name": "Name",
-            "last_name": "Name",
-            "profile_image": ???,
-            "date_of_birth": "2022-01-01",
-            "gender": "Male",
-            "nationality": "National",
-            "blood_group": "O Positive",
-            "category": "General",
-            "temporary_ward": "http://endpoint/to/ward/1",
-            "permanent_ward": "http://endpoint/to/ward/1",
+            "email": "profile@example.com",
+            "password": "shark@123",
+            "volunteer": {
+                "first_name": "Name",
+                "last_name": "Name",
+                "contact_number": "+9779840424017",
+                "date_of_birth": "2005-01-01",
+                "gender": "Male",
+                "nationality": "National",
+                "blood_group": "O Positive",
+                "active": True,
+                "category": "General",
+                "temporary_ward": "https://vms.ndrrma.com.np/api/ward/1",
+                "permanent_ward": "https://vms.ndrrma.com.np/api/ward/2",
+                "point": {
+                    "type": "Point",
+                    "coordinates": [0, 0],
+                },
+                "academic_qualification": "High School",
+            },
+            "citizenship": {
+                "id": "123",
+                "registration_date": "2001-01-01",
+                "registration_district": "https://vms.ndrrma.com.np/api/district/1",
+                "image": "BASE64IMAGE==",
+            },
+            "passport": {
+                "id": "123",
+                "issue_date": "2001-01-01",
+                "expiry_date": "2032-01-10",
+                "image": "BASE64IMAGE==",
+            },
+            "national_id": {
+                "id": "123",
+                "registration_date": "2001-01-01",
+                "registration_district": "https://vms.ndrrma.com.np/api/district/1",
+                "image": "BASE64IMAGE==",
+            },
+            "other_identification_document": {
+                "name": "123",
+                "image": "BASE64IMAGE==",
+            },
+            "certificates": [
+                {"name": "1", "image": "BASE64IMAGE=="},
+                {"name": "2", "image": "BASE64IMAGE=="},
+            ],
+            "trainings": [
+                {
+                    "name": "name",
+                    "subject": "subject",
+                    "category": "Rescue",
+                    "image": "BASE64IMAGE==",
+                },
+                {
+                    "name": "name2",
+                    "subject": "subject2",
+                    "category": "Other",
+                    "image": "BASE64IMAGE==",
+                },
+            ],
         }
     ```
 
@@ -521,6 +617,9 @@ class StatisticsViewSet(
         job_qs = StatisticsViewSet.JobFilterWithEndDate(request.GET).qs
         incident_qs = IncidentFilter(request.GET).qs
         program_qs = ProgramFilter(request.GET).qs
+        training_qs = models.Training.objects.filter(
+            user__in=volunteer_qs.values_list("user")
+        )
 
         start_date = request.GET.get("date_after", None)
         end_date = request.GET.get("date_before", None)
@@ -569,6 +668,7 @@ class StatisticsViewSet(
             {
                 "volunteers": {
                     "total": volunteer_qs.count(),
+                    "active": volunteer_qs.filter(active=True).count(),
                     "gender": self.count_by_criteria(
                         "gender", models.Gender, volunteer_qs
                     ),
@@ -585,6 +685,11 @@ class StatisticsViewSet(
                     ),
                     "category": self.count_by_criteria(
                         "category", models.VolunteerCategory, volunteer_qs
+                    ),
+                    "training": self.count_by_criteria(
+                        "category",
+                        models.TrainingCategory,
+                        training_qs,
                     ),
                     "by_federal": self.count_by_foreign_key(
                         volunteer_qs,

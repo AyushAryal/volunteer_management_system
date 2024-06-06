@@ -1,5 +1,4 @@
 import json
-import csv
 import random
 import os
 import inspect
@@ -342,6 +341,7 @@ class Command(BaseCommand):
                 last_name=last_name.capitalize(),
                 gender=gender,
                 blood_group=random.choice(incident.models.BloodGroup.values),
+                active=random.random() > 0.5,
                 nationality=nationality,
                 date_of_birth=date_of_birth,
                 temporary_ward=ward,
@@ -367,6 +367,7 @@ class Command(BaseCommand):
                 ward = federal.models.Ward.objects.get(pk=ward_id)
                 date = datetime.fromisoformat(result["incidentOn"])
                 incident_ = incident.models.Incident(
+                    pk=result["id"],
                     name=result["title"],
                     date=date,
                     description=result["description"] or "",
