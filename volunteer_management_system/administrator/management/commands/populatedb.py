@@ -378,6 +378,14 @@ class Command(BaseCommand):
         )
         volunteer.save()
 
+        training = incident.models.Training(
+            user=user,
+            subject="subject",
+            category=random.choice(incident.models.TrainingCategory.values),
+            name="Training",
+        )
+        training.save()
+
     def load_red_cross_volunteers(self):
         filepath = settings.BASE_DIR / "shared" / "red_cross_data.csv"
 

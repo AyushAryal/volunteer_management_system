@@ -314,7 +314,7 @@ export const TrainingStats = () => {
               }
             }
           },
-          
+
         },
         plugins: {
           legend: {
@@ -369,9 +369,9 @@ const Stats = () => {
   return (
     <section
       className="w-full mx-auto bg-cover"
-      // style={{
-      //   backgroundImage: `url(${volunteering2})`,
-      // }}
+    // style={{
+    //   backgroundImage: `url(${volunteering2})`,
+    // }}
     >
       <div
         className="px-3 h-auto md:px-8 pb-6 pt-4"

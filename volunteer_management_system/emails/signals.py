@@ -1,9 +1,10 @@
 from authentication.signals import new_password_reset_link, new_verification_link
 from django.conf import settings
 from django.contrib.sites.models import Site
-from django.core.mail import send_mail
 from django.dispatch import receiver
 from django.template.loader import get_template
+
+from emails.tasks import async_send_mail
 
 
 @receiver(new_verification_link)
@@ -17,7 +18,7 @@ def on_new_verification_link(sender, link, user, **kwargs):
             "user": user,
         }
     )
-    send_mail(
+    async_send_mail.delay(
         "Verification Link",
         None,
         settings.EMAIL_HOST_USER,
@@ -37,7 +38,7 @@ def on_new_password_reset_link(sender, link, user, **kwargs):
             "user": user,
         }
     )
-    send_mail(
+    async_send_mail.delay(
         "Verification Link",
         None,
         settings.EMAIL_HOST_USER,

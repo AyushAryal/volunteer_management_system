@@ -28,6 +28,8 @@ drf-extra-fields = "^3.7.0"
 drf-writable-nested = "^0.7.0"
 django-tables2 = "^2.7.0"
 django-htmx = "^1.17.3"
+celery = "^5.4.0"
+redis = "^5.0.5"
 
 
 [tool.poetry.group.dev.dependencies]

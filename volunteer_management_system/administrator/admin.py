@@ -351,7 +351,17 @@ class UserAdmin(BaseUserAdmin):
         ),
     )
     ordering = ("email",)
-    search_fields = ("email",)
+
+    # need to search through inlines and integer choice fields
+    search_fields = (
+        "email",
+        "citizenship__id",
+        "passport__id",
+        "national_id__id",
+        "passport__id",
+        "volunteer__contact_number",
+        "trainings__name",
+    )
 
 
 class ProvinceAdmin(admin.ModelAdmin):
