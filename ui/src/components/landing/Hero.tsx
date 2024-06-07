@@ -5,7 +5,7 @@ import { Button } from "primereact/button";
 
 // import { get_site_content_list } from "@api/incident";
 // import { SiteContent } from "@models/incident";
-import { unnamed, volunteering } from "@assets/index";
+import { vmsdemo, volunteering } from "@assets/index";
 import { useHookstate } from "@hookstate/core";
 import { storeState } from "@models/store";
 import { useTranslation } from "react-i18next";
@@ -77,11 +77,11 @@ const Hero = () => {
               </div>
             </div>
 
-            <div className="flex align-items-center justify-content-center">
+            <div className="flex align-items-center justify-content-center" style={{ width: "50%" }}>
               <img
                 className="border-round-lg shadow-5 min-w-15rem"
                 style={{ width: "85%" }}
-                src={unnamed}
+                src={vmsdemo}
                 alt="dashboard"
               />
             </div>

@@ -37,11 +37,11 @@ export function ReportActionWidget({ report }: ReportActionWidgetProps) {
         }
     };
 
-    return <div className="card flex flex-column justify-content-around gap-2">
+    return <div className="card flex flex-column justify-content-around gap-2 w-full">
         <Editor
             value={content}
             onTextChange={(e) => { setContent(e.htmlValue ?? "") }}
-            style={{ height: '320px', width: "900px" }}
+            style={{ height: '320px', width: "100%" }}
         />
 
         <Button outlined

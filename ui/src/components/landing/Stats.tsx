@@ -9,6 +9,7 @@ import { get_statistics } from "@api/incident.ts";
 import { get_id } from "@api/utils";
 import { StatisticsFilter } from "@api/incident.ts";
 import { GlobalLocationSelector } from "@components/map/GlobalLocationSelector";
+import { useTranslation } from "react-i18next";
 
 function make_dataset(label: string, data: { [key: string]: number }) {
   const styles = getComputedStyle(document.documentElement)
@@ -331,6 +332,7 @@ export const TrainingStats = () => {
 };
 
 const Stats = () => {
+  const { t } = useTranslation();
   const store = useHookstate(storeState);
   useEffect(() => {
     let networkRequest = async () => {
@@ -377,7 +379,7 @@ const Stats = () => {
       >
         <div className="flex flex-column align-items-center mb-7">
           <h1 className="text-indigo-800 text-4xl">
-            Visualizations <FontAwesomeIcon icon="chart-simple" />
+            {t("Visualizations")} <FontAwesomeIcon icon="chart-simple" />
           </h1>
           <div className="p-inputtext-sm">
             <GlobalLocationSelector className="flex-row flex-wrap" />
