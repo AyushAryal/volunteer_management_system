@@ -322,6 +322,16 @@ class Command(BaseCommand):
             user.email_verified = True
             user.save()
 
+            training_category = random.choice(incident.models.TrainingCategory.values)
+            training = incident.models.Training(
+                id=incident.models.Training.objects.all().count() + 1,
+                user=user,
+                name=f"{training_category} Training",
+                subject=f"{training_category} Training",
+                category=training_category,
+            )
+            training.save()
+
             citizenship = incident.models.Citizenship(
                 id=incident.models.Citizenship.objects.all().count() + 1,
                 user=user,

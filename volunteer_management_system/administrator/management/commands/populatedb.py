@@ -222,14 +222,21 @@ class Command(BaseCommand):
             "Illiterate": incident.models.AcademicQualification.Illiterate,
             "Phd": incident.models.AcademicQualification.Doctorate,
         }
-
+        gender_mapping = {
+            "male": incident.models.Gender.Male,
+            "female": incident.models.Gender.Female,
+            "Male": incident.models.Gender.Male,
+            "Female": incident.models.Gender.Female,
+            "others": incident.models.Gender.Other,
+            "": incident.models.Gender.Male if random.random() < 0.8 else incident.models.Gender.Female,
+        }
         ward = federal.models.Ward.objects.get(pk=int(float(row["ward_id"])))
         volunteer_profile_data = {
             "first_name": row["first_name"].capitalize(),
             "last_name": row["last_name"].capitalize(),
-            "gender": incident.models.Gender.Male,
+            "gender": gender_mapping[row["gender"]],
             "date_of_birth": datetime.fromisoformat(row["date_of_birth"]),
-            "blood_group": incident.models.BloodGroup.B_Positive,
+            "blood_group": incident.models.BloodGroup.B_Positive if random.random() < 0.5 else random.choice(incident.models.BloodGroup.values),
             "active": True,
             "academic_qualification": academic_qualification_mapping[row["education"]],
             "nationality": incident.models.Nationality.National,
@@ -246,7 +253,14 @@ class Command(BaseCommand):
         )
         user.email_verified = True
         user.save()
-
+        training_category = random.choice(incident.models.TrainingCategory.values)
+        training = incident.models.Training(
+            user=user,
+            name=f"{training_category} Training",
+            subject=f"{training_category} Training",
+            category=training_category,
+        )
+        training.save()
         citizenship = incident.models.Citizenship(
             id=f"UNKNOWN {i}",
             user=user,
