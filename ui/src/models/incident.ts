@@ -238,11 +238,13 @@ export interface SiteContent {
 export interface Statistics {
     volunteers: {
         total: number,
+        active: number,
         gender: { [key: string]: number },
         nationality: { [key: string]: number },
         blood_group: { [key: string]: number },
         academic_qualification: { [key: string]: number },
         category: { [key: string]: number },
+        training: { [key: string]: number },
         by_federal: { [key: string]: number }
     }
     jobs: {

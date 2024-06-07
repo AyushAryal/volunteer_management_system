@@ -1,3 +1,21 @@
+:root {
+    --light-coral: rgba(239, 118, 122, 1);
+    --lapis-lazuli: rgba(69, 105, 144, 1);
+    --keppel: rgba(73, 190, 170, 1);
+    --turquoise: rgba(73, 220, 177, 1);
+    --earth-yellow: rgba(238, 184, 104, 1);
+
+    --light-coral2: rgba(239, 118, 122, 0.4);
+    --lapis-lazuli2: rgba(69, 105, 144, 0.4);
+    --keppel2: rgba(73, 190, 170, 0.4);
+    --turquoise2: rgba(73, 220, 177, 0.4);
+    --earth-yellow2: rgba(238, 184, 104, 0.4);
+
+    --selective-yellow: rgba(255, 186, 8, 1);
+    --coquelicot: rgba(255, 74, 28, 1);
+    --emerald: rgba(12, 206, 107, 1);
+}
+
 body {
     margin: 0;
 }
@@ -9,6 +27,12 @@ path.leaflet-interactive:focus {
     font-size: 12px;
     font-weight: "100px";
 }
+
+.p-tabview .p-tabview-nav li.p-highlight .p-tabview-nav-link {
+    background: #ffffff;
+    border-color: #027dc6;
+    color: #027dc6;
+  }
 
 .p-stepper .p-stepper-header .p-stepper-action .p-stepper-number {
     font-size: 12px;
@@ -24,10 +48,7 @@ path.leaflet-interactive:focus {
     padding: 1rem;
 }
 
-.languageButton {
-    height: 0px;
-}
-.languageButton .nepButton {
+.nepButton {
     background-color: #949494;
     opacity: 0.67;
     border: none;
@@ -37,31 +58,32 @@ path.leaflet-interactive:focus {
     text-decoration: none;
     text-align: center;
     cursor: pointer;
-    width: 26px;
-    height: 22px;
+    width: 28px;
+    height: 24px;
     font-weight: 500;
     filter: saturate(100%);
 }
 
-.languageButton .engButton {
+.engButton {
     background-color: #949494;
     opacity: 0.67;
     border: none;
     color: white;
     outline: none;
-    font-size: 14px;
+    font-size: 12px;
     text-decoration: none;
     text-align: center;
     cursor: pointer;
-    width: 26px;
-    height: 22px;
+    width: 28px;
+    height: 24px;
     font-weight: 500;
     filter: saturate(100%);
-    padding-right: 22px;
 }
 
-.languageButton .selectedLanguage {
+.selectedLanguage {
     background-color: #216cd7;
     opacity: 1 !important;
-    width: 26px;
+    width: 28px;
+    height: 24px;
 }
+

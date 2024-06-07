@@ -1,19 +1,29 @@
-import { VolunteerCategoryStats, GenderStats, BloodGroupStats, AcademicQualificationStats, VolunteerByFederal } from "@components/landing/Stats";
+import {
+  VolunteerCategoryStats,
+  GenderStats,
+  BloodGroupStats,
+  AcademicQualificationStats,
+  VolunteerByFederal,
+  TrainingStats,
+} from "@components/landing/Stats";
 import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useHookstate } from "@hookstate/core";
+import { storeState } from "@models/store";
 import { Button } from "primereact/button";
 import { Stepper } from "primereact/stepper";
 import { StepperPanel } from "primereact/stepperpanel";
 import { useRef } from "react";
 import { useTranslation } from "react-i18next";
-
-
+import { get_selected_local_body } from "utils";
 
 export function Visualizations() {
-  const {t} = useTranslation();
+  const { t } = useTranslation();
+  let store = useHookstate(storeState);
+  let federal_body = get_selected_local_body(store);
   const tabs = [
     {
-      title: t("Federal Region"),
+      title: federal_body?.name ?? t("National"),
       content: (
         <div className="p-1 my-3 w-30rem" style={{ height: "20rem" }}>
           <VolunteerByFederal />
@@ -56,7 +66,7 @@ export function Visualizations() {
       title: t("Training"),
       content: (
         <div className="p-1 my-3 w-30rem" style={{ height: "20rem" }}>
-          <BloodGroupStats />
+          <TrainingStats />
         </div>
       ),
     },
@@ -73,13 +83,17 @@ export function Visualizations() {
                   style={{ scale: "0.5" }}
                   severity="secondary"
                   onClick={() => stepperRef.current.prevCallback()}
-                ><FontAwesomeIcon icon={faArrowLeft} /></Button>
+                >
+                  <FontAwesomeIcon icon={faArrowLeft} />
+                </Button>
                 <div>{tab.title}</div>
                 <Button
                   style={{ scale: "0.5" }}
                   severity="secondary"
                   onClick={() => stepperRef.current.nextCallback()}
-                ><FontAwesomeIcon icon={faArrowRight} /></Button>
+                >
+                  <FontAwesomeIcon icon={faArrowRight} />
+                </Button>
               </div>
               <div className="flex justify-content-center">{tab.content}</div>
             </StepperPanel>
@@ -89,4 +103,3 @@ export function Visualizations() {
     </div>
   );
 }
-
