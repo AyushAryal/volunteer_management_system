@@ -49,17 +49,10 @@ export function Sidebar({ mapRef }: SidebarProps) {
               style={{ color: "var(--red-600)", cursor: "pointer" }}
               onClick={() => navigate("/")}
             >
-              <img
-                style={{ width: "4rem" }}
-                src={EmblemOfNepal}
-                alt="Emblem of Nepal"
-              />
+              <img style={{ width: "4rem" }} src={EmblemOfNepal} alt="Emblem of Nepal" />
               VMS
             </div>
-            <div
-              className="font-semibold my-1 mx-1 text-xl"
-              style={{ color: "var(--primary-color)" }}
-            >
+            <div className="font-semibold my-1 mx-1 text-xl" style={{ color: "#027dc6" }}>
               {federal_body?.name ?? t("National")}{" "}
             </div>
             <VolunteerLoginButton />
@@ -83,6 +76,7 @@ export function Sidebar({ mapRef }: SidebarProps) {
         rounded
         className="absolute shadow-4"
         style={{
+          backgroundColor: "#027dc6",
           top: "50%",
           right: "-20px",
           width: "40px",

@@ -65,7 +65,7 @@ export function VolunteerProfileMenu() {
     return <div className="flex flex-row">
         <img
             onClick={(event) => menu?.current?.toggle(event)}
-            className="mb-2 border-2 border-red-600"
+            className="border-2 border-red-600"
             src={profile_image == "" ? default_profile_image : profile_image}
             style={{
                 width: "3.1rem",
@@ -197,8 +197,8 @@ export function VolunteerLoginButton() {
         if (modalVisible) {
             return <VolunteerLoginModal visible={modalVisible} setVisible={setModalVisible} />;
         } else {
-            return <Button outlined size="small" className="mx-1 text-primary border-1 border-white hover:underline" label={t("Login")} onClick={() => setModalVisible(true)}>
-                <FontAwesomeIcon className="ml-2" icon={faUser} />
+            return <Button outlined size="small" className="mx-1 text-primary border-1 border-surface-ground hover:underline" label={t("Login")} onClick={() => setModalVisible(true)}>
+                <FontAwesomeIcon className="ml-1" icon={faUser} />
             </Button>;
         }
     } else {

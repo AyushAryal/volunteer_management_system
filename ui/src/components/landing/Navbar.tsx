@@ -28,16 +28,23 @@ const Navbar = () => {
   );
 
   return (
-    <div className="w-full bg-indigo-900 flex flex-row flex-wrap align-items-center justify-content-between px-3 py-2 overflow-hidden">
-      <a href="https://bipad.gov.np/np/" target="_blank">
-        <img src={logo} alt="logo" className="h-3rem" style={{width: "100%"}} />
-      </a>
-      <div className="flex flex-row justify-content-end">
-        <div className="pt-2"><LanguageSelector /></div>
-        <div className="flex flex-wrap pl-1">{signupButton}</div>
-        <VolunteerLoginButton />
+    <section className="absolute z-5 w-full mx-auto">
+      <div
+        className="w-full flex flex-row flex-wrap px-3 py-1 overflow-hidden justify-content-between"
+        style={{ backgroundColor: "rgba(255, 255, 255, 0.7)" }}
+      >
+        <a href="https://bipad.gov.np/np/" target="_blank">
+          <img src={logo} alt="logo" style={{ width: "60%" }} />
+        </a>
+        <div className="flex flex-wrap align-items-center">
+          <div className="px-1">
+            <LanguageSelector />
+          </div>
+          <div className="flex flex-wrap">{signupButton}</div>
+          <VolunteerLoginButton />
+        </div>
       </div>
-    </div>
+    </section>
   );
 };
 

@@ -48,12 +48,12 @@ export function Profile() {
                 setTemporaryWard(ward);
             }
         );
-        if (volunteer.citizenship !== undefined) {
-            get_district_detail(
-                get_id(volunteer.citizenship.registration_district)
-            ).then((district) => {
-                setRegistrationDistrict(district);
-            });
+        if (volunteer.citizenship !== undefined && volunteer.citizenship !== null) {
+            get_district_detail(get_id(volunteer.citizenship.registration_district)).then(
+                (district) => {
+                    setRegistrationDistrict(district);
+                }
+            );
         }
     }, [
         volunteer.volunteer.permanent_ward,

@@ -9,13 +9,15 @@ import { Incidents } from '@components/map/sidebar/Incidents';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useHookstate } from "@hookstate/core";
 import { storeState } from "@models/store";
-import { faBell, faBriefcase, faPeopleCarryBox } from "@fortawesome/free-solid-svg-icons";
+import { faBell, faBriefcase } from "@fortawesome/free-solid-svg-icons";
 import { Badge } from "primereact/badge";
 import { Notifications } from "./Notifications";
 import { Profile } from "./Profile";
 import { useTranslation } from "react-i18next";
+import { ProgressSpinner } from "primereact/progressspinner";
 
 export function Tabpage() {
+  const statistics = useHookstate(storeState.statistics).get();
   const volunteer = useHookstate(storeState.volunteer);
   const incidentCount = useHookstate(storeState.incidentList).length;
   const jobCount = useHookstate(storeState.jobList).length;
@@ -81,9 +83,10 @@ export function Tabpage() {
         style={{ cursor: "pointer" }}
         onClick={options.onClick}
       >
-        <div className="text-xl">
-          <FontAwesomeIcon icon={faPeopleCarryBox} />
-        </div>
+        {statistics?.volunteers.total ?(<div className="text-xl">
+          {/* <FontAwesomeIcon icon={faPeopleCarryBox} /> */}
+          {statistics?.volunteers.total}
+        </div>):<ProgressSpinner style={{width: '30px', height: '30px'}}/>}
         <span className="white-space-nowrap">{options.titleElement}</span>
       </div>
     );

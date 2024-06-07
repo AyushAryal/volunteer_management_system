@@ -83,14 +83,14 @@ const Overview = () => {
   //   </div>
   // );
   return (
-    <section className="flex flex-wrap  bg-indigo-100 p-3">
+    <section className="flex flex-wrap  bg-indigo-100 p-3 shadow-4">
       <div className="flex flex-wrap gap-5 align-items-center justify-content-center">
         <div className="flex-1" style={{ minWidth: "20rem" }}>
           <CountsComponent />
         </div>
-        <div className="flex-1" style={{ minWidth: "20rem" }}>
+        <div className="flex-1 px-6" style={{ minWidth: "20rem" }}>
           <h2 className="text-4xl">{t("Overview")}</h2>
-          <p className="text-xl">
+          <p className="text-xl text-justify">
             {t("Hero")}
             {/* {overviewContent} */}
           </p>
