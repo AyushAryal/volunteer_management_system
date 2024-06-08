@@ -89,8 +89,8 @@
   "Other ID Name": "Other ID Name",
   "Choose": "Choose",
   "Upload": "Upload",
-  "Accept Terms & Conditions": "Accept Terms & Conditions",
-
+  "Accept Terms & Conditions": "Accept <span>{{terms}}</span>",
+  "Terms & Conditions": "Terms & Conditions",
   "Useful Resources": "Useful Resources",
   "User Manual": "User Manual",
   "Volunteer Guidelines": "Volunteer Guidelines",

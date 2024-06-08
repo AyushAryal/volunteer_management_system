@@ -87,8 +87,8 @@
   "Other ID Name": "अन्य परिचय पत्र नाम",
   "Choose": "चयन गर्नुहोस्",
   "Upload": "अपलोड",
-  "Accept Terms & Conditions": "नियम र सर्तहरू स्वीकार गर्नुहोस्",
-
+  "Accept Terms & Conditions": "<span>{{terms}}</span> स्वीकार गर्नुहोस्",
+  "Terms & Conditions": "नियम र सर्तहरू",
   "Useful Resources": "उपयोगी स्रोतहरू",
   "User Manual": "प्रयोगकर्ता मैनुअल",
   "Volunteer Guidelines": "स्वयम् सेवक निर्देशिका",
