@@ -12,9 +12,9 @@ import dotenv
 
 from django.core.wsgi import get_wsgi_application
 
+dotenv.load_dotenv(os.path.join(os.path.dirname(__file__), "..", ".env"))
 os.environ.setdefault(
-    "DJANGO_SETTINGS_MODULE", "volunteer_management_system.production"
+    "DJANGO_SETTINGS_MODULE", "volunteer_management_system.development"
 )
-dotenv.load_dotenv(os.path.join(os.path.dirname(__file__), "../.env"))
 
 application = get_wsgi_application()
