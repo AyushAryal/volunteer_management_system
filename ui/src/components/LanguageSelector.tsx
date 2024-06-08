@@ -7,7 +7,9 @@ export const LanguageSelector = () => {
   const changeLanguage = (lng: string) => {
     i18n.changeLanguage(lng);
   };
-  const lng = "en";
+
+  const lng = i18n.language;
+  
   return (
     <div className="flex">
       <button
