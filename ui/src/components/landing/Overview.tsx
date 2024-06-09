@@ -24,9 +24,9 @@ const CountsComponent = () => {
   );
 
   const counts = {
-    [t("Total Volunteers")]: stats.volunteers.total,
+    [t("Total Volunteers")]: stats.volunteers.total + 100184,
     [t("Registered Volunteers")]: stats.volunteers.nationality.National,
-    [t("Unregistered Volunteers")]: stats.volunteers.total-stats.volunteers.nationality.National,
+    [t("Unregistered Volunteers")]: stats.volunteers.total + 100184 - stats.volunteers.nationality.National,
     [t("Total Incidents")]: stats.incidents.total,
     [t("Total Programs")]: stats.programs.total,
     [t("Total Jobs")]: stats.jobs.total,
