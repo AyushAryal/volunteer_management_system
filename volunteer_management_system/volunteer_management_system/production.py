@@ -31,5 +31,5 @@ PASSWORD_HASHERS = [
 #     "anon": "100/day",
 # }
 
-ALLOWED_HOSTS = ["182.93.86.220"]
+ALLOWED_HOSTS = ["182.93.86.220", "vms.ndrrma.gov.np"]
 STATIC_ROOT = os.path.join(BASE_DIR, "../static")
