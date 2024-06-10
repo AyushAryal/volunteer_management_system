@@ -28,7 +28,7 @@ SECRET_KEY = "django-insecure-89d+bl$*lfa=*0yk1c$67(2byhp3j9lohn6qucas1w%3r2m1xk
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
+CSRF_TRUSTED_ORIGINS = ["https://vms.ndrrma.gov.np"]
 SITE_ID = 1
 
 AUTH_USER_MODEL = "authentication.User"

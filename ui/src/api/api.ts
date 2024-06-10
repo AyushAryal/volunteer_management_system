@@ -1,5 +1,5 @@
-export const server = "http://localhost:8000";
-// export const server = "http://182.93.86.220";
+// export const server = "http://localhost:8000";
+export const server =  import.meta.env.VITE_SERVER;
 
 export const endpoints = {
     user: `${server}/api/user`,
