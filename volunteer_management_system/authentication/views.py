@@ -133,7 +133,7 @@ class UserViewSet(
         else:
             user.email_verified = True
             user.save()
-            return redirect(f"{site.domain}{success_path}")
+            return redirect(f"{protocol}://{site.domain}{success_path}")
 
     @action(detail=False, methods=["post"])
     def password_reset_link(self, request):
