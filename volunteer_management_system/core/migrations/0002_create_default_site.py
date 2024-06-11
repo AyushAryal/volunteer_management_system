@@ -8,7 +8,7 @@ def create_site(apps, schema_editor):
     SiteSettings = apps.get_model("core", "SiteSettings")
     SiteSettings.objects.all().delete()
     SiteSettings.objects.create(
-        pk=settings.SITE_ID, domain="vms.ndrrma.com.np", name="NDRRMA"
+        pk=settings.SITE_ID, domain="vms.ndrrma.gov.np", name="NDRRMA"
     )
 
 

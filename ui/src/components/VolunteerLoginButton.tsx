@@ -14,7 +14,7 @@ import { login, logout } from '@api/token';
 import { Menu } from 'primereact/menu';
 import { MenuItem, MenuItemOptions } from 'primereact/menuitem';
 import { VolunteerUpdateForm } from '@components/profile/VolunteerUpdateForm';
-import { get_volunteer } from '@api/incident.ts';
+import { get_volunteer, reset_password_link } from '@api/incident.ts';
 import { describe_api_errors } from '@api/utils';
 import { FormState } from '@api/form.tsx';
 import default_profile_image from "@assets/default_profile_image.png";
@@ -123,7 +123,7 @@ export function VolunteerLoginModal({ visible, setVisible }: VolunteerLoginModal
     }
 
     let response = formState.hasErrors() ? formState.getErrorAsElement() : null;
-    const {t} = useTranslation();
+    const { t } = useTranslation();
     return <Dialog
         visible={visible}
         modal
@@ -175,7 +175,23 @@ export function VolunteerLoginModal({ visible, setVisible }: VolunteerLoginModal
                         />
                     </div>
                     {response}
-                    <div className="flex justify-content-end">
+                    <div className="flex justify-content-between align-items-center">
+                        <Button
+                            outlined
+                            size="small"
+                            label={t("Forgot Password?")}
+                            onClick={async () => {
+                                if (emailRef.current !== null && passwordRef.current !== null) {
+                                    let email = (emailRef.current.value);
+                                    let response = await reset_password_link(email);
+                                    if (response.ok) {
+                                        setFormState(FormState.fromError("Password reset link sent! Please check your email."));
+                                    } else {
+                                        setFormState(FormState.fromError(describe_api_errors(await response.json())));
+                                    }
+                                }
+                            }}
+                        />
                         <Button
                             outlined
                             size="small"

@@ -14,7 +14,7 @@ export function RegistrationSuccess() {
                 style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}>
                 <h1 className="text-teal-500">Registration was successful!</h1>
                 <div> Welcome to NDRRMA Volunteer Management System.</div>
-                <a href="https://vms.ndrrma.gov.np"
+                <a href="/"
                     className="font-semibold text-orange-300 no-underline">
                     Go back to main page
                 </a>

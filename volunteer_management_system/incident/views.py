@@ -96,8 +96,8 @@ class VolunteerProfileViewSet(
             "blood_group": "O Positive",
             "active": True,
             "category": "General",
-            "temporary_ward": "https://vms.ndrrma.com.np/api/ward/1",
-            "permanent_ward": "https://vms.ndrrma.com.np/api/ward/2",
+            "temporary_ward": "https://vms.ndrrma.gov.np/api/ward/1",
+            "permanent_ward": "https://vms.ndrrma.gov.np/api/ward/2",
             "point": {
                 "type": "Point",
                 "coordinates": [0, 0],
@@ -107,7 +107,7 @@ class VolunteerProfileViewSet(
         "citizenship": {
             "id": "123",
             "registration_date": "2001-01-01",
-            "registration_district": "https://vms.ndrrma.com.np/api/district/1",
+            "registration_district": "https://vms.ndrrma.gov.np/api/district/1",
             "image": "BASE64IMAGE==",
         },
         "passport": {
@@ -119,7 +119,7 @@ class VolunteerProfileViewSet(
         "national_id": {
             "id": "123",
             "registration_date": "2001-01-01",
-            "registration_district": "https://vms.ndrrma.com.np/api/district/1",
+            "registration_district": "https://vms.ndrrma.gov.np/api/district/1",
             "image": "BASE64IMAGE==",
         },
         "other_identification_document": {
@@ -176,8 +176,8 @@ class VolunteerProfileViewSet(
                 "blood_group": "O Positive",
                 "active": True,
                 "category": "General",
-                "temporary_ward": "https://vms.ndrrma.com.np/api/ward/1",
-                "permanent_ward": "https://vms.ndrrma.com.np/api/ward/2",
+                "temporary_ward": "https://vms.ndrrma.gov.np/api/ward/1",
+                "permanent_ward": "https://vms.ndrrma.gov.np/api/ward/2",
                 "point": {
                     "type": "Point",
                     "coordinates": [0, 0],
@@ -187,7 +187,7 @@ class VolunteerProfileViewSet(
             "citizenship": {
                 "id": "123",
                 "registration_date": "2001-01-01",
-                "registration_district": "https://vms.ndrrma.com.np/api/district/1",
+                "registration_district": "https://vms.ndrrma.gov.np/api/district/1",
                 "image": "BASE64IMAGE==",
             },
             "passport": {
@@ -199,7 +199,7 @@ class VolunteerProfileViewSet(
             "national_id": {
                 "id": "123",
                 "registration_date": "2001-01-01",
-                "registration_district": "https://vms.ndrrma.com.np/api/district/1",
+                "registration_district": "https://vms.ndrrma.gov.np/api/district/1",
                 "image": "BASE64IMAGE==",
             },
             "other_identification_document": {
