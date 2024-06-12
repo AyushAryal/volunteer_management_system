@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     "rest_framework.authtoken",
     "rest_framework_gis",
     "vectortiles",
+    "django_celery_beat",
     "django_select2",
     "django_tables2",
     "django_filters",
@@ -156,6 +157,7 @@ USE_TZ = True
 CELERY_TIMEZONE = "Asia/Kathmandu"
 CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 30 * 60
+CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
 
 
 CELERY_BROKER_URL = "redis://127.0.0.1:6379/0"
@@ -222,7 +224,8 @@ LEAFLET_CONFIG = {
             {"attribution": "&copy; contributors"},
         ),
         (
-            "ESRI.World Imagery",
+            "DJANGO_SETTINGS_MODULE",
+            "volunteer_management_system.production" "ESRI.World Imagery",
             (
                 "https://server.arcgisonline.com"
                 "/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
