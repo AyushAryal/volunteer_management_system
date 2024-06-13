@@ -3,7 +3,7 @@ import { Incident } from "@models/incident";
 import { useState } from "react";
 import { faAngleRight } from '@fortawesome/free-solid-svg-icons/faAngleRight';
 import { faClock } from '@fortawesome/free-regular-svg-icons/faClock';
-import { VirtualScroller } from "primereact/virtualscroller";
+import { VirtualScroller, VirtualScrollerTemplateOptions } from "primereact/virtualscroller";
 import { useHookstate } from "@hookstate/core";
 import { storeState } from "@models/store";
 import { IncidentDetailModal } from "@components/map/sidebar/IncidentDetailModal";
@@ -91,12 +91,9 @@ export function Incidents() {
     ];
 
     return (
-      <div>
+      <div className="flex flex-column justify-content-between">
         <div className="flex justify-content-end">
-          <FontAwesomeIcon
-            icon={icon}
-            onClick={() => setShowChart(!showChart)}
-          />
+          <FontAwesomeIcon icon={icon} onClick={() => setShowChart(!showChart)} />
         </div>
         {showChart && (
           <div>
@@ -112,14 +109,21 @@ export function Incidents() {
           </div>
         )}
         {!showChart && (
-          <VirtualScroller
-            style={{ width: "100%", height: "65vh", overflowX: "hidden" }}
-            items={incidentList.get() as Incident[]}
-            itemSize={70}
-            itemTemplate={(incident: Incident) => (
-              <IncidentRibbon key={incident.url} incident={incident} />
-            )}
-          ></VirtualScroller>
+          <div className="pt-2">
+            <VirtualScroller
+              style={{ width: "100%", height: "75vh", overflowX: "hidden" }}
+              items={incidentList.get() as Incident[]}
+              itemSize={75}
+              itemTemplate={(incident: Incident, options: VirtualScrollerTemplateOptions) => (
+                <div
+                  className="flex flex-column flex-wrap w-full"
+                  style={{ height: options.props.itemSize + "px" }}
+                >
+                  <IncidentRibbon key={incident.url} incident={incident} />
+                </div>
+              )}
+            ></VirtualScroller>
+          </div>
         )}
       </div>
     );

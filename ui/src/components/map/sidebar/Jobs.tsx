@@ -4,7 +4,7 @@ import { useHookstate } from "@hookstate/core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClock } from '@fortawesome/free-regular-svg-icons/faClock';
 import { faAngleRight, faChartLine, faList, faPeopleGroup } from "@fortawesome/free-solid-svg-icons";
-import { VirtualScroller } from "primereact/virtualscroller";
+import { VirtualScroller, VirtualScrollerTemplateOptions } from "primereact/virtualscroller";
 import { Divider } from "primereact/divider";
 
 import { Job } from "@models/incident";
@@ -114,10 +114,7 @@ export function Jobs() {
     return (
       <div>
         <div className="flex justify-content-end">
-          <FontAwesomeIcon
-            icon={icon}
-            onClick={() => setShowChart(!showChart)}
-          />
+          <FontAwesomeIcon icon={icon} onClick={() => setShowChart(!showChart)} />
         </div>
         {showChart && (
           <div>
@@ -133,12 +130,21 @@ export function Jobs() {
           </div>
         )}
         {!showChart && (
-          <VirtualScroller
-            items={jobList.get() as Job[]}
-            itemTemplate={(job: Job) => <JobRibbon key={job.url} job={job} />}
-            itemSize={70}
-            style={{ width: "100%", height: "65vh", overflowX: "hidden" }}
-          ></VirtualScroller>
+          <div className="pt-2">
+            <VirtualScroller
+              items={jobList.get() as Job[]}
+              itemTemplate={(job: Job, options: VirtualScrollerTemplateOptions) => (
+                <div
+                  className="flex flex-column flex-wrap w-full"
+                  style={{ height: options.props.itemSize + "px" }}
+                >
+                  <JobRibbon key={job.url} job={job} />
+                </div>
+              )}
+              itemSize={95}
+              style={{ width: "100%", height: "75vh", overflowX: "hidden" }}
+            ></VirtualScroller>
+          </div>
         )}
       </div>
     );

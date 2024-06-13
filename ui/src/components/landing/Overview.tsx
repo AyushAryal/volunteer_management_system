@@ -23,10 +23,11 @@ const CountsComponent = () => {
     </div>
   );
 
+  const unregisteredVolunteers = 100184;
   const counts = {
-    [t("Total Volunteers")]: stats.volunteers.total + 100184,
-    [t("Registered Volunteers")]: stats.volunteers.nationality.National,
-    [t("Unregistered Volunteers")]: stats.volunteers.total + 100184 - stats.volunteers.nationality.National,
+    [t("Total Volunteers")]: stats.volunteers.total + unregisteredVolunteers,
+    [t("Registered Volunteers")]: stats.volunteers.total,
+    [t("Unregistered Volunteers")]: unregisteredVolunteers,
     [t("Total Incidents")]: stats.incidents.total,
     [t("Total Programs")]: stats.programs.total,
     [t("Total Jobs")]: stats.jobs.total,
