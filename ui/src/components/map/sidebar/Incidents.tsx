@@ -109,11 +109,12 @@ export function Incidents() {
           </div>
         )}
         {!showChart && (
-          <div className="pt-2">
+          <div className="flex pt-2 align-items-center" style={{width: '100%', height: "68vh" }}>
             <VirtualScroller
-              style={{ width: "100%", height: "75vh", overflowX: "hidden" }}
+            className="flex flex-column align-self-center"
+              style={{ width: "100%", height: "100%", overflowX: "hidden" }}
               items={incidentList.get() as Incident[]}
-              itemSize={75}
+              itemSize={70}
               itemTemplate={(incident: Incident, options: VirtualScrollerTemplateOptions) => (
                 <div
                   className="flex flex-column flex-wrap w-full"
