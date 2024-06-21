@@ -224,8 +224,7 @@ LEAFLET_CONFIG = {
             {"attribution": "&copy; contributors"},
         ),
         (
-            "DJANGO_SETTINGS_MODULE",
-            "volunteer_management_system.production" "ESRI.World Imagery",
+            "ESRI.World Imagery",
             (
                 "https://server.arcgisonline.com"
                 "/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"

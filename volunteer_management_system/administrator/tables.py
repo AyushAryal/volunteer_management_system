@@ -1,8 +1,10 @@
 from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
+
 import django_tables2
-from django_filters.views import FilterView
 import django_filters
+from django_filters.views import FilterView
+
 import federal.models
 import incident.models
 
@@ -26,10 +28,28 @@ def get_user_controlled_wards(user):
 
 
 class VolunteerProfileFilter(django_filters.FilterSet):
+    province = django_filters.ModelChoiceFilter(
+        label="Province",
+        field_name="temporary_ward__municipality__district__province",
+        queryset=federal.models.Province.objects.all(),
+    )
+
+    district = django_filters.ModelChoiceFilter(
+        label="District",
+        field_name="temporary_ward__municipality__district",
+        queryset=federal.models.District.objects.all(),
+    )
+
     municipality = django_filters.ModelChoiceFilter(
         label="Municipality",
         field_name="temporary_ward__municipality",
         queryset=federal.models.Municipality.objects.all(),
+    )
+
+    ward = django_filters.ModelChoiceFilter(
+        label="Ward",
+        field_name="temporary_ward",
+        queryset=federal.models.Ward.objects.all(),
     )
 
     blood_group = django_filters.ChoiceFilter(
@@ -54,6 +74,12 @@ class VolunteerProfileFilter(django_filters.FilterSet):
         label="Training",
         field_name="user__trainings__category",
         choices=incident.models.TrainingCategory.choices,
+    )
+
+    academic_qualification = django_filters.ChoiceFilter(
+        label="Qualification",
+        field_name="academic_qualification",
+        choices=incident.models.AcademicQualification.choices,
     )
 
     class Meta:
